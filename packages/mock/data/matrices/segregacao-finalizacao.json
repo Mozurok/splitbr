@@ -1,0 +1,14 @@
+{
+  "informe": "segregacao-finalizacao",
+  "fonte": "Manual de Integracao v1.0, secao 3.5.3 (passo 3; sem legenda M/O/NE, todos os campos presentes na tabela)",
+  "arranjos": ["boleto", "pix-automatico", "pix-dinamico", "pix-estatico", "ted", "tef"],
+  "topo": {
+    "cnpjRaizPspRecDir": ["M", "M", "M", "M", "M", "M"],
+    "dtHrMsg": ["M", "M", "M", "M", "M", "M"],
+    "idInfSegr": ["M", "M", "M", "M", "M", "M"],
+    "totalTrans": ["M", "M", "M", "M", "M", "M"],
+    "valorTotalCbs": ["M", "M", "M", "M", "M", "M"],
+    "valorTotalIbs": ["M", "M", "M", "M", "M", "M"]
+  },
+  "transacoes": {}
+}

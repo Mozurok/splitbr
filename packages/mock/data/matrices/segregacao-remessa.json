@@ -1,0 +1,13 @@
+{
+  "informe": "segregacao-remessa",
+  "fonte": "Manual de Integracao v1.0, secao 3.5.1 (passo 1; sem legenda M/O/NE, todos os campos presentes na tabela)",
+  "arranjos": ["boleto", "pix-automatico", "pix-dinamico", "pix-estatico", "ted", "tef"],
+  "topo": {
+    "cnpjRaizPspRecDir": ["M", "M", "M", "M", "M", "M"],
+    "dtHrMsg": ["M", "M", "M", "M", "M", "M"],
+    "idRepasse": ["M", "M", "M", "M", "M", "M"],
+    "arrj": ["M", "M", "M", "M", "M", "M"],
+    "idInfSegr": ["M", "M", "M", "M", "M", "M"]
+  },
+  "transacoes": {}
+}

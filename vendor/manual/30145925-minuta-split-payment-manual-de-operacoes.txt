@@ -1,0 +1,1951 @@
+Manual de Operações
+
+      Split Payment
+   (Reforma Tributária)
+
+
+
+
+     Versão preliminar
+
+      Junho de 2026
+Sumário
+1. Disposições Iniciais ..................................................................................................................................................................................... 5
+    1.1 Introdução............................................................................................................................................................................................... 5
+    1.2 Escopo do Split (Fase 1 - B2B Opcional)..................................................................................................................................... 5
+2. Conceitos Operacionais Fundamentais .............................................................................................................................................. 7
+    2.1 Modelos do Split ................................................................................................................................................................................... 7
+    2.2 Arranjos Participantes ....................................................................................................................................................................... 7
+        2.2.1 Pix Estático – Visão Macro do Fluxo .................................................................................................................................... 9
+        2.2.2 TED – Visão Macro do Fluxo.................................................................................................................................................... 9
+        2.2.3 TEF – Visão Macro do Fluxo ................................................................................................................................................. 10
+        2.2.4 Boleto – Visão Macro do Fluxo ............................................................................................................................................ 10
+        2.2.5 Pix Dinâmico – Visão Macro do Fluxo .............................................................................................................................. 11
+        2.2.6 Pix Automático – Visão Macro do Fluxo .......................................................................................................................... 11
+    2.3 Os Tipos de Valor de CBS/IBS ...................................................................................................................................................... 11
+3. Input dos Dados Fiscais.......................................................................................................................................................................... 13
+    3.1 Regras Gerais de Input .................................................................................................................................................................... 13
+    3.2 Input em Arranjos Iniciados pelo Recebedor ........................................................................................................................ 13
+    3.3 Input em Arranjos Iniciados pelo Pagador ............................................................................................................................. 14
+    3.4 Restrições B2B e Características do Documento Fiscal .................................................................................................... 14
+        3.4.1 Restrições B2B ........................................................................................................................................................................... 14
+        3.4.2 Características do Documento Fiscal................................................................................................................................ 15
+4. Comunicação com a Plataforma Pública ......................................................................................................................................... 16
+    4.1 Quem Comunica com a PP por Arranjo .................................................................................................................................... 16
+    4.2 Descrição dos Informes - Visão Funcional .............................................................................................................................. 17
+        4.2.1 Informes em Arranjos Iniciados pelo Recebedor ........................................................................................................ 17
+        4.2.2 Informes em Arranjos Iniciados pelo Pagador ............................................................................................................. 18
+        4.2.3 Resumo dos Informes por Arranjo .................................................................................................................................... 18
+    4.3 Diferença entre Informe Preliminar de Pagamento e Informe de Segregação ........................................................ 19
+    4.4 Gatilhos de Envio dos Informes por Arranjo ......................................................................................................................... 20
+        Convenções da tabela ......................................................................................................................................................................... 20
+        4.4.1 Arranjos iniciados pelo Recebedor ................................................................................................................................... 20
+        4.4.2 Arranjos iniciados pelo Pagador ........................................................................................................................................ 20
+5. Cálculo do Valor a Segregar .................................................................................................................................................................. 22
+    5.1 Princípios do Cálculo ....................................................................................................................................................................... 22
+    5.2 Fórmula de Proporcionalidade.................................................................................................................................................... 22
+    5.3 Regra de Arredondamento ............................................................................................................................................................ 23
+    5.4 Quem Faz o Cálculo .......................................................................................................................................................................... 23
+6. Liquidação Financeira e Repasse Financeiro ................................................................................................................................ 24
+    6.1 Marco de Liquidação Financeira por Arranjo........................................................................................................................ 24
+        6.1.1 Antecipação de Recebíveis .................................................................................................................................................... 25
+    6.2 Repasse Financeiro .......................................................................................................................................................................... 25
+    6.3 Liquidação do Boleto Dinâmico em Quatro Partes ............................................................................................................. 25
+7. Responsabilidades dos PSPs ................................................................................................................................................................ 27
+    7.1 Não Responsabilidade por Validação dos Tributos ............................................................................................................ 27
+    7.2 Operação Conforme Informações Disponíveis...................................................................................................................... 27
+    7.3 Operação Conjunta entre PSP Recebedor Direto e PSP Recebedor Indireto............................................................ 27
+        7.3.1 Definições e Princípios ........................................................................................................................................................... 28
+        7.3.2 Responsabilidades por Etapa do Ciclo ............................................................................................................................. 28
+        7.3.3 Mecânica da Liquidação no Pix Dinâmico e no Pix Automático ............................................................................ 29
+        7.3.4 Repasse Financeiro com Prestador de Serviço ............................................................................................................ 30
+    7.4 Inadimplência de PSPs .................................................................................................................................................................... 30
+8. Experiência do Usuário .......................................................................................................................................................................... 31
+    8.1 Princípios Gerais ............................................................................................................................................................................... 31
+    8.2 Categorias de CBS/IBS e Valor Exibidas em Cada Etapa................................................................................................... 31
+        8.2.1 Boleto............................................................................................................................................................................................. 32
+        8.2.2 Pix Dinâmico ............................................................................................................................................................................... 33
+        8.2.3 Pix Automático........................................................................................................................................................................... 33
+        8.2.4 Pix Estático .................................................................................................................................................................................. 34
+        8.2.5 TED ................................................................................................................................................................................................. 35
+        8.2.6 TEF (Book Transfer)................................................................................................................................................................ 36
+        8.2.7 Observações Gerais .................................................................................................................................................................. 36
+9. Cenários Operacionais Específicos .................................................................................................................................................... 37
+    9.1 Transações com Impeditivos Não Contratuais ..................................................................................................................... 37
+    9.2 Plataformas Digitais ......................................................................................................................................................................... 38
+10. Mecanismo de Ocorrências (MOC) ................................................................................................................................................. 39
+    10.1 Casos de Uso ..................................................................................................................................................................................... 39
+    10.2 Relação do MOC com os Arranjos ............................................................................................................................................ 40
+    10.3 Fluxo da Solicitação de Estorno via MOC.............................................................................................................................. 40
+Apêndice A - Glossário ................................................................................................................................................................................ 41
+    A.1 Atores Institucionais (Governo) ................................................................................................................................................. 41
+    A.2 Atores do Mercado (PSPs e Infraestruturas) ........................................................................................................................ 41
+    A.3 Infraestruturas Técnicas dos Arranjos .................................................................................................................................... 42
+    A.4 Pessoas e Papéis na Transação ................................................................................................................................................... 42
+    A.5 Tributos e Reforma Tributária .................................................................................................................................................... 43
+    A.6 Conceito do Split e Modelos de Aplicação .............................................................................................................................. 43
+    A.7 Categorias de Valor de Tributo e Valores da Transação ................................................................................................... 44
+    A.8 Informes e Mensageria do Split .................................................................................................................................................. 45
+    A.9 Arranjos e Instrumentos de Pagamento.................................................................................................................................. 46
+    A.10 Identificadores de Transação .................................................................................................................................................... 46
+    A.11 Governança e Operação ............................................................................................................................................................... 47
+    A.12 Outros Conceitos ............................................................................................................................................................................ 47
+1. Disposições Iniciais
+
+1.1 Introdução
+Este Manual de Operações descreve o funcionamento operacional do Split Payment dos tributos CBS e IBS,
+instituídos no âmbito da Reforma Tributária pela Lei Complementar nº 214 de 2025. O manual orienta PSPs e
+instituições operadoras na implementação e operação do split, detalhando regras, fluxos, cálculos e tratamentos
+aplicáveis às transações realizadas em arranjos de pagamento participantes.
+O Split Payment é o procedimento padronizado de segregação e recolhimento do CBS/IBS no momento da
+Liquidação Financeira. A cada transação realizada com split, o valor do tributo é separado do valor líquido
+destinado ao Recebedor e posteriormente repassado, pelo PSP Recebedor Direto, à RFB (caso CBS) e ao CGIBS
+(caso IBS).
+Este manual integra um conjunto de documentos do Split Payment, cada um com finalidade específica:
+
+ Documento                                   Finalidade
+
+
+                                             Funcionamento operacional, fluxos, regras de cálculo, experiência do
+ Manual de Operações (este documento)
+                                             usuário
+
+
+                                             Especificação técnica da API, contratos de mensagens, endpoints,
+ Manual de Integração + Swagger
+                                             dicionário de campos
+
+
+ Manual de Tempos                            Prazos, janelas operacionais, ANS e marcos temporais
+
+
+ Manual de Redes                             Arquitetura de conexão, topologia, capacidade e resiliência
+
+
+ Manual de Segurança                         Autenticação, criptografia, auditoria e controles de proteção
+
+
+                                             Checklist de conformidade para entrada de novos PSPs no Split
+ Manual de Onboarding                        Payment, playbooks de onboarding e offboarding, governança de
+                                             incidentes
+
+
+ Regulamento (Ato Conjunto RFB/CGIBS)        Bases normativas, obrigações legais, penalidades
+
+
+
+O conteúdo deste manual é complementar aos demais. Quando um tema for tratado em outro manual, este
+documento não reproduzirá o detalhamento técnico que pertence ao manual correspondente.
+Os termos técnicos utilizados ao longo deste manual estão definidos no Apêndice A - Glossário.
+
+1.2 Escopo do Split (Fase 1 - B2B Opcional)
+A primeira fase do Split Payment, escopo deste manual, é denominada B2B Opcional e possui as seguintes
+características estruturantes:
+Operações B2B: o split aplica-se exclusivamente a operações entre Pessoas Jurídicas (PJs), em que tanto o
+Pagador Original quanto o Recebedor (beneficiário) estejam regularmente inscritos no CNPJ. Operações com
+Pessoas Físicas como Pagador Efetivo são permitidas em arranjos iniciados pelo Recebedor, sem impedimento
+ao split, conforme detalhado na Seção 8 (Experiência do Usuário). Já em arranjos iniciados pelo Pagador, o
+Pagador deve ser obrigatoriamente PJ.
+Adoção facultativa pelo originador da transação: a utilização do split é facultativa ao originador da transação.
+A opção pelo split é manifestada mediante o preenchimento dos campos de CBS, IBS e, se aplicável, Documento
+Fiscal no momento de iniciação da transação. Se os campos não forem preenchidos, a transação prossegue sem
+split. As regras de input são detalhadas na Seção 3.
+Implementação obrigatória aos PSPs: embora seja facultativa ao originador da transação, a implementação do
+split é obrigatória a todos os PSPs e instituições operadoras participantes dos arranjos contemplados. Os PSPs
+devem disponibilizar o split aos seus clientes PJ, tanto Pagadores quanto Recebedores.
+Arranjos participantes: o escopo da Fase 1 contempla seis arranjos:
+
+ Arranjo                                          Iniciador da Transação   Modelo do Split
+
+
+ Boleto (incluindo “Débito Direto Autorizado”),
+ Pix Dinâmico [APDN e QRDN] e Pix Automático      Recebedor                Super Inteligente
+ [AUTO]
+
+
+ Pix Estático [DICT, MANU, QRES e APES], TED e
+                                                  Pagador                  Inteligente
+ TEF (Book Transfer)
+
+
+
+Os arranjos e modelos do split são detalhados na Seção 2 (Conceitos Operacionais Fundamentais).
+Arranjos fora do escopo da Fase 1 (lista não exaustiva): todos os arranjos não contemplados na tabela acima
+estão fora do escopo desta fase, tais como cartões de crédito, débito e pré-pago; benefícios e vouchers; Pix com
+Iniciação de Transação de Pagamento (Open Finance); convênios; criptomoedas e meios não eletrônicos, entre
+outros.
+Iniciação de Transação de Pagamento (Open Finance) fora do escopo da Fase 1: Transações iniciadas por
+meio de serviço de iniciação de transação de pagamento, prestado por um Iniciador de Transação de Pagamento
+(ITP) no contexto do Open Finance, estão fora do escopo desta fase, independentemente do arranjo de pagamento
+utilizado. O critério de enquadramento dessas transações é a iniciação por terceiro em nome do usuário,
+evidenciada, no caso do Pix, pela presença do campo de CNPJ do iniciador ou pela forma de iniciação INIC.
+Modalidades fora do escopo da Fase 1: as demais modalidades de recolhimento previstas pela LC 214/2025
+(incluindo o Recolhimento pelo Adquirente (RAD), o pagamento pelo contribuinte e a compensação de créditos)
+não são tratadas neste manual. O Modelo Simplificado do Split e o Imposto Seletivo também estão fora do escopo
+da Fase 1.
+Transferência de excesso de tributos ao Fornecedor: Em hipóteses específicas de recolhimento indevido ou
+“a maior” de CBS e/ou IBS, a RFB, para CBS, e o CGIBS, para IBS, poderão efetuar a transferência de excesso de
+valores ao Fornecedor, conforme regras definidas pelos respectivos entes governamentais. Quando aplicável, a
+transferência será realizada em até três dias úteis, de forma consolidada, não constituindo operação de Split
+Payment nem utilizando seus campos, fluxos ou regras de segregação. Este processo está fora do escopo
+operacional deste manual.
+2. Conceitos Operacionais Fundamentais
+
+2.1 Modelos do Split
+A LC 214/2025 prevê diferentes modelos de Split Payment, que se distinguem pela forma como o valor do tributo
+é determinado e pela existência ou não de interação com os sistemas do governo no momento da transação. Na
+Fase 1 (B2B Opcional), escopo deste manual, dois modelos estão em operação: o Modelo Inteligente e o Modelo
+Super Inteligente.
+Modelo Inteligente: o valor do CBS/IBS a ser segregado é integralmente determinado pelo originador da
+transação no momento de iniciação, sem qualquer correção pelo governo. O PSP segrega exatamente o valor de
+CBS/IBS Informado, sem consulta a sistemas externos durante o ciclo da transação. Esse modelo é aplicado nos
+arranjos iniciados pelo Pagador (Pix Estático, TED e TEF), em razão da característica de instantaneidade ou da
+ausência de janela operacional viável para retorno do governo entre a iniciação e a liquidação da transação.
+Modelo Super Inteligente: o valor do CBS/IBS a ser segregado é informado inicialmente pelo Recebedor, mas
+pode ser ajustado pelo governo até a baixa da transação (por pagamento ou outro motivo de encerramento). A
+RFB e o CGIBS, por meio da Plataforma Pública (PP), retornam mensagens que podem corrigir o valor do tributo
+(quando há divergência em relação ao Documento Fiscal vinculado) ou reduzir o valor a ser efetivamente
+recolhido (quando parte do débito já foi extinta por outros meios). Esse modelo é aplicado nos arranjos iniciados
+pelo Recebedor (Boleto, Pix Dinâmico e Pix Automático), em razão da existência de uma janela temporal entre a
+iniciação da transação (emissão do boleto ou QR Code) e o pagamento efetivo. Nestes arranjos, caso não haja
+tempo hábil ou necessidade de Retorno Super Inteligente, o split será realizado conforme valor de CBS/IBS
+Informado.
+A diferença prática entre os dois modelos está resumida abaixo:
+
+ Característica                       Modelo Inteligente                      Modelo Super Inteligente
+
+
+ Responsável pelo preenchimento
+                                      Pagador                                 Recebedor
+ do tributo
+
+
+ Possibilidade de correção do                                                 Aplicável quando há divergência em
+                                      Não aplicável
+ tributo pelo governo                                                         relação ao Documento Fiscal
+
+
+                                                                              Aplicável quando o débito do tributo já
+ Dispensa parcial ou total do split
+                                      Não aplicável                           foi parcialmente ou integralmente
+ por extinção prévia do débito
+                                                                              extinto
+
+
+ Proporcionalidade do tributo
+                                      Não aplicável (não há distinção entre   Aplicável (Valor Pago pode diferir do
+ (quando Valor Pago inferior ao
+                                      Valor Pago e Valor Original)            Valor Original)
+ Valor Original)
+
+
+ Arranjos aplicáveis                  Pix Estático, TED, TEF                  Boleto, Pix Dinâmico, Pix Automático
+2.2 Arranjos Participantes
+O escopo da Fase 1 do Split Payment contempla seis variações dos arranjos de pagamento, classificados conforme
+o iniciador da transação:
+Arranjos iniciados pelo Recebedor: nessas modalidades, o Recebedor inicia a transação (emite o boleto, QR
+Code ou solicita o agendamento de cobrança recorrente) contendo os campos fiscais (CBS, IBS e, opcionalmente,
+Documento Fiscal). O pagamento é efetivado sem que o Pagador preencha os campos fiscais. Os arranjos iniciados
+pelo Recebedor operam no Modelo Super Inteligente.
+Arranjos iniciados pelo Pagador: nessas modalidades, o Pagador inicia a transação preenchendo, ele próprio,
+os campos fiscais (CBS, IBS e Documento Fiscal). O Recebedor não tem participação prévia na transação, embora
+deva comunicar ao Pagador os campos fiscais por canais externos ao arranjo para que sejam corretamente
+preenchidos. Os arranjos iniciados pelo Pagador operam no Modelo Inteligente.
+Nota sobre formas de iniciação do Pix: cada arranjo participante admite formas específicas de iniciação, como
+DICT, MANU, QRES e APES no Pix Estático; QRDN e APDN no Pix Dinâmico; e AUTO no Pix Automático. A forma
+de iniciação INIC, que indica a iniciação por terceiro por meio de Iniciador de Transação de Pagamento (ITP) no
+contexto do Open Finance, está fora do escopo da Fase 1 e não está sujeita a split.
+A tabela a seguir consolida os arranjos participantes:
+
+ Arranjo / Variação    Iniciador        Modelo              Característica do Instrumento
+
+
+                                                            Cobrança emitida com vencimento, registrada via
+ Boleto                Recebedor        Super Inteligente
+                                                            Núclea (PCR) e liquidada via SILOC ou STR
+
+
+                                                            QR Code gerado para cada cobrança, com valor e
+ Pix Dinâmico          Recebedor        Super Inteligente   demais dados pré-definidos (podendo ser com ou sem
+                                                            vencimento)
+
+
+                                                            Autorização prévia de cobranças recorrentes em
+ Pix Automático        Recebedor        Super Inteligente
+                                                            periodicidades acordadas
+
+
+                                                            Pagamento iniciado a partir de chave Pix, QR Code
+ Pix Estático          Pagador          Inteligente
+                                                            estático, ou dados bancários
+
+
+                                                            Transferência Eletrônica Disponível, liquidada via
+ TED                   Pagador          Inteligente
+                                                            STR/SITRAF
+
+
+ TEF (Book                                                  Transação intrabancária entre contas mantidas no
+                       Pagador          Inteligente
+ Transfer)                                                  mesmo PSP
+
+Cada arranjo possui particularidades operacionais que são detalhadas ao longo deste manual, especialmente nas
+Seções 4 (Comunicação com a Plataforma Pública), 5 (Cálculo do Valor a Segregar) e 6 (Liquidação e Repasse).
+2.2.1 Pix Estático – Visão Macro do Fluxo
+
+
+
+
+2.2.2 TED – Visão Macro do Fluxo
+2.2.3 TEF – Visão Macro do Fluxo
+
+
+
+
+2.2.4 Boleto – Visão Macro do Fluxo
+2.2.5 Pix Dinâmico – Visão Macro do Fluxo
+
+
+
+
+2.2.6 Pix Automático – Visão Macro do Fluxo
+
+
+
+
+2.3 Os Tipos de Valor de CBS/IBS
+No contexto do Split Payment, o valor de CBS e IBS associado a uma transação assume diferentes categorias
+conforme o momento e a finalidade. Os valores têm origem no originador da transação, no retorno da PP ou no
+cálculo realizado pelo PSP, e se destinam tanto à determinação do valor a ser segregado e recolhido quanto à
+exibição nas interfaces e arquivos disponibilizados aos clientes PJ.
+A tabela a seguir apresenta as cinco categorias de valor de CBS/IBS aplicáveis ao Split Payment:
+ Categoria              Origem                    Finalidade
+
+
+                        Originador da transação   Valor inicialmente declarado para a transação, considerado para a
+ CBS/IBS Informado
+                        (Pagador ou Recebedor)    segregação caso não haja retorno do Super Inteligente
+
+
+                                                  Substitui o CBS/IBS Informado quando há divergência em relação
+ CBS/IBS Corrigido      RFB/CGIBS via PP
+                                                  ao Documento Fiscal vinculado
+
+
+                                                  Limite máximo a ser recolhido, considerando que parte do débito
+ CBS/IBS Em Aberto      RFB/CGIBS via PP
+                                                  do DF pode já ter sido extinta
+
+
+                                                  Valor efetivamente separado para Repasse Financeiro ao governo,
+                        PSP Recebedor Direto ou   calculado conforme a regra de proporcionalidade a partir do
+ CBS/IBS Segregado
+                        Núclea                    CBS/IBS Informado ou CBS/IBS Corrigido, do CBS/IBS Em Aberto
+                                                  e do Valor Pago
+
+
+                                                  Valor que representa a carga tributária da transação ou
+                                                  pagamento, a ser exibida ao Pagador. É calculado pelo PSP
+                                                  Pagador Direto a partir do CBS/IBS Informado (ou CBS/IBS
+                                                  Corrigido, quando disponível) e do Valor Pago, aplicando-se a
+ CBS/IBS Aplicado       PSP Pagador Direto        regra de proporcionalidade. Ao contrário do CBS/IBS Segregado,
+                                                  não considera o CBS/IBS Em Aberto, pois eventual dispensa
+                                                  parcial ou total do recolhimento beneficia o Recebedor (que
+                                                  mantém parte do tributo) e não altera o crédito a que o Pagador
+                                                  tem direito
+
+
+
+Os valores de CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto e CBS/IBS Segregado são
+utilizados para fins de cálculo e segregação do tributo. O valor de CBS/IBS Aplicado é utilizado para fins de
+exibição em arquivos e extratos disponibilizados aos clientes PJ. A aplicação de cada categoria é detalhada nas
+demais seções deste manual.
+Observação operacional sobre atualização dos valores: no Modelo Super Inteligente, os valores CBS/IBS
+Corrigido e CBS/IBS Em Aberto podem ser atualizados pela PP a qualquer momento entre a iniciação e a baixa
+da transação (incluindo a baixa por pagamento). O PSP Recebedor Direto ou a Núclea operam com a versão mais
+recente dos valores que conseguiram processar a tempo do pagamento. Caso uma atualização chegue após o PSP
+ter consolidado os dados para o cálculo da segregação, o valor anterior pode ser utilizado. As regras de tempo de
+processamento e janelas de atualização são detalhadas no Manual de Tempos.
+3. Input dos Dados Fiscais
+
+3.1 Regras Gerais de Input
+Para que uma transação seja realizada com Split Payment, os campos fiscais associados à operação comercial
+devem ser comunicados ao arranjo de pagamento no momento de emissão. Três campos novos são utilizados
+para esse fim:
+   •   CBS Informado: montante absoluto da Contribuição sobre Bens e Serviços associada à transação.
+   •   IBS Informado: montante absoluto do Imposto sobre Bens e Serviços associado à transação.
+   •   Documento Fiscal (DF): identificador (chave de acesso) do Documento Fiscal que vincula a transação
+       de pagamento à operação fiscal subjacente.
+A utilização do Split Payment é facultativa. A opção pelo split é manifestada por meio do preenchimento dos
+campos acima no momento de iniciação da transação. Quando os campos não são preenchidos, a transação
+prossegue normalmente, sem split.
+O responsável pelo preenchimento varia conforme o arranjo:
+   •   Em arranjos iniciados pelo Recebedor (Boleto, Pix Dinâmico, Pix Automático), os dados são preenchidos
+       pelo Recebedor na iniciação da transação.
+   •   Em arranjos iniciados pelo Pagador (Pix Estático, TED, TEF), os dados são preenchidos pelo Pagador no
+       momento de iniciação da transação.
+A obrigatoriedade de preenchimento dos três campos também varia conforme o arranjo, com regras específicas
+detalhadas nas Seções 3.2 e 3.3.
+Vínculo entre transação e Documento Fiscal: nos arranjos iniciados pelo Recebedor, o preenchimento do
+Documento Fiscal através do arranjo é opcional. Quando o DF não é preenchido no arranjo, o Recebedor pode
+estabelecer o vínculo entre a transação e o DF diretamente com o governo. Esse caminho alternativo não
+interrompe o ciclo do split: caso a vinculação ocorra dentro das janelas operacionais, o Retorno Super Inteligente
+pode ocorrer normalmente.
+
+3.2 Input em Arranjos Iniciados pelo Recebedor
+Nos arranjos Boleto, Pix Dinâmico e Pix Automático, o Recebedor é o responsável pelo preenchimento dos
+campos fiscais no momento de iniciação da transação.
+Obrigatoriedade dos campos: para utilizar o split, o Recebedor deve preencher obrigatoriamente os valores de
+CBS Informado e IBS Informado, ainda que sejam preenchidos com valor igual a zero. Ambos os campos precisam
+ser informados em conjunto, não sendo possível preencher apenas um deles.
+O preenchimento do Documento Fiscal através do arranjo é opcional. Quando o Recebedor opta por não
+preencher o DF no arranjo, o vínculo entre a transação e o Documento Fiscal deve ser estabelecido diretamente
+com o governo, conforme descrito na Seção 3.1.
+Resumo da obrigatoriedade (caso deseje utilizar o split):
+
+ Campo                       Obrigatório                  Observação
+
+
+ CBS Informado               Sim                          Valor pode ser zero, mas o campo deve ser preenchido
+ Campo                       Obrigatório                Observação
+
+
+ IBS Informado               Sim                        Valor pode ser zero, mas o campo deve ser preenchido
+
+
+                                                        Opcional via arranjo; vínculo posterior diretamente com o
+ Documento Fiscal            Não
+                                                        governo permitido
+
+
+
+Após a iniciação da transação, o Recebedor pode atualizar os campos fiscais até o pagamento ou a baixa,
+observadas as regras de atualização descritas na Seção 4.
+
+3.3 Input em Arranjos Iniciados pelo Pagador
+Nos arranjos Pix Estático, TED e TEF, o Pagador é o responsável pelo preenchimento dos campos fiscais no
+momento de iniciação da transação.
+Obrigatoriedade dos campos: para utilizar o split, o Pagador deve preencher obrigatoriamente os três campos:
+CBS Informado, IBS Informado e Documento Fiscal.
+Resumo da obrigatoriedade (caso deseje utilizar o split):
+
+ Campo                       Obrigatório                Observação
+
+
+ CBS Informado               Sim                        Preenchimento obrigatório para utilização do split
+
+
+ IBS Informado               Sim                        Preenchimento obrigatório para utilização do split
+
+
+                                                        Não há possibilidade de vínculo posterior com o governo
+ Documento Fiscal            Sim
+                                                        nestes arranjos
+
+
+
+Pré-requisito do Documento Fiscal: nos arranjos iniciados pelo Pagador, o Documento Fiscal deve estar
+disponível ao Pagador antes da iniciação da transação, para que ele possa preenchê-lo corretamente no
+momento da transação. O DF é, em regra, comunicado pelo Recebedor ao Pagador por canais externos ao arranjo.
+Não há, nesses arranjos, mecanismo de vínculo posterior entre transação e DF: o vínculo é estabelecido
+exclusivamente por meio do preenchimento do campo no arranjo.
+
+3.4 Restrições B2B e Características do Documento Fiscal
+
+3.4.1 Restrições B2B
+O Split Payment, na Fase 1, aplica-se exclusivamente a operações entre Pessoas Jurídicas. As regras de
+elegibilidade variam conforme o tipo de arranjo:
+Arranjos iniciados pelo Pagador (Pix Estático, TED, TEF): tanto o Pagador quanto o Recebedor devem ser
+obrigatoriamente PJ para que a transação possa ser realizada com split. Não há jornada de input dos campos
+fiscais para Pessoas Físicas nesses arranjos. Caso o Recebedor seja PF, a transação é realizada, mas sem split.
+Arranjos iniciados pelo Recebedor (Boleto, Pix Dinâmico, Pix Automático): o Recebedor (beneficiário) e o
+Pagador Original devem ser obrigatoriamente PJ para que a transação possa ser criada com split. O Pagador
+Efetivo, no entanto, pode ser PF: nesse caso, a transação é realizada com split, mas o Pagador Efetivo PF não tem
+visibilidade dos campos fiscais nas telas de pagamento e comprovantes. A experiência do usuário PF em arranjos
+do Recebedor é detalhada na Seção 8.
+Operações com partes não relacionadas ao split: o Documento Fiscal vinculado à transação pode envolver
+Pessoas Jurídicas distintas das partes envolvidas na transação de pagamento (por exemplo, em operações com
+mandatário, escritórios de cobrança, plataformas digitais, ou outras estruturas comerciais). Os arranjos não
+possuem visibilidade dos dados do Documento Fiscal (além da sua chave), portanto não realizam validações.
+Cabe ao originador da transação garantir a coerência entre o DF e as partes envolvidas.
+
+3.4.2 Características do Documento Fiscal
+O Documento Fiscal preenchido na transação pode assumir duas naturezas distintas:
+DF Único: representa uma única operação comercial entre o Recebedor e o Pagador. É o caso mais comum, em
+que cada transação de pagamento corresponde a um único Documento Fiscal.
+DF Agregador: representa um conjunto de documentos fiscais consolidados sob um único identificador. É
+utilizado quando uma única transação de pagamento corresponde a múltiplas operações comerciais.
+Tratamento pelos arranjos: para os arranjos, o tratamento do DF Único e do DF Agregador é idêntico. Os
+arranjos não distinguem entre as duas naturezas: o campo de Documento Fiscal aceita qualquer identificador
+válido, sendo a distinção transparente aos PSPs. O processamento específico de cada tipo ocorre nos sistemas do
+governo (RFB e CGIBS).
+Quantidade de DFs por transação: cada transação permite o preenchimento de apenas um Documento Fiscal
+(único ou agregador).
+Vínculo entre a transação e o Documento Fiscal: o Documento Fiscal informado na transação estabelece o
+vínculo entre o pagamento e a operação correspondente e, em arranjos iniciados pelo Recebedor, caso esse
+vínculo não seja realizado através do arranjo, ele deve ser realizado diretamente com o governo. O vínculo é
+necessário para viabilizar o Retorno Super Inteligente (correção do tributo e dispensa de split) e a conciliação
+entre o CBS/IBS Segregado e o Documento Fiscal por parte da RFB e do CGIBS, permitindo a extinção do débito
+tributário do Fornecedor e a possibilidade de utilização de crédito tributário ao Adquirente.
+4. Comunicação com a Plataforma Pública
+
+4.1 Quem Comunica com a PP por Arranjo
+A Plataforma Pública (PP) atua como ponto único de comunicação entre PSPs/Núclea e os entes
+governamentais (RFB e CGIBS). Ela recebe os dados das transações com split, encaminha-os à RFB e ao CGIBS, e
+veicula os retornos do Modelo Super Inteligente no sentido oposto. A PP não executa regras de negócio do Split
+Payment, atuando exclusivamente como canal estruturado de comunicação, com validações sintáticas e
+semânticas dos dados trafegados.
+A responsabilidade pela comunicação com a PP varia conforme o arranjo:
+
+                                                                      Comunicação efetiva pode ser
+                          Responsável pela comunicação com a
+ Arranjo                                                              realizada por Prestador de Serviço de
+                          PP
+                                                                      Conexão?
+
+ Boleto                   Núclea                                       Não
+
+ Pix Automático
+
+ Pix Dinâmico             PSP Recebedor Direto                         Sim
+
+ Pix Estático
+
+ TED                      PSP Recebedor Direto                         Sim
+
+ TEF (Book Transfer)      PSP onde ocorreu a liquidação                Sim
+
+
+
+Nos arranjos Pix Dinâmico, Pix Automático, Pix Estático, TED e TEF, o PSP responsável pela comunicação pode
+optar por se comunicar diretamente com a PP ou por contratar um Prestador de Serviço de Conexão para fazê-lo
+em seu nome, ainda que possua conexão própria. A responsabilidade regulatória pela correção e pelo
+cumprimento dos prazos da comunicação permanece sempre com o PSP, independentemente do uso de
+prestador. No arranjo Boleto, a comunicação é realizada exclusivamente pela Núclea, não havendo opção de
+prestador.
+Pode atuar como Prestador de Serviço de Conexão somente o PSP autorizado pelo Banco Central que seja
+participante do arranjo TED e/ou participante direto do arranjo Pix.
+Caso específico do TEF: no arranjo TEF, a comunicação direta só é possível se o PSP for participante direto dos
+arranjos TED ou Pix e apresente conexão com a PP. Caso seja responsável por enviar somente os dados de TEF, a
+comunicação deve necessariamente ser intermediada por um Prestador de Serviço de Conexão, não sendo
+permitido o estabelecimento de uma conexão direta com a PP apenas para transmitir os campos fiscais
+relacionados a esse arranjo.
+Caso específico do Boleto com QR Code: quando um boleto é emitido com um QR Code Pix associado, os
+arranjos Boleto e Pix Dinâmico são tratados de forma totalmente independente (em separado) para fins de Split
+Payment. A comunicação é realizada separadamente para cada arranjo: uma vez para o boleto, pela Núclea, e uma
+vez para o QR Code, pelo PSP Recebedor Direto. Além disso, os Retornos Super Inteligente também são enviados
+de forma independente em cada arranjo. A transação é comunicada no Informe Preliminar de Pagamento e no
+Informe de Segregação exclusivamente no arranjo em que ocorrer a Liquidação Financeira, cabendo ao outro
+arranjo comunicá-la no Informe de Baixa (exceto por pagamento).
+A especificação técnica da comunicação com a PP (endpoints, formato de mensagens, autenticação, contratos de
+dados) é detalhada no Manual de Integração. Os prazos e janelas operacionais para envio dos informes e
+processamento dos retornos são detalhados no Manual de Tempos.
+
+4.2 Descrição dos Informes - Visão Funcional
+Os informes do Split Payment compõem o fluxo de comunicação entre PSPs/Núclea e a PP ao longo do ciclo de
+vida da transação. Cada informe tem uma finalidade específica e ocorre em um momento determinado do ciclo.
+Os informes variam conforme o tipo de arranjo: arranjos iniciados pelo Recebedor possuem um conjunto mais
+amplo de informes (em razão da janela temporal entre iniciação e pagamento – Modelo Super Inteligente),
+enquanto arranjos iniciados pelo Pagador possuem apenas os informes essenciais ao recolhimento.
+
+4.2.1 Informes em Arranjos Iniciados pelo Recebedor
+Informe de Transação Iniciada: comunica à PP que uma nova transação foi criada (emissão do boleto, geração
+do QR Code Dinâmico, criação da cobrança no Pix Automático) e que os campos fiscais foram informados pelo
+Recebedor. Esse informe abre a janela do Super Inteligente para a transação, permitindo que RFB e CGIBS
+verifiquem os valores de CBS/IBS Informado contra o Documento Fiscal vinculado e retornem eventuais
+correções ou reduções.
+Informe de Transação Atualizada: comunica à PP que uma transação previamente criada teve seus dados
+modificados pelo Recebedor (alteração de valor, atualização de CBS/IBS, ou vinculação posterior do Documento
+Fiscal). Quando os campos alterados afetam o cálculo do Super Inteligente (valor da transação, CBS/IBS
+Informado, DF), retornos previamente enviados pela PP podem ser descartados, e a PP pode emitir novos
+retornos refletindo os dados atualizados. Este informe aplica-se apenas aos arranjos Boleto e Pix Dinâmico, nos
+quais a transação admite atualização de seus dados após a criação. No arranjo Pix Automático não há Informe de
+Transação Atualizada, pois a cobrança recorrente (CobR) não admite atualização de conteúdo: qualquer
+alteração é realizada mediante cancelamento da CobR existente (que gera Informe de Baixa, Exceto por
+Pagamento) e criação de uma nova CobR (que gera novo Informe de Transação Iniciada).
+Retorno Super Inteligente — Correção: mensagem enviada pela PP em sentido oposto (da PP para a Núclea ou
+para o PSP Recebedor Direto), comunicando uma correção do valor de CBS/IBS Informado em relação ao
+Documento Fiscal vinculado. O valor de CBS/IBS Corrigido substitui o CBS/IBS Informado para fins de cálculo do
+CBS/IBS Segregado, conforme regras detalhadas na Seção 5. A correção pode ocorrer tanto para um valor maior
+quanto para um valor menor que o CBS/IBS Informado, com regras distintas para cada caso: correções de tributo
+a menor podem ser enviadas pela PP a qualquer momento entre a iniciação e a baixa da transação, enquanto
+correções de tributo a maior somente podem ser enviadas até as 00:30 do dia (corrido) seguinte ao da
+iniciação da transação. Após esse horário, eventuais retornos do Super Inteligente podem apenas reduzir o
+valor a recolher, nunca aumentá-lo. Em todo Retorno Super Inteligente, a PP comunicará o identificador do
+Documento Fiscal vinculado à transação.
+Retorno Super Inteligente — Em Aberto: mensagem enviada pela PP em sentido oposto (da PP para a Núclea
+ou para o PSP Recebedor Direto), comunicando o CBS/IBS Em Aberto, que significa o limite máximo de CBS/IBS
+a ser segregado, considerando que parte do débito do tributo já pode ter sido extinta. O valor de CBS/IBS Em
+Aberto pode ser atualizado sucessivamente pela PP, sempre a menor, até a baixa ou o pagamento da transação.
+Em todo Retorno Super Inteligente, a PP comunicará o identificador do Documento Fiscal vinculado à transação.
+Informe de Baixa (Exceto por Pagamento): comunica à PP que a transação foi encerrada por motivo que não
+seja pagamento (cancelamento pelo Recebedor, expiração da data limite, etc.). Encerra a janela do Super
+Inteligente para a transação, pois ela deixa de ser passível de pagamento. Quando o encerramento se dá por
+pagamento integral, esse informe não é necessário porque o próprio Informe de Segregação sinaliza o
+encerramento.
+Informe Preliminar de Pagamento: comunica à PP, em caráter informativo e não vinculante, que uma
+transação com split foi paga, ou seja, que o Pagador autorizou e teve o valor debitado, proporcionando
+visibilidade da transação ao governo de forma preliminar, antes que ela seja comunicada no Informe de
+Segregação. Este informe não gera obrigação de Repasse Financeiro e é desconsiderado pelo governo quando a
+mesma transação é comunicada no Informe de Segregação. O Informe Preliminar de Pagamento é enviado pelo
+responsável pela comunicação com a PP no arranjo (Seção 4.1) assim que identifica o pagamento, momento que
+varia conforme o arranjo e independe da conclusão da Liquidação Financeira. Os gatilhos de envio em cada
+arranjo constam na tabela da Seção 4.4.
+Informe de Segregação: comunica à PP, em caráter definitivo, o conjunto de transações que foram liquidadas
+em uma determinada janela temporal, com o respectivo valor de CBS/IBS Segregado. Constitui a base de
+referência para fins de Repasse Financeiro: gera obrigação de Repasse Financeiro pelo PSP Recebedor Direto à
+RFB e ao CGIBS, conforme detalhado na Seção 6.
+
+4.2.2 Informes em Arranjos Iniciados pelo Pagador
+Os arranjos iniciados pelo Pagador não possuem janela temporal entre iniciação e pagamento que justifique a
+operação do Super Inteligente. Assim, apenas dois informes ocorrem nesses arranjos:
+Informe Preliminar de Pagamento: comunica à PP, em caráter informativo e não vinculante, que uma
+transação com split foi paga. Possui as mesmas características descritas para os arranjos iniciados pelo
+Recebedor. No arranjo TEF, o envio deste informe é opcional ao PSP.
+Informe de Segregação: comunica à PP, em caráter definitivo, o conjunto de transações com Liquidação
+Financeira efetivada em uma janela temporal, com o respectivo valor de CBS/IBS Segregado. Possui as mesmas
+características descritas para os arranjos iniciados pelo Recebedor e gera obrigação de Repasse Financeiro.
+
+4.2.3 Resumo dos Informes por Arranjo
+A tabela a seguir consolida a aplicabilidade de cada informe por arranjo:
+
+                                         Pix            Pix
+ Informe                   Boleto                                     Pix Estático   TED         TEF
+                                         Dinâmico       Automático
+
+
+ Informe de Transação                                                 Não            Não         Não
+                           Obrigatório   Obrigatório    Obrigatório
+ Iniciada                                                             aplicável      aplicável   aplicável
+
+
+ Informe de Transação                                   Não           Não            Não         Não
+                           Obrigatório   Obrigatório
+ Atualizada                                             aplicável     aplicável      aplicável   aplicável
+                                            Pix            Pix
+ Informe                    Boleto                                       Pix Estático    TED             TEF
+                                            Dinâmico       Automático
+
+
+ Retorno Super              Aplicável       Aplicável      Aplicável     Não             Não             Não
+ Inteligente — Correção                                                  aplicável       aplicável       aplicável
+
+
+ Retorno Super              Aplicável       Aplicável      Aplicável     Não             Não             Não
+ Inteligente — Em Aberto                                                 aplicável       aplicável       aplicável
+
+
+ Informe de Baixa (Exceto                                                Não             Não             Não
+                            Obrigatório     Obrigatório    Obrigatório
+ por Pagamento)                                                          aplicável       aplicável       aplicável
+
+
+ Informe Preliminar de
+                            Obrigatório     Obrigatório    Obrigatório   Obrigatório     Obrigatório     Opcional
+ Pagamento
+
+
+ Informe de Segregação      Obrigatório     Obrigatório    Obrigatório   Obrigatório     Obrigatório     Obrigatório
+
+
+
+
+4.3 Diferença entre Informe Preliminar de Pagamento e Informe de Segregação
+Embora ambos os informes comuniquem transações pagas à PP, possuem naturezas e funções distintas no ciclo
+do Split Payment.
+O Informe Preliminar de Pagamento é uma mensagem informativa e não vinculante, enviada logo após o
+pagamento de cada transação, ainda sem as verificações finais que serão realizadas na consolidação. Seu
+propósito é dar ao governo visibilidade preliminar dos pagamentos, sem gerar obrigações ao PSP. Por ser
+preliminar, pode conter inconsistências ou não reportar todas as transações.
+O Informe de Segregação, por outro lado, é uma mensagem definitiva e vinculante, enviada em lote duas vezes
+por dia útil, contendo o conjunto de transações que foram efetivamente liquidadas em uma janela específica.
+Constitui a base de referência única para fins de obrigação de Repasse Financeiro: o PSP deverá repassar ao
+governo, em D+N, exatamente o valor total de CBS e IBS consolidado no Informe de Segregação. Quando o Informe
+de Segregação é recebido pela PP, todos os Informes Preliminares de Pagamento referentes àquelas transações
+são descartados pelo governo.
+A tabela a seguir compara as principais características dos dois informes:
+
+ Característica                      Informe Preliminar de Pagamento         Informe de Segregação
+
+
+ Caráter                             Informativo, não vinculante             Definitivo, vinculante
+
+
+                                     Logo após o pagamento de cada           Em lote, 2x por dia útil, por arranjo e
+ Quando é enviado
+                                     transação                               por PSP
+
+
+ Granularidade                       Uma transação por informe               Múltiplas transações por informe
+ Característica                           Informe Preliminar de Pagamento                  Informe de Segregação
+
+
+ Tempo hábil para verificações            Não há (envio imediato)                          Sim (janela de 3h antes do envio)
+
+
+ Gera obrigação de Repasse
+                                          Não                                              Sim
+ Financeiro?
+
+
+ Pode desencadear penalidades?            Não                                              Sim
+
+
+                                          Descartado pelo governo ao receber o             Permanente (base de referência do
+ Tratamento após consolidação
+                                          Informe de Segregação correspondente             Repasse Financeiro)
+
+
+
+As regras detalhadas de aplicação de penalidades vinculadas a cada informe são tratadas no Manual de Tempos
+e no Regulamento.
+
+4.4 Gatilhos de Envio dos Informes por Arranjo
+A tabela a seguir consolida, para cada informe e cada arranjo, o evento do arranjo que dispara a comunicação
+com a PP. A descrição técnica detalhada dos endpoints, formato das mensagens e dicionário de campos é
+apresentada no Manual de Integração.
+
+Convenções da tabela
+   • Gatilho (evento do arranjo): mensagem ou evento que ocorre no fluxo do arranjo e que aciona a
+      obrigação de envio do informe à PP.
+   • Não aplicável: o informe não se aplica a esse arranjo.
+
+4.4.1 Arranjos iniciados pelo Recebedor
+Exemplos de Gatilhos (eventos do arranjo) que disparam o envio de cada informe (não estão listados todos os
+eventos possíveis):
+
+Informe                     Boleto                            Pix Dinâmico                           Pix Automático
+
+
+                                                                                                     Solicitação do Recebedor ao PSP
+Informe de Transação                                                                                 Recebedor Direto para agendamento
+                            Registro do boleto (DDA0101)      Criação do QR Code Dinâmico
+Iniciada                                                                                             de cobrança (criação da CobR, pré
+                                                                                                     PAIN.013)
+
+
+                                                                                                     Não aplicável (a CobR não admite
+Informe de Transação
+                            Alteração do boleto (DDA0102)     Atualização do QR Code Dinâmico        atualização; alterações são feitas por
+Atualizada
+                                                                                                     cancelamento e nova criação)
+
+
+                            Long polling pela Núclea na       Long polling pelo PSP Recebedor        Long polling pelo PSP Recebedor
+Retorno Super Inteligente
+                            Plataforma Pública                Direto na Plataforma Pública           Direto na Plataforma Pública
+
+
+Informe de Baixa (Exceto    Baixa do boleto sem pagamento     Cancelamento ou expiração do QR        Cancelamento ou expiração do
+Pagamento)                  (DDA0108 ou DDA0114)              Code                                   agendamento
+
+
+Informe Preliminar de       Pagamento do boleto (DDA0108 ou   Liquidação SPI (PACS.008 +
+                                                                                                     Liquidação SPI (PACS.008/PACS.002)
+Pagamento                   DDA0114)                          PACS.002)
+ Informe                         Boleto                                  Pix Dinâmico                               Pix Automático
+
+
+                                 Consolidação 2x/dia útil (a partir da   Consolidação 2x/dia útil (a partir da      Consolidação 2x/dia útil (a partir da
+ Informe de Segregação¹
+                                 Liquidação Financeira)                  Liquidação Financeira)                     Liquidação Financeira)
+
+¹ Transações com impeditivos não contratuais pendentes (por exemplo, transações em análise de segurança) não são incluídas no Informe
+de Segregação enquanto o impeditivo não for resolvido.
+
+
+
+4.4.2 Arranjos iniciados pelo Pagador
+Gatilhos (eventos do arranjo) que disparam o envio de cada informe:
+
+ Informe          Pix Estático                             TED                                                   TEF
+
+
+ Informe                                                   Liquidação STR/SITRAF
+                  Liquidação SPI                                                                                 Sensibilização a débito do Pagador (envio
+ Preliminar de                                             (STR0005/STR0007/STR0008/STR0034/STR00
+                  (PACS.008/PACS.002)                                                                            opcional)
+ Pagamento                                                 40/PAG0107/PAG0108/PAG0134/PAG0143)
+
+
+ Informe de       Consolidação 2x/dia útil (a partir da    Consolidação 2x/dia útil (a partir da Liquidação      Consolidação 2x/dia útil (a partir da
+ Segregação¹      Liquidação Financeira)                   Financeira)                                           Liquidação Financeira)
+
+¹ Transações com impeditivos não contratuais pendentes (por exemplo, transações em análise de segurança) não são incluídas no Informe
+de Segregação enquanto o impeditivo não for resolvido.
+5. Cálculo do Valor a Segregar
+O Cálculo do Valor a Segregar é o procedimento que determina, no momento da liquidação de cada transação
+com split, o valor exato de CBS e IBS que será separado para Repasse Financeiro ao governo. Este cálculo é
+necessário porque o valor efetivamente recolhido pode diferir do valor inicialmente informado na transação, em
+razão de retornos do Modelo Super Inteligente e da regra de proporcionalidade aplicada em pagamentos cujo
+Valor Pago difere do Valor Original da transação.
+
+5.1 Princípios do Cálculo
+O cálculo do CBS/IBS Segregado segue quatro princípios fundamentais.
+Aplicabilidade do cálculo: o cálculo de proporcionalidade é aplicado exclusivamente em arranjos iniciados pelo
+Recebedor (Boleto, Pix Dinâmico, Pix Automático), nos quais opera o Modelo Super Inteligente e nos quais o Valor
+Pago pode diferir do Valor Original da transação. Em arranjos iniciados pelo Pagador (Pix Estático, TED, TEF),
+não há cálculo de proporcionalidade: o CBS/IBS Segregado corresponde diretamente ao CBS/IBS Informado pelo
+Pagador no momento da iniciação, sem qualquer ajuste.
+Hierarquia dos valores de referência: quando o cálculo é aplicável, o CBS/IBS Segregado considera, em ordem
+de prioridade, três valores de referência:
+   1. CBS/IBS Em Aberto: limite máximo a ser recolhido em cada pagamento, retornado pela PP quando
+      parte do débito do tributo já foi extinta por outros meios.
+   2. CBS/IBS Corrigido: valor que substitui o CBS/IBS Informado quando há divergência em relação ao
+      Documento Fiscal vinculado, retornado pela PP via Super Inteligente.
+   3. CBS/IBS Informado: valor declarado pelo Recebedor na iniciação da transação, utilizado quando não
+      há Retorno Super Inteligente.
+A presença do CBS/IBS Em Aberto torna esse valor o limite efetivo do recolhimento. Na ausência do CBS/IBS Em
+Aberto, considera-se o CBS/IBS Corrigido. Na ausência de ambos, considera-se o CBS/IBS Informado.
+Proporcionalidade em pagamentos parciais: quando o Valor Pago é inferior ao Valor Original da transação, o
+CBS/IBS Segregado é reduzido proporcionalmente, de modo a refletir a parcela efetivamente paga. Em
+pagamentos cujo Valor Pago supera o Valor Original (por exemplo, em razão de multas ou juros), o CBS/IBS
+Segregado não é majorado (permanece limitado ao valor calculado para a transação original).
+Cálculo independente por tributo: o CBS Segregado e o IBS Segregado são calculados separadamente, cada um
+considerando seus próprios valores CBS/IBS Informado, CBS/IBS Corrigido e CBS/IBS Em Aberto. Não há
+compensação cruzada entre os tributos.
+
+5.2 Fórmula de Proporcionalidade
+O CBS/IBS Segregado é calculado por meio da fórmula:
+
+                          R = mín ( (Vp / Vt) × C ; C ; A )
+
+Onde:
+   •    R: valor do CBS ou IBS Segregado a ser repassado ao governo.
+   •    Vp: Valor Pago pelo Pagador na transação.
+   •    Vt: Valor Original (sem acréscimos de multas ou juros).
+   •      C: valor do CBS/IBS de referência: utiliza-se o CBS/IBS Corrigido quando disponível; na ausência, utiliza-
+          se o CBS/IBS Informado.
+   •      A: valor do CBS/IBS Em Aberto retornado pela PP. Quando não há retorno do CBS/IBS Em Aberto, este
+          termo é desconsiderado da operação de mínimo.
+A fórmula é aplicada separadamente para o CBS e para o IBS. O resultado é então submetido à regra de
+arredondamento descrita na Seção 5.3.
+
+5.3 Regra de Arredondamento
+O resultado do cálculo do CBS/IBS Segregado é sempre arredondado para baixo, com precisão de duas casas
+decimais (centavo). Frações abaixo do centavo são truncadas, sem qualquer operação de arredondamento
+estatístico.
+Exemplo: um valor calculado de R$ 12,35954 é arredondado para R$ 12,35.
+
+5.4 Quem Faz o Cálculo
+O responsável pela execução do cálculo do CBS/IBS Segregado varia conforme o arranjo:
+
+ Arranjo                        Responsável pelo Cálculo
+
+
+ Boleto                         Núclea
+
+
+ Pix Dinâmico                   PSP Recebedor Direto
+
+
+ Pix Automático                 PSP Recebedor Direto
+
+
+ Pix Estático                   Não há cálculo de proporcionalidade (CBS/IBS Segregado = CBS/IBS Informado)
+
+
+ TED                            Não há cálculo de proporcionalidade (CBS/IBS Segregado = CBS/IBS Informado)
+
+
+ TEF                            Não há cálculo de proporcionalidade (CBS/IBS Segregado = CBS/IBS Informado)
+
+
+
+Nos arranjos iniciados pelo Recebedor, o cálculo é realizado no momento da Liquidação Financeira da transação,
+com base nos valores de CBS/IBS mais recentemente recebidos do Super Inteligente, observada a regra de
+atualização dos valores descrita na Seção 2.3. O resultado do cálculo é o valor que constará no Informe de
+Segregação e que será efetivamente repassado ao governo.
+6. Liquidação Financeira e Repasse Financeiro
+Quando ocorre a Liquidação Financeira, a transação é considerada concluída para fins do Split Payment, o valor
+de CBS/IBS Segregado é determinado e o Repasse Financeiro desses valores é executado pelo PSP Recebedor
+Direto aos entes governamentais.
+
+6.1 Marco de Liquidação Financeira por Arranjo
+O marco de Liquidação Financeira corresponde ao momento em que a transação é considerada concluída para
+fins do Split Payment e em que o cálculo do CBS/IBS Segregado é aplicado. Esse marco varia conforme o arranjo:
+
+ Arranjo                       Marco de Liquidação Financeira
+
+
+                               Baixa por pagamento completa (DDA0108 ou DDA0114), Liquidação Intrabancária
+ Boleto                        (débito na conta do Pagador) ou Interbancária (SILOC ou STR) e ausência de
+                               impeditivos não contratuais para a sensibilização do valor a crédito do Recebedor
+
+
+                               Liquidação Intrabancária (débito na conta do Pagador) ou Interbancária no SPI
+ Pix Dinâmico                  (PACS.008 + PACS.002) efetuada e ausência de impeditivos não contratuais para a
+                               sensibilização do valor a crédito do Recebedor
+
+
+                               Liquidação Intrabancária (débito na conta do Pagador) ou Interbancária no SPI
+ Pix Automático                (PACS.008 + PACS.002) efetuada e ausência de impeditivos não contratuais para a
+                               sensibilização do valor a crédito do Recebedor
+
+
+                               Liquidação Intrabancária (débito na conta do Pagador) ou Interbancária no SPI
+ Pix Estático                  (PACS.008 + PACS.002) efetuada e ausência de impeditivos não contratuais para a
+                               sensibilização do valor a crédito do Recebedor
+
+
+                               Liquidação Interbancária via STR (STR0005, STR0007, STR0008, STR0034 e STR0040)
+ TED                           ou SITRAF (PAG0107, PAG0108, PAG0134 e PAG0143) efetuada e ausência de
+                               impeditivos não contratuais para a sensibilização do valor a crédito do Recebedor
+
+
+                               Sensibilização a débito da conta do Pagador efetuada e ausência de impeditivos não
+ TEF (Book Transfer)
+                               contratuais para a sensibilização do valor a crédito do Recebedor
+
+
+
+Em todos os arranjos, o marco de Liquidação Financeira está condicionado à ausência de impeditivos não
+contratuais para a sensibilização do valor a crédito do Recebedor. Os impeditivos não contratuais postergam o
+marco de Liquidação Financeira, enquanto os impeditivos contratuais não o postergam.
+São exemplos de impeditivos não contratuais as verificações internas do PSP: submissão da transação a
+verificações ou análises de segurança e compliance em geral, antiterrorismo, prevenção a lavagem de dinheiro, e
+fraude. O tratamento operacional desses casos é detalhado na Seção 9 (Cenários Operacionais Específicos).
+Um exemplo de impeditivo contratual, em que o marco de liquidação não é postergado, é o acordo entre o
+Recebedor e o PSP Recebedor Direto para que os valores sejam sensibilizados a crédito apenas no dia seguinte à
+Liquidação Interbancária.
+6.1.1 Antecipação de Recebíveis
+Antecipação de Recebíveis: a antecipação de recebíveis ou qualquer operação de crédito que tenha por objeto
+o direito creditório associado a uma transação com split não caracteriza, por si só, Pagamento ou Liquidação
+Financeira da transação para fins do Split Payment. Portanto, a realização da antecipação de recebíveis não
+determina a segregação de CBS/IBS, o envio do Informe de Segregação ou a realização do Repasse Financeiro no
+momento em que os recursos são antecipados ao Recebedor ou em que o direito creditório é cedido ou negociado.
+A segregação de CBS/IBS e os eventos subsequentes do Split Payment somente ocorrem quando for atingido o
+respectivo marco de Liquidação Financeira no arranjo correspondente. O valor antecipado deve ser tratado no
+âmbito da relação contratual entre as partes, sem alterar o momento, a base de cálculo ou a responsabilidade
+operacional do Split Payment.
+
+6.2 Repasse Financeiro
+O Repasse Financeiro é a transferência efetiva dos valores de CBS e IBS Segregados, do PSP Recebedor Direto
+para as contas da RFB (no caso do CBS) e do CGIBS (no caso do IBS).
+Responsabilidade pelo Repasse Financeiro: o PSP Recebedor Direto é o responsável pela execução do Repasse
+Financeiro, conforme os valores consolidados no Informe de Segregação. Quando o PSP não possui acesso aos
+eventos TES e STR necessários para efetuar o Repasse Financeiro, ou não deseja executar o Repasse Financeiro
+diretamente, deverá contratar um Prestador de Serviço de Repasse Financeiro para executar a transferência em
+seu nome, mantendo a responsabilidade regulatória pelo envio dos valores corretos e pelo cumprimento dos
+prazos. O Prestador de Serviço de Repasse Financeiro pode ou não coincidir com o Prestador de Serviço de
+Conexão (descrito na Seção 4.1).
+Instrumentos utilizados: o Repasse Financeiro é realizado por meio de eventos específicos das infraestruturas
+de liquidação:
+   •   CBS Segregado: repassado à RFB por meio de evento TES.
+   •   IBS Segregado: repassado ao CGIBS por meio de evento STR.
+Prazo do Repasse Financeiro: o Repasse Financeiro é executado em D+N dias úteis, contados a partir do envio
+do Informe de Segregação. Há horários específicos para a execução do Repasse Financeiro dentro de D+N, bem
+como ANS e metas operacionais associadas. O detalhamento desses prazos é tratado no Manual de Tempos.
+Consolidação: o Repasse Financeiro é executado de forma consolidada: não há Repasse Financeiro transação a
+transação. Cada PSP Recebedor Direto é responsável por realizar, por dia útil, um Repasse Financeiro por
+variação de arranjo (as seis variações de arranjo são: Boleto, Pix Dinâmico, Pix Automático, Pix Estático, TED e
+TEF): um evento TES (com o total de CBS) e um evento STR (com o total de IBS), correspondentes às transações
+consolidadas no Informe de Segregação do dia de referência. Os dois Informes de Segregação enviados ao longo
+do dia útil são agrupados em um único Repasse Financeiro, por PSP Recebedor Direto, por variação de arranjo,
+em uma relação de N:1. A eventual utilização de um mesmo Prestador de Serviço de Repasse Financeiro por
+múltiplos PSP Recebedores Diretos não altera a necessidade de existir um Repasse Financeiro separado para
+cada PSP Recebedor Direto.
+
+6.3 Liquidação do Boleto Dinâmico em Quatro Partes
+No arranjo Boleto, em determinadas situações, a liquidação de uma única transação pode envolver a divisão do
+Valor Pago entre quatro destinatários distintos: a RFB e o CGIBS (que recebem o tributo segregado), o
+Recebedor original da cobrança e um eventual novo detentor dos direitos creditórios sobre a transação.
+No arranjo Boleto, especificamente na modalidade Boleto Dinâmico, o destinatário do pagamento pode ser
+diferente do emissor original da cobrança, quando há operações que transferem o direito ao recebimento. Nesses
+casos, no momento da liquidação:
+   •   O valor de CBS/IBS Segregado é encaminhado ao PSP Recebedor Direto (do beneficiário), que é
+       responsável por efetuar o Repasse Financeiro à RFB e ao CGIBS, conforme as regras descritas nesta seção.
+   •   O valor negociado dos direitos creditórios é direcionado ao PSP do novo detentor dos direitos creditórios
+       da transação (não superior a: Valor Pago – CBS Segregado - IBS Segregado).
+   •   Eventuais valores residuais, decorrentes de ajustes posteriores nos valores de CBS/IBS via Super
+       Inteligente, podem ser destinados ao Recebedor original.
+A composição exata dos destinatários e dos valores depende das condições da operação subjacente à transação,
+registradas em sistemas e estruturas próprias fora do escopo deste manual. A Núclea, no papel de instituição
+operadora do arranjo, executa a partição do Valor Pago no momento da liquidação, assegurando que o CBS/IBS
+Segregado seja sempre destinado ao PSP Recebedor Direto, que, por sua vez, é responsável pelo Repasse
+Financeiro ao governo.
+7. Responsabilidades dos PSPs
+Esta seção descreve as responsabilidades operacionais dos PSPs no Split Payment, seus limites e as regras de
+coordenação quando há mais de um PSP envolvido na transação. As bases jurídicas dessas responsabilidades são
+tratadas no Regulamento.
+
+7.1 Não Responsabilidade por Validação dos Tributos
+No Split Payment, os PSPs e a Núclea atuam exclusivamente como operadores do fluxo de segregação e
+recolhimento, não exercendo qualquer função fiscal sobre os valores de CBS e IBS informados pelas partes da
+transação.
+Princípio operacional: o PSP opera conforme o input do tributo que recebe, seja do originador da transação, do
+PSP anterior na cadeia ou da Plataforma Pública. Não cabe ao PSP verificar a correção dos valores de CBS/IBS,
+confrontá-los com o Documento Fiscal vinculado ou avaliar sua aderência à legislação tributária. O PSP segrega
+e repassa o tributo conforme o que foi declarado pelo originador da transação ou determinado pela Plataforma
+Pública.
+Exceções - validações sintáticas mínimas: o PSP/Núclea aplica apenas duas validações mínimas sobre os
+valores recebidos, ambas de natureza sintática (não fiscal):
+   •   O valor de CBS ou IBS não pode ser negativo.
+   •   A soma dos valores de CBS e IBS não pode ultrapassar o Valor Original da transação.
+Quando algum desses limites é violado, a transação não é aceita com split e a emissão é rejeitada pelo PSP/Núclea.
+Essas validações não substituem a análise fiscal: são apenas barreiras de consistência que evitam inputs
+estruturalmente inválidos.
+Não responsabilidade solidária: os PSPs e a Núclea não são responsáveis solidários pelos tributos dos
+contribuintes. A obrigação tributária permanece com o contribuinte, e a participação do PSP no Split Payment
+limita-se às responsabilidades operacionais descritas neste manual.
+
+7.2 Operação Conforme Informações Disponíveis
+O Modelo Super Inteligente prevê que a Plataforma Pública envie Retornos Super Inteligente, contendo CBS/IBS
+Corrigido e/ou CBS/IBS Em Aberto a qualquer momento entre a iniciação e a baixa da transação. Esses retornos
+chegam de forma assíncrona, e o PSP Recebedor Direto/Núclea precisa processá-los antes que possam ser
+utilizados no cálculo do CBS/IBS Segregado. Em consequência, é esperado que, em determinados momentos, o
+PSP/Núclea opere com base em informações que não são, necessariamente, as mais recentes disponíveis na
+Plataforma Pública.
+Princípio aplicável: o PSP Recebedor Direto/Núclea opera o split conforme as informações mais atualizadas
+que conseguiu processar a tempo da Liquidação Financeira. Quando um Retorno Super Inteligente é recebido
+com pouca antecedência em relação ao pagamento, e o PSP Recebedor Direto/Núclea não dispõe de tempo hábil
+para processá-lo, o valor anterior de CBS/IBS é o utilizado no cálculo.
+Tratamento operacional: o PSP Recebedor Direto/Núclea não é responsabilizado por não utilizar um Retorno
+Super Inteligente recebido após o início do processamento da liquidação. Os prazos de processamento e as
+janelas operacionais aplicáveis são detalhados no Manual de Tempos.
+7.3 Operação Conjunta entre PSP Recebedor Direto e PSP Recebedor Indireto
+Em parte dos arranjos (Boleto, Pix Dinâmico, Pix Automático e Pix Estático), a relação comercial com o Recebedor
+pode envolver dois PSPs distintos: o PSP Recebedor Direto, que participa diretamente do arranjo de pagamento
+e responde regulatoriamente pelo split, e o PSP Recebedor Indireto, que detém a relação com o Recebedor e
+participa indiretamente do arranjo. No arranjo TED, há somente o PSP Recebedor Direto, sem a figura do PSP
+Recebedor Indireto. No TEF, por se tratar de transação intrabancária, há um único PSP, que concentra os papéis
+de PSP Pagador Direto e PSP Recebedor Direto.
+Do lado do Pagador pode existir estrutura análoga: o PSP Pagador Indireto detém a relação com o Pagador, sem
+participar diretamente do arranjo, enquanto o PSP Pagador Direto participa diretamente do arranjo. Os papéis
+podem ser acumulados por um único PSP. Esta seção, porém, trata do lado do Recebedor, por ser onde recaem
+as obrigações do split.
+
+7.3.1 Definições e Princípios
+PSP Recebedor Direto: PSP que participa diretamente do arranjo de pagamento, com conexão à infraestrutura
+de liquidação. É o responsável regulatório pela correção e pelo cumprimento dos prazos das obrigações do Split
+Payment perante a Plataforma Pública e os entes governamentais, independentemente da existência de PSPs
+Indiretos ou Prestadores de Serviço envolvidos no fluxo. É também o ator remunerado pela operação do split no
+arranjo. No arranjo Boleto, a comunicação com a Plataforma Pública é realizada pela Núclea, mas a
+responsabilidade pelo Repasse Financeiro permanece com o PSP Recebedor Direto.
+PSP Recebedor Indireto: PSP que detém a relação comercial e contratual com o Recebedor, e participa
+indiretamente do arranjo. Para que o Recebedor possa atuar no Split Payment, depende dos serviços do PSP
+Recebedor Direto, com quem mantém relação contratual específica. O PSP Recebedor Indireto é aplicável apenas
+aos arranjos de Boleto, Pix Automático, Pix Dinâmico e Pix Estático. Nos arranjos TEF e TED não há a figura do
+PSP Recebedor Indireto.
+PSP Recebedor Direto e PSP Recebedor Indireto podem ser o mesmo PSP: nos casos em que o Recebedor se
+relaciona diretamente com o PSP que participa do arranjo, não há um PSP Recebedor Indireto distinto e os papéis
+de PSP Recebedor Direto e PSP Recebedor Indireto recaem sobre o mesmo PSP.
+Responsabilidade regulatória única: as obrigações do Split Payment perante a Plataforma Pública e os entes
+governamentais recaem sobre o PSP Recebedor Direto, ressalvado o arranjo Boleto, em que a comunicação com
+a Plataforma Pública é de responsabilidade da Núclea. Eventuais falhas atribuíveis ao PSP Recebedor Indireto
+que afetem o cumprimento dessas obrigações devem ser tratadas no âmbito da relação contratual entre os dois
+PSPs, sem alterar a responsabilidade do PSP Recebedor Direto perante o governo. Ao PSP Recebedor Indireto
+cabe a apresentação dos campos fiscais ao Recebedor, com quem mantém a relação comercial, utilizando para
+isso as informações que o PSP Recebedor Direto lhe envia para fins de conciliação.
+Flexibilidade da comunicação entre os PSPs: o Split Payment não prescreve a forma específica como o PSP
+Recebedor Direto e o PSP Recebedor Indireto trocam informações entre si. Os fluxos informacionais, formatos de
+mensagens e sistemas envolvidos são definidos pela relação contratual entre os dois PSPs, desde que assegurem
+o cumprimento das obrigações do split.
+Preenchimento do campo Recebedor Original: em arranjos com PSP Recebedor Indireto, o campo de
+identificação do Recebedor/Beneficiário na transação deve ser preenchido sempre com o CNPJ do Recebedor
+Original (beneficiário), e nunca com o CNPJ do PSP Recebedor Indireto. Essa regra permite a correta alocação
+do crédito tributário pelo governo e a rastreabilidade da transação.
+7.3.2 Responsabilidades por Etapa do Ciclo
+As responsabilidades de cada PSP variam ao longo do ciclo da transação. As descrições a seguir cobrem as
+principais etapas.
+Iniciação ou atualização da transação: o PSP Recebedor Indireto obtém junto ao Recebedor os dados
+necessários para a iniciação (criação, emissão) da transação e disponibiliza esses dados ao PSP Recebedor Direto.
+O PSP Recebedor Direto recebe ou acessa esses dados e envia à Plataforma Pública o Informe de Transação
+Iniciada ou o Informe de Transação Atualizada, conforme o caso. O PSP Recebedor Indireto também disponibiliza
+ao Recebedor os dados da transação criada ou atualizada, permitindo seu acompanhamento.
+Retorno Super Inteligente: o PSP Recebedor Direto recebe da Plataforma Pública (ou da Núclea, no arranjo
+Boleto) os retornos do Super Inteligente (CBS/IBS Corrigido ou CBS/IBS Em Aberto) e os transmite ao PSP
+Recebedor Indireto. O PSP Recebedor Indireto, por sua vez, disponibiliza esses dados ao Recebedor
+(beneficiário).
+Baixa (Exceto por Pagamento): quando uma transação é encerrada por cancelamento, expiração ou outro
+motivo que não o pagamento, o PSP Recebedor Indireto (no caso de Pix Dinâmico ou Pix Automático) comunica
+o evento (ou disponibiliza os dados) ao PSP Recebedor Direto, que envia à Plataforma Pública o Informe de Baixa
+(Exceto por Pagamento). No arranjo Boleto, quem envia à Plataforma Pública o Informe de Baixa (Exceto por
+Pagamento) é a Núclea.
+Pagamento e liquidação: no momento da liquidação, o PSP Recebedor Direto (ou a Núclea, no arranjo Boleto)
+executa o cálculo de proporcionalidade utilizando os valores mais atualizados de CBS/IBS Informado, CBS/IBS
+Corrigido e CBS/IBS Em Aberto que conseguiu processar. Em seguida, transfere ao PSP Recebedor Indireto o
+valor líquido da transação (descontado o CBS/IBS Segregado), permitindo que este sensibilize a conta do
+Recebedor. O PSP Recebedor Direto (ou a Núclea, no arranjo Boleto) envia à Plataforma Pública o Informe
+Preliminar de Pagamento e, posteriormente, o Informe de Segregação consolidando as transações liquidadas. O
+PSP Recebedor Direto também segrega internamente os valores de CBS/IBS Segregado até o momento do
+Repasse Financeiro.
+Prestação de contas ao Recebedor: o PSP Recebedor Indireto, com base nos dados disponíveis (tanto da
+liquidação no arranjo quanto dos dados originais da transação), apresenta ao Recebedor o detalhamento da
+segregação (incluindo CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto e CBS/IBS Segregado, Valor
+Original, Valor Pago e Valor Líquido). Esses dados permitem ao Recebedor conciliar corretamente a transação e
+compreender o motivo do valor líquido recebido.
+Repasse Financeiro: o PSP Recebedor Direto é o responsável pelo Repasse Financeiro à RFB (CBS) e ao CGIBS
+(IBS), em D+N, conforme descrito na Seção 6.2.
+Cumprimento dos ANS: o PSP Recebedor Direto é o responsável pelo cumprimento de todos os ANS do Split
+Payment perante a Plataforma Pública. As consequências do não cumprimento, incluindo aplicação de
+penalidades, são tratadas no Regulamento e no Manual de Tempos.
+
+7.3.3 Mecânica da Liquidação no Pix Dinâmico e no Pix Automático
+No arranjo Pix Dinâmico, a mensagem de Liquidação Interbancária (PACS.008) trafegada pelo SPI não contém os
+campos de CBS, IBS ou Documento Fiscal. Esses dados ficam registrados no payload do QR Code do Pix Dinâmico
+criado anteriormente, não trafegando no momento do pagamento (Liquidação Interbancária).
+Em consequência, o PSP Recebedor Direto precisa, ao receber a PACS.008, identificar internamente se a transação
+que está sendo liquidada corresponde a um Pix Dinâmico criado em que foi feita a opção pelo split (CBS e IBS
+Informado preenchidos). Essa identificação é feita pelo cruzamento entre o TxID presente na PACS.008 e no Pix
+Dinâmico previamente criado. Quando o cruzamento confirma que se trata de uma transação com split, o PSP
+Recebedor Direto aplica o cálculo de proporcionalidade utilizando os valores mais atualizados de CBS/IBS
+Informado, CBS/IBS Corrigido e CBS/IBS Em Aberto disponíveis no momento da liquidação.
+O arranjo Pix Automático segue mecânica similar, na qual os campos de CBS/IBS Informado e Documento Fiscal
+(opcional) são informados no momento do agendamento da cobrança (mensagem PAIN.013), e não na
+Liquidação Interbancária (mensagem PACS.008). Assim, ao receber a PACS.008, o PSP Recebedor Direto
+identifica, pelo cruzamento com a cobrança previamente agendada (através do TxID), se a transação corresponde
+a um agendamento com split e, em caso afirmativo, aplica o cálculo de proporcionalidade utilizando os valores
+mais atualizados de CBS/IBS Informado, CBS/IBS Corrigido e CBS/IBS Em Aberto disponíveis no momento da
+liquidação.
+Fluxo informacional entre PSP Recebedor Direto e PSP Recebedor Indireto na liquidação: não há um fluxo
+padronizado estabelecido para transmissão de dados relacionados ao Split Payment entre PSP Recebedor Direto
+e PSP Recebedor Indireto. Os PSPs possuem flexibilidade para acordarem, entre si, como transmitir os dados
+necessários para viabilizar a prestação de contas ao Recebedor.
+
+7.3.4 Repasse Financeiro com Prestador de Serviço
+Quando o PSP Recebedor Direto não possui acesso aos eventos TES e STR necessários para o Repasse Financeiro,
+ou quando não deseja realizar o Repasse Financeiro diretamente para RFB e CGIBS, deve contratar um Prestador
+de Serviço de Repasse Financeiro (PSP com acesso aos eventos TES e STR necessários para efetuar o Repasse
+Financeiro) para executar a transferência em seu nome. Essa figura é distinta do Prestador de Serviço de
+Conexão, descrito na Seção 4.1, e pode ou não coincidir com este último — a depender da escolha contratual do
+PSP.
+A responsabilidade regulatória pelo Repasse Financeiro (incluindo a correção dos valores, o cumprimento dos
+prazos e a eventual aplicação de penalidades) permanece com o PSP Recebedor Direto. Eventuais falhas do
+Prestador de Serviço de Repasse Financeiro devem ser tratadas no âmbito da relação contratual entre o PSP e o
+Prestador, sem afetar a responsabilidade do PSP perante o governo.
+As regras detalhadas do Repasse Financeiro, incluindo prazos e instrumentos utilizados, estão descritas na Seção
+6.2 deste manual e no Manual de Tempos.
+
+7.4 Inadimplência de PSPs
+A inadimplência de PSPs no Split Payment corresponde a situações em que um PSP, por motivos operacionais ou
+financeiros, deixa de cumprir suas obrigações relacionadas ao recolhimento do tributo. O tratamento operacional
+varia conforme o estágio em que a inadimplência ocorre.
+Quando a Liquidação Interbancária já ocorreu: se a transação foi liquidada (com troca de reservas bancárias
+entre PSPs), o PSP Recebedor Direto ou a Núclea (conforme o arranjo) comunica a transação no Informe de
+Segregação. O governo considera o débito do tributo extinto, como se tivesse sido pago pelo Recebedor, ainda
+que o valor não tenha sido efetivamente repassado à RFB ou ao CGIBS. Nesse cenário, a obrigação de quitação do
+tributo passa a recair sobre o PSP Recebedor Direto, e a cobrança é realizada pelo governo diretamente ao PSP,
+e não mais ao contribuinte (Recebedor original).
+Quando a Liquidação Interbancária não ocorreu: se não houve troca de reservas bancárias, o pagamento da
+transação não se efetivou. Caso algum valor tenha sido sensibilizado a débito do Pagador, ele deve ser restituído.
+Para fins do Split Payment, é como se a transação e o split nunca tivessem ocorrido (o débito tributário do
+contribuinte permanece em aberto), e o governo cobrará o tributo do emissor do Documento Fiscal, conforme o
+regime tributário ordinário.
+8. Experiência do Usuário
+Esta seção descreve como o Split Payment se manifesta na experiência dos usuários finais, Pagadores e
+Recebedores, ao longo das interações com seus PSPs, orientando sobre os campos a serem exibidos ou
+capturados em cada momento da jornada.
+
+8.1 Princípios Gerais
+A experiência do usuário no Split Payment segue quatro princípios fundamentais, que orientam a definição das
+jornadas em todas as interações dos PSPs com seus clientes.
+Princípio 1 - Experiência da Pessoa Física não é impactada: o Split Payment, na Fase 1 (B2B Opcional), aplica-
+se exclusivamente a operações entre Pessoas Jurídicas. Tanto o Pagador Original (devedor) quanto o Recebedor
+(beneficiário) devem ser obrigatoriamente PJ para que a transação possa ser realizada com split. A experiência
+dos usuários Pessoa Física não é alterada por este manual: não há novos campos a preencher, novas telas de
+confirmação ou alterações em comprovantes. Em arranjos iniciados pelo Pagador (Pix Estático, TED, TEF), o
+Pagador PF não consegue realizar transações com split. Em arranjos iniciados pelo Recebedor (Boleto, Pix
+Dinâmico, Pix Automático), o Pagador Efetivo pode ser PF: situação em que ele executa o pagamento de uma
+transação previamente criada com split, mas sem visibilidade dos campos de CBS, IBS e Documento Fiscal nas
+telas de pagamento e comprovantes.
+Princípio 2 - Pessoa Jurídica tem visibilidade ampla dos campos fiscais: a Pessoa Jurídica, em qualquer papel
+na transação (Pagador ou Recebedor), deve ter visibilidade dos campos fiscais em todas as etapas relevantes:
+iniciação da transação, consulta para pagamento, comprovante de pagamento, comprovante de recebimento e
+detalhamento (zoom) no extrato. Os campos visualizados variam conforme o momento da jornada e o papel do
+usuário. Ressalva: podem existir divergências entre os valores de tributo apresentados ao Pagador e os valores
+de tributo utilizados no arranjo, conforme detalhado na Seção 8.2.7.
+Princípio 3 - Separação de jornadas PF e PJ em etapas críticas: em etapas críticas do fluxo (em especial, no
+preenchimento dos dados da transação) os PSPs não podem operar com jornadas híbridas (ex: uma única tela
+atendendo PF e PJ indistintamente). É necessário ter jornadas separadas para usuários PJ e PF, garantindo que
+apenas usuários PJ tenham acesso aos campos de CBS, IBS e Documento Fiscal e que usuários PF não consigam
+preenchê-los inadvertidamente. Em etapas não críticas, jornadas híbridas são permitidas, devendo seguir a
+definição da jornada PJ.
+Princípio 4 - Arquivos retorno e relação com ERPs: os arquivos retorno destinados a clientes PJ devem incluir
+os campos fiscais (CBS, IBS e Documento Fiscal) permitindo a conciliação contábil e fiscal pelas Pessoas Jurídicas.
+As categorias dos tributos a serem exibidas variam conforme o tipo de cliente (Pagador ou Recebedor) e o
+contexto.
+
+8.2 Categorias de CBS/IBS e Valor Exibidas em Cada Etapa
+As tabelas a seguir consolidam, para cada arranjo e cada etapa da jornada, quais categorias de CBS/IBS e de valor
+são exibidas, conforme as definições da Seção 2.3 (Tipos de Valor de CBS/IBS). O Documento Fiscal (DF),
+quando disponível, é sempre exibido em conjunto com os valores de tributo.
+Cada tabela distingue o que é exibido conforme o participante: a Pessoa Física (PF) visualiza tipicamente apenas
+o valor da transação, enquanto à Pessoa Jurídica (PJ) são exibidos, adicionalmente, os campos de CBS, IBS e
+Documento Fiscal. Os IDs das transações (específicos para cada arranjo) precisam ser exibidos para a PJ, e podem
+ser exibidos também para as PF. As colunas a seguir indicam, para cada etapa, o que é exibido ao participante PF
+e o que é exibido adicionalmente ao participante PJ.
+Convenções:
+   •   Cada célula indica a categoria (ou categorias) de CBS/IBS exibidas naquela etapa, para aquele
+       participante.
+   •   Não aplicável: a etapa não existe ou não envolve o participante naquele arranjo.
+   •   A obrigatoriedade da exibição segue o Princípio 2 (Pessoa Jurídica tem visibilidade ampla dos campos
+       fiscais).
+   •   As tabelas abaixo não são exaustivas, e focam apenas nos campos relacionados ao Split Payment. Cada
+       etapa pode conter campos adicionais.
+
+8.2.1 Boleto
+
+                                                          Categorias
+                                                          Exibidas se       Categorias Exibidas Adicionais se
+ Etapa da Jornada                         Participante
+                                                          Participante      Participante PJ
+                                                          PF
+
+
+ Emissão do boleto (preenchimento)        Recebedor       Valor Original    CBS/IBS Informado, DF, ID DDA
+
+
+ Documento de cobrança (PDF/ versão                                         Não exibir campos de CBS/IBS (não
+                                          Ambos           Valor Original
+ impressa)                                                                  alterar layout atual por causa do split)
+
+
+                                                          Se não pago       Se não pago ainda: CBS/IBS
+                                                          ainda: Valor      Informado, CBS/IBS Corrigido,
+ Consulta do boleto emitido               Recebedor       Original          CBS/IBS Em Aberto, DF, ID DDA
+                                                          Se já foi pago:   Se já foi pago: complementar com
+                                                          Valor Pago        CBS/IBS Segregado; Valor Líquido
+
+
+                                                                            CBS/IBS Informado, CBS/IBS
+ Comprovante ou consulta de                                                 Corrigido, CBS/IBS Em Aberto,
+                                          Recebedor       Valor Pago
+ recebimento (formato individual)                                           CBS/IBS Segregado; Valor Original;
+                                                                            Valor Líquido, DF, ID DDA
+
+
+                                                                            CBS/IBS Informado, CBS/IBS
+ Detalhamento, zoom do extrato ou                                           Corrigido, CBS/IBS Em Aberto,
+                                          Recebedor       Valor Pago
+ retorno (formato de tabela)                                                CBS/IBS Segregado; Valor Original;
+                                                                            Valor Líquido, DF, ID DDA
+
+
+ Visibilidade do Pagador antes da
+                                                                            CBS/IBS Aplicado - com disclaimer,
+ execução da cobrança (via código de      Pagador         Valor Original
+                                                                            DF, ID DDA
+ barras ou DDA)
+
+
+ Comprovante de pagamento (formato                                          CBS/IBS Aplicado - com disclaimer,
+                                          Pagador         Valor Pago
+ individual)                                                                DF, ID DDA
+                                                     Categorias
+                                                     Exibidas se       Categorias Exibidas Adicionais se
+ Etapa da Jornada                     Participante
+                                                     Participante      Participante PJ
+                                                     PF
+
+
+ Detalhamento, zoom do extrato ou                                      CBS/IBS Aplicado - com disclaimer,
+                                      Pagador        Valor Pago
+ retorno (formato de tabela)                                           DF, ID DDA
+
+
+
+8.2.2 Pix Dinâmico
+
+                                                     Categorias
+                                                     Exibidas se       Categorias Exibidas Adicionais se
+ Etapa da Jornada                     Participante
+                                                     Participante      Participante PJ
+                                                     PF
+
+
+ Criação do QR Code Dinâmico
+                                      Recebedor      Valor Original    CBS/IBS Informado, DF, TxID
+ (preenchimento)
+
+
+ Documento de cobrança (PDF/ imagem                                    Não exibir campos de CBS/IBS (não
+                                      Ambos          Valor Original
+ do QR Code Dinâmico)                                                  alterar layout atual por causa do split)
+
+
+                                                     Se não pago       Se não pago ainda: CBS/IBS
+                                                     ainda: Valor      Informado, CBS/IBS Corrigido,
+ Consulta ao QR Code gerado           Recebedor      Original          CBS/IBS Em Aberto, DF, TxID
+                                                     Se já foi pago:   Se já foi pago: complementar com
+                                                     Valor Pago        CBS/IBS Segregado; Valor Líquido
+
+
+                                                                       CBS/IBS Informado, CBS/IBS
+ Comprovante ou consulta de                                            Corrigido, CBS/IBS Em Aberto,
+                                      Recebedor      Valor Pago
+ recebimento (formato individual)                                      CBS/IBS Segregado; Valor Original;
+                                                                       Valor Líquido, DF, TxID; E2EID
+
+
+                                                                       CBS/IBS Informado, CBS/IBS
+ Detalhamento, zoom do extrato ou                                      Corrigido, CBS/IBS Em Aberto,
+                                      Recebedor      Valor Pago
+ retorno (formato de tabela)                                           CBS/IBS Segregado; Valor Original;
+                                                                       Valor Líquido, DF, TxID; E2EID
+
+
+                                                                       CBS/IBS Aplicado – com disclaimer,
+ Consulta do QR Code para pagamento   Pagador        Valor Original
+                                                                       DF, TxID
+
+
+ Comprovante de pagamento (formato                                     CBS/IBS Aplicado – com disclaimer,
+                                      Pagador        Valor Pago
+ individual)                                                           DF, TxID; E2EID
+                                                            Categorias
+                                                            Exibidas se      Categorias Exibidas Adicionais se
+ Etapa da Jornada                            Participante
+                                                            Participante     Participante PJ
+                                                            PF
+
+
+ Detalhamento, zoom do extrato ou                                            CBS/IBS Aplicado – com disclaimer,
+                                             Pagador        Valor Pago
+ retorno (formato de tabela)                                                 DF, TxID; E2EID
+
+
+                                                                             Não exibir campos de CBS/IBS (não
+ Comprovante POS (Slip)                      Ambos          Valor Pago
+                                                                             alterar layout atual por causa do split)
+
+
+
+8.2.3 Pix Automático
+
+                                                            Categorias
+                                                            Exibidas se      Categorias Exibidas Adicionais se
+ Etapa da Jornada                            Participante
+                                                            Participante     Participante PJ
+                                                            PF
+
+
+ Solicitação de autorização da recorrência                  Não há
+                                             Recebedor                       Não impactada pelo Split Payment
+ pelo Recebedor                                             recebedor PF
+
+
+                                                            Não impactada
+ Autorização da recorrência pelo Pagador     Pagador        pelo Split       Não impactada pelo Split Payment
+                                                            Payment
+
+
+ Solicitação de agendamento de cobrança
+                                                            Não há           Valor Original, CBS/IBS Informado, DF,
+ individual pelo Recebedor                   Recebedor
+                                                            recebedor PF     TxID
+ (preenchimento)
+
+
+                                                                             Se não pago ainda: Valor Original,
+                                                                             CBS/IBS Informado, CBS/IBS
+                                                                             Corrigido, CBS/IBS Em Aberto, DF,
+                                                            Não há           TxID
+ Consulta às solicitações de cobrança        Recebedor
+                                                            recebedor PF
+                                                                             Se já foi pago: complementar com
+                                                                             Valor Pago, CBS/IBS Segregado; Valor
+                                                                             Líquido
+
+
+                                                                             CBS/IBS Aplicado – com disclaimer,
+ Visibilidade da cobrança agendada           Pagador        Valor Original
+                                                                             DF, TxID
+
+
+ Comprovante ou consulta de                                 Não há           Valor Pago, CBS/IBS Informado,
+                                             Recebedor                       CBS/IBS Corrigido, CBS/IBS Em
+ recebimento (formato individual)                           recebedor PF
+                                                                             Aberto, CBS/IBS Segregado; Valor
+                                                                        Original; Valor Líquido, DF, TxID;
+                                                                        E2EID
+
+
+                                                                        Valor Pago, CBS/IBS Informado,
+                                                                        CBS/IBS Corrigido, CBS/IBS Em
+ Detalhamento, zoom do extrato ou                      Não há
+                                        Recebedor                       Aberto, CBS/IBS Segregado; Valor
+ retorno (formato de tabela)                           recebedor PF
+                                                                        Original; Valor Líquido, DF, TxID;
+                                                                        E2EID
+
+
+ Comprovante de pagamento (formato                                      CBS/IBS Aplicado – com disclaimer,
+                                        Pagador        Valor Pago
+ individual)                                                            DF, TxID; E2EID
+
+
+ Detalhamento, zoom do extrato ou                                       CBS/IBS Aplicado – com disclaimer,
+                                        Pagador        Valor Pago
+ retorno (formato de tabela)                                            DF, TxID; E2EID
+
+
+
+
+8.2.4 Pix Estático
+
+                                                       Categorias
+                                                       Exibidas se      Categorias Exibidas Adicionais se
+ Etapa da Jornada                       Participante
+                                                       Participante     Participante PJ
+                                                       PF
+
+
+ Preenchimento dos dados de pagamento
+                                        Pagador        Valor Original   CBS/IBS Informado, DF
+ (CBS, IBS, DF)
+
+
+ Comprovante de pagamento (formato
+                                        Pagador        Valor Original   CBS/IBS Informado, DF, E2EID
+ individual)
+
+
+ Detalhamento, zoom do extrato ou
+                                        Pagador        Valor Original   CBS/IBS Informado, DF, E2EID
+ retorno (formato de tabela)
+
+
+ Comprovante ou consulta de                                             CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ recebimento (formato individual)                                       E2EID
+
+
+ Detalhamento, zoom do extrato ou                                       CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ retorno (formato de tabela)                                            E2EID
+8.2.5 TED
+
+                                                       Categorias
+                                                       Exibidas se      Categorias Exibidas Adicionais se
+ Etapa da Jornada                       Participante
+                                                       Participante     Participante PJ
+                                                       PF
+
+
+ Preenchimento dos dados de pagamento
+                                        Pagador        Valor Original   CBS/IBS Informado, DF
+ (CBS, IBS, DF)
+
+
+ Comprovante de pagamento (formato                                      CBS/IBS Informado, DF, NumCtrlSTR
+                                        Pagador        Valor Original
+ individual)                                                            ou NumCtrlPAG
+
+
+ Detalhamento, zoom do extrato ou                                       CBS/IBS Informado, DF, NumCtrlSTR
+                                        Pagador        Valor Original
+ retorno (formato de tabela)                                            ou NumCtrlPAG
+
+
+ Comprovante ou consulta de                                             CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ recebimento (formato individual)                                       NumCtrlSTR ou NumCtrlPAG
+
+
+ Detalhamento, zoom do extrato ou                                       CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ retorno (formato de tabela)                                            NumCtrlSTR ou NumCtrlPAG
+
+
+
+8.2.6 TEF (Book Transfer)
+
+                                                       Categorias
+                                                       Exibidas se      Categorias Exibidas Adicionais se
+ Etapa da Jornada                       Participante
+                                                       Participante     Participante PJ
+                                                       PF
+
+
+ Preenchimento dos dados de pagamento
+                                        Pagador        Valor Original   CBS/IBS Informado, DF
+ (CBS, IBS, DF)
+
+
+ Comprovante de pagamento (formato
+                                        Pagador        Valor Original   CBS/IBS Informado, DF, NumCtrlTEF
+ individual)
+
+
+ Detalhamento, zoom do extrato ou
+                                        Pagador        Valor Original   CBS/IBS Informado, DF, NumCtrlTEF
+ retorno (formato de tabela)
+
+
+ Comprovante ou consulta de                                             CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ recebimento (formato individual)                                       NumCtrlTEF
+
+
+ Detalhamento, zoom do extrato ou                                       CBS/IBS Segregado; Valor Líquido, DF,
+                                        Recebedor      Valor Original
+ retorno (formato de tabela)                                            NumCtrlTEF
+8.2.7 Observações Gerais
+    • CBS/IBS Aplicado: o valor CBS/IBS Aplicado exibido ao Pagador em arranjos iniciados pelo Recebedor
+        deriva do CBS/IBS Corrigido (quando houve retorno do Super Inteligente) ou do CBS/IBS Informado (na
+        ausência de correção), com a regra de proporcionalidade aplicada em pagamentos parciais. A definição é
+        a da Seção 2.3.
+    • CBS/IBS Corrigido e CBS/IBS Em Aberto: em arranjos iniciados pelo Recebedor, os valores CBS/IBS
+        Corrigido e CBS/IBS Em Aberto são exibidos apenas quando houve retorno do Super Inteligente. Na
+        ausência de retorno, exibe-se apenas o CBS/IBS Informado.
+    • CBS/IBS Segregado: o CBS/IBS Segregado corresponde ao valor separado pelo PSP Recebedor Direto
+        (ou pela Núclea, no Boleto) para Repasse Financeiro ao governo. Em todos os arranjos, aparece apenas
+        em comprovantes e extratos do Recebedor (e não do Pagador), a partir do momento da liquidação. O
+        Repasse Financeiro efetivo ao governo, via eventos TES/STR, ocorre em D+N, conforme detalhado na
+        Seção 6.2.
+    • Arranjos iniciados pelo Pagador: nos arranjos Pix Estático, TED e TEF, não há Super Inteligente e não
+        há aplicação de proporcionalidade pelo PSP Recebedor Direto (já que o valor efetivamente pago é
+        exatamente o valor preenchido pelo Pagador). Em consequência, o CBS/IBS Informado sempre
+        corresponde ao valor de CBS/IBS Segregado.
+    • Mensagem exibida ao Pagador PJ (disclaimer): os valores de CBS/IBS exibidos podem divergir do
+        montante efetivamente segregado nas seguintes hipóteses: i) atualização posterior pelo Usuário
+        Recebedor (após o momento de consulta pelo Pagador); ii) divergência em relação ao Documento Fiscal
+        vinculado à transação, quando houver vínculo; e iii) aplicação de proporcionalidade em caso de
+        pagamento parcial. As hipóteses i, ii e iii aplicam-se a todos os arranjos iniciados pelo Recebedor, não
+        havendo necessidade de mensagens distintas por arranjo.
+
+
+9. Cenários Operacionais Específicos
+Esta seção descreve dois cenários operacionais com particularidades em relação ao fluxo padrão do Split
+Payment: transações com impeditivos não contratuais e transações realizadas em ambientes de Plataformas
+Digitais. Em ambos, as regras estruturantes do split permanecem aplicáveis.
+
+9.1 Transações com Impeditivos Não Contratuais
+Os impeditivos não contratuais são condições de natureza operacional, regulatória ou prudencial que postergam
+a sensibilização a crédito do valor líquido ao Recebedor e, com isso, o marco da Liquidação Financeira. São
+exemplos as verificações internas realizadas pelo PSP, tais como análises de segurança, prevenção a fraude,
+identificação de inconsistências, cancelamento de baixa e análises de compliance, além de demais casos que
+possam resultar em devolução dos valores. O tratamento operacional descrito nesta seção aplica-se a qualquer
+impeditivo não contratual: enquanto a transação permanece pendente, o valor fica retido na esfera do PSP
+Recebedor Direto e a transação não é incluída no Informe de Segregação. A análise de segurança, detalhada a
+seguir, é tomada como exemplo, mas o mesmo tratamento vale para os demais impeditivos não contratuais.
+Transações com Liquidação Interbancária ou Intrabancária efetivada podem ser temporariamente retidas pelo
+PSP Recebedor Direto por impeditivos não contratuais. Um caso recorrente é a análise de segurança, que pode
+incluir verificações antifraude, sanções internacionais (OFAC), prevenção à lavagem de dinheiro, antiterrorismo
+e compliance regulatório. Durante o período de análise, o valor permanece na esfera do PSP Recebedor Direto,
+sem ser sensibilizado a crédito do Recebedor.
+Como essas análises podem se estender por vários dias úteis (em determinados casos, ultrapassando o prazo
+regular de envio do Informe de Segregação) o tratamento operacional dessas transações segue regras específicas:
+Durante o período de análise:
+   •   A transação é comunicada no Informe Preliminar de Pagamento (sem aguardar a conclusão da análise).
+   •   A transação não é incluída no Informe de Segregação enviado à Plataforma Pública.
+   •   O CBS/IBS Segregado não é repassado à RFB ou ao CGIBS: o valor permanece segregado no PSP,
+       aguardando o desfecho da análise.
+   •   O PSP Recebedor Direto deve notificar a Plataforma Pública sobre a transação em análise assim que
+       identificado o impeditivo, nos prazos definidos no Manual de Tempos. Essa notificação é a Notificação de
+       Transação em Análise, feita por meio do Mecanismo de Ocorrências (MOC) e detalhada na Seção 10.1.
+Após a conclusão da análise:
+   •   Se a transação for aceita: ela é incluída no próximo Informe de Segregação enviado à Plataforma Pública,
+       e o CBS/IBS é repassado ao governo conforme o ciclo normal do split (D+N a partir da data da inclusão
+       no Informe de Segregação).
+   •   Se a transação não for aceita: ela não é incluída no Informe de Segregação, e o CBS/IBS Segregado não
+       é recolhido. O tratamento financeiro da transação não aceita (devolução ao Pagador, encaminhamento a
+       órgão de compliance, etc.) segue os procedimentos próprios do arranjo/PSP, fora do escopo deste
+       manual.
+O PSP Recebedor Direto deve possuir mecanismos internos para identificar, no momento da Liquidação
+Interbancária ou Intrabancária, transações que possuem impeditivos não contratuais (e serão retidas para
+análise), evitando seu envio prematuro no Informe de Segregação. As regras detalhadas para uso do MOC nesse
+cenário são tratadas na Seção 10.
+
+9.2 Plataformas Digitais
+Transações realizadas em ambientes de Plataformas Digitais (ex. marketplaces) possuem estrutura operacional
+própria, que pode envolver a intermediação da transação entre o Pagador e os Recebedores (lojistas
+vendedores). Do ponto de vista da arquitetura do pagamento, essa intermediação pode se manifestar em duas
+pernas de liquidação distintas: uma entre o Pagador e o PSP Intermediador, outra entre o PSP Intermediador e o
+Recebedor (lojista).
+Para fins do Split Payment, o tratamento das transações de Plataformas Digitais é regido por um princípio central:
+Princípio operacional do split em transações de Plataformas Digitais: os PSPs não possuem visibilidade, por
+meio do arranjo de pagamento, de que uma transação se refere a um contexto de Plataforma Digital. Não há, no
+arranjo, qualquer marcador, campo ou sinalização que permita aos PSPs distinguir uma transação de Plataforma
+Digital de uma transação direta entre Pagador e Recebedor. O Split Payment, portanto, é realizado sempre que
+os campos fiscais (CBS/IBS Informado e, quando aplicável, Documento Fiscal) são inseridos no arranjo,
+independentemente do contexto comercial subjacente à transação.
+Em consequência:
+   •   Cabe ao Pagador, Plataforma Digital e Recebedores (lojistas) acordarem entre si a utilização ou não do
+       split e em qual perna da operação ele será aplicado.
+   •   Quando uma transação emitida com split (ou seja, em que foram preenchidos os campos de CBS/IBS
+       Informado) é liquidada, a segregação de CBS e IBS e o Repasse Financeiro serão realizados normalmente,
+    conforme as definições do split para o arranjo utilizado. Não há qualquer impacto nas regras ou no
+    funcionamento do split em razão daquela transação estar relacionada a uma Plataforma Digital.
+•   Eventuais obrigações acessórias das Plataformas Digitais perante a RFB e o CGIBS são tratadas em
+    normativos próprios, fora do escopo deste manual.
+10. Mecanismo de Ocorrências (MOC)
+O Mecanismo de Ocorrências (MOC) é o canal de comunicação entre PSP Recebedor Direto e RFB e CGIBS, através
+da Plataforma Pública, para situações de exceção, fora do fluxo padrão do Split Payment.
+Em todos os arranjos, a comunicação do MOC com a Plataforma Pública é de responsabilidade do PSP Recebedor
+Direto. Se ele utiliza Prestador de Serviço de Conexão para a transmissão dos informes do split, também o
+utilizará para transmitir os dados relacionados ao MOC. No arranjo Boleto, embora a comunicação regular dos
+informes seja realizada pela Núclea, o acionamento do MOC permanece sob responsabilidade do PSP Recebedor
+Direto.
+
+10.1 Casos de Uso
+O MOC possui duas funcionalidades, acionadas em momentos distintos do ciclo da transação:
+Notificação de Transação em Análise: é enviada quando uma transação com Liquidação Interbancária ou
+Intrabancária já concluída não pode ter o valor líquido sensibilizado ao Recebedor em razão de Impeditivos Não
+Contratuais (por exemplo, análise de segurança, prevenção à fraude ou compliance). Cumpre duas finalidades:
+dar à RFB e ao CGIBS visibilidade tempestiva de que a transação está retida em análise e, ao mesmo tempo,
+autorizar o PSP Recebedor Direto a incluí-la em um Informe de Segregação posterior, após a conclusão da análise,
+sem que essa inclusão seja considerada atraso.
+O PSP Recebedor Direto envia a Notificação tão logo identifique o impeditivo não contratual, nos prazos definidos
+no Manual de Tempos, independentemente de a análise vir a ser concluída antes ou depois do horário de corte
+do Informe de Segregação. Enquanto a análise não é concluída, a transação não é incluída no Informe de
+Segregação e o CBS/IBS não é repassado à RFB/CGIBS. Concluída a análise: se a transação for aceita, ela é incluída
+no Informe de Segregação seguinte ao aceite e o Repasse Financeiro é realizado normalmente; se não for aceita,
+a transação não é incluída no Informe de Segregação e não há Repasse Financeiro. O tratamento operacional das
+transações em análise é detalhado na Seção 9.1.
+Solicitação de Estorno: permite recuperar o valor de CBS/IBS Segregado depois que a transação já foi
+comunicada no Informe de Segregação (ou seja, quando ela já gerou obrigação de Repasse Financeiro e não pode
+mais ser apenas omitida de um informe). A Solicitação de Estorno não dispensa a obrigação de o PSP Recebedor
+Direto realizar o Repasse Financeiro daquela transação, mas, se aprovada por RFB/CGIBS, pode permitir a
+recuperação do tributo. A Solicitação de Estorno é permitida exclusivamente nas duas categorias a seguir:
+A) Incidentes de segurança (ex.: fraudes e ataques).
+B) Falha operacional de PSPs ou da Entidade Liquidante (ex.: PSP processou pagamento duplicado, ou processou
+transação de maneira indevida por erro sistêmico próprio).
+
+
+Não é permitida a Solicitação de Estorno de CBS/IBS via MOC em decorrência de desacordos comerciais ou de
+falhas operacionais do Pagador ou do Recebedor (ex.: pagamento com valor incorreto de tributo; desistência da
+compra pelo Pagador; pagamento duplicado pelo Pagador). Nesses casos, se o tributo tiver sido recolhido em
+excesso (excedendo o CBS/IBS destacado no Documento Fiscal vinculado à transação), o valor será devolvido
+pela RFB e pelo CGIBS ao Fornecedor em até 3 dias úteis, conforme previsto na legislação.
+O quadro a seguir resume quando cada funcionalidade é acionada:
+ Situação                                                                         Funcionalidade do MOC
+
+ Transação com Liquidação Interbancária ou Liquidação Intrabancária
+                                                                                  Notificação de Transação
+ concluída, mas em análise por Impeditivos Não Contratuais, sem sensibilização
+                                                                                  em Análise
+ do valor líquido ao Recebedor
+
+ Transação já comunicada em Informe de Segregação, e é preciso recuperar o
+                                                                                  Solicitação de Estorno
+ CBS/IBS Segregado (apenas nos casos A ou B)
+
+
+
+10.2 Relação do MOC com os Arranjos
+O MOC é aplicável a todos os arranjos participantes do split. O conteúdo e o tratamento da ocorrência não variam
+conforme o arranjo, e a comunicação com a Plataforma Pública é sempre de responsabilidade do PSP Recebedor
+Direto.
+A Solicitação de Estorno é enviada sempre pelo PSP Recebedor Direto responsável (ou pelo Prestador de Serviço
+de Conexão) por efetuar o Repasse Financeiro do CBS/IBS, ainda que o valor do tributo precise ser estornado a
+outro ator (ex.: Pagador, PSP Pagador, Entidade Liquidante, Recebedor). Eventuais demandas de estorno
+originadas pelo PSP Pagador, pela Entidade Liquidante ou por outro PSP devem ser direcionadas ao PSP
+Recebedor Direto pelo backoffice das instituições ou, quando possível, por fluxos já existentes no arranjo (ex.:
+Mecanismo Especial de Devolução - Pix), para que o PSP Recebedor Direto envie a Solicitação de Estorno à
+Plataforma Pública. Esse fluxo de encaminhamento entre instituições não faz parte do escopo do Split Payment.
+
+10.3 Fluxo da Solicitação de Estorno via MOC
+O estorno do tributo segue um fluxo próprio, com etapa de aprovação pela RFB e pelo CGIBS. As etapas são as
+seguintes:
+   ●   O PSP Recebedor Direto identifica a demanda de estorno, que deve se enquadrar em um dos dois casos
+       permitidos (Incidente de segurança ou Falha operacional de PSPs ou da Entidade Liquidante — Seção
+       10.1).
+   ●   O PSP Recebedor Direto envia a Solicitação de Estorno à Plataforma Pública (que a direciona à RFB e ao
+       CGIBS), identificando a transação, o motivo da ocorrência e o ator prejudicado — aquele que receberá o
+       valor do tributo estornado, caso aprovado —, conforme o Manual de Integração.
+   ●   A RFB e o CGIBS avaliam a solicitação separadamente, podendo aceitá-la integralmente, aceitá-la
+       parcialmente ou recusá-la, e disponibilizam a resposta ao PSP Recebedor Direto na Plataforma Pública.
+   ●   O PSP Recebedor Direto consulta a resposta da solicitação na Plataforma Pública.
+   ●   Quando o estorno é aceito, o valor do tributo estornado é devolvido ao PSP Recebedor Direto (ou ao
+       Prestador de Serviço de Repasse Financeiro) pela RFB (no caso do CBS) e pelo CGIBS (no caso do IBS).
+   ●   De posse do valor, o PSP Recebedor Direto devolve o tributo à parte prejudicada, pelos mesmos fluxos
+       já utilizados para outros estornos que ocorrem fora do escopo do Split (ex.: backoffice).
+Apêndice A - Glossário
+Este glossário consolida os termos técnicos utilizados ao longo do Manual de Operações. Os termos estão
+organizados por categoria temática para facilitar a navegação. Termos relacionados a temas tratados em outros
+manuais (penalidades, duplicatas escriturais, definições puramente técnicas de mensageria) não constam deste
+glossário.
+
+A.1 Atores Institucionais (Governo)
+   •   RFB: Receita Federal do Brasil, órgão da administração tributária federal responsável pela administração
+       e arrecadação do CBS.
+   •   CGIBS: Comitê Gestor do IBS, entidade de coordenação da administração e arrecadação do IBS.
+   •   LC 214/2025: Lei Complementar nº 214 de 2025, que regulamenta a Reforma Tributária e prevê o Split
+       Payment como uma das modalidades de recolhimento de tributos.
+
+A.2 Atores do Mercado (PSPs e Infraestruturas)
+   •   PSP: Prestador de Serviços de Pagamento, instituição que operacionaliza arranjos de pagamento, sendo
+       responsável direta ou indiretamente pela liquidação dos valores decorrentes das transações de
+       pagamento e pelo envio e/ou captura de valores aos usuários finais recebedores e pagadores.
+   •   PSP Pagador Direto: PSP que detém a conta do Pagador Efetivo e participa diretamente do arranjo de
+       pagamento (Boleto, Pix e TED). É responsável por debitar os recursos da conta do Pagador, por capturar
+       os campos fiscais (CBS/IBS/DF) nos arranjos iniciados pelo Pagador e por exibir as informações do split
+       ao Pagador.
+   •   PSP Pagador Indireto: PSP que oferece serviços de pagamento ao Pagador Efetivo, mas não participa
+       diretamente do arranjo de pagamento (Boleto e Pix), dependendo de um PSP Pagador Direto para a
+       liquidação. A figura não se aplica aos arranjos TED e TEF. Quando o Pagador se relaciona diretamente
+       com o PSP que participa do arranjo, não há um PSP Pagador Indireto distinto: um mesmo PSP acumula
+       os papéis de PSP Pagador Direto e PSP Pagador Indireto.
+   •   PSP Recebedor Direto: PSP que participa diretamente do arranjo de pagamento, com conexão à
+       infraestrutura de liquidação. É o responsável regulatório pela correção e pelo cumprimento dos prazos
+       das obrigações do Split Payment perante a Plataforma Pública e os entes governamentais,
+       independentemente da existência de PSPs Indiretos ou Prestadores de Serviço envolvidos no fluxo. É
+       também o ator remunerado pela operação do split no arranjo. No arranjo Boleto, a comunicação com a
+       Plataforma Pública é cumprida pela Núclea, mas a segregação do tributo e o Repasse Financeiro
+       permanecem com o PSP Recebedor Direto.
+   •   PSP Recebedor Indireto: PSP que detém a relação comercial e contratual com o Recebedor, mas não
+       participa diretamente do arranjo. Para que o Recebedor possa atuar no Split Payment, depende dos
+       serviços do PSP Recebedor Direto, com quem mantém relação contratual específica. O PSP Recebedor
+       Indireto é aplicável apenas aos arranjos de Boleto, Pix Automático, Pix Dinâmico e Pix Estático. Nos
+       arranjos TEF e TED não há a figura do PSP Recebedor Indireto, pois o PSP Recebedor Direto se relaciona
+       com o Recebedor.
+   •   PSP Intermediador: PSP parceiro da Plataforma Digital, que disponibiliza uma conta para receber o
+       valor total das vendas do Pagador. Essa conta não é de livre movimentação pela Plataforma Digital.
+   •   Prestador de Serviço de Conexão: PSP contratado por um PSP Recebedor Direto para intermediar a
+       transmissão dos dados de Split à Plataforma Pública, atuando em nome do PSP Recebedor Direto. Pré-
+       requisitos para atuar nessa função: Ser instituição autorizada pelo Banco Central; e ser participante do
+       arranjo TED ou participante direto do arranjo Pix.
+   •   Prestador de Serviço de Repasse Financeiro: PSP com acesso aos eventos TES e STR necessários para
+       efetuar o Repasse Financeiro, contratado por um PSP Recebedor Direto para realizar o Repasse
+       Financeiro do CBS/IBS à RFB/CGIBS em nome do PSP contratante. Não precisa ser, necessariamente, o
+       mesmo ator que atua como Prestador de Serviço de Conexão.
+   •   Núclea: Ator responsável pela operação, comunicação e liquidação (SILOC) do arranjo de Boleto.
+   •   Entidade Liquidante: Participante/infraestrutura do arranjo responsável pela Liquidação Interbancária
+       da transação (Exemplo: movimentação entre contas de reserva/infraestruturas de liquidação),
+       possibilitando a finalização financeira necessária para a segregação e eventos subsequentes (Informes e
+       Repasse Financeiro).
+   •   Plataforma Digital: Plataforma comercial (ex. marketplace) que intermedeia vendas entre múltiplos
+       Recebedores e Pagadores, podendo envolver duas pernas de liquidação (A1 entre Pagador e PSP
+       Intermediador; A2 entre PSP Intermediador e Recebedor).
+   •   PP: Plataforma Pública, sistema informatizado destinado à troca de informações relativas ao Split
+       Payment entre as administrações tributárias e os prestadores de serviços de pagamento e instituições
+       operadoras de sistemas de pagamento.
+
+A.3 Infraestruturas Técnicas dos Arranjos
+   •   SPI: Sistema de Pagamentos Instantâneos, infraestrutura de liquidação do Pix, utilizado para processar
+       transações no arranjo Pix.
+   •   SPB: Sistema de Pagamentos Brasileiro, conjunto de entidades, sistemas e regras que viabiliza a
+       transferência de recursos, operado sob supervisão do Banco Central.
+   •   DICT: Diretório de Identificadores de Contas Transacionais do ecossistema Pix, utilizado para
+       endereçamento/consulta de chaves e contas transacionais no fluxo do Pix.
+   •   STR: Sistema de Transferência de Reservas, infraestrutura de liquidação bruta em tempo real do Banco
+       Central, utilizada inclusive para Repasse Financeiro do IBS ao CGIBS.
+   •   SITRAF: Sistema de Transferência de Fundos, utilizado para liquidação de TEDs via eventos PAG.
+   •   SILOC: Sistema de Liquidação Diferida das Transferências Interbancárias de Ordens de Crédito, utilizado
+       para liquidação de boletos e outros instrumentos.
+   •   PCR: Plataforma Centralizadora de Recebíveis, operada pela Núclea no contexto do arranjo de Boleto.
+   •   DDA: Débito Direto Autorizado, sistema de apresentação eletrônica de boletos ao Pagador.
+   •   TES: Mensagens utilizadas para transferências entre Contas de Reserva Bancária de participantes do SPB
+       e Conta Única do Tesouro Nacional. No contexto do Split Payment, é utilizado para Repasse Financeiro do
+       CBS à RFB.
+
+A.4 Pessoas e Papéis na Transação
+   •   PF: Pessoa Física, identificada por CPF.
+   •   PJ: Pessoa Jurídica, identificada por CNPJ. Para fins do Split Payment, equiparam-se a PJ as Pessoas Físicas
+       que possuam inscrição no CNPJ (por exemplo, produtores rurais, nanoempreendedores e outras Pessoas
+       Físicas que obtenham CNPJ no âmbito da Reforma Tributária), as quais podem atuar no split como
+       Pagador ou Recebedor PJ, desde que utilizando o seu CNPJ.
+   •   Pagador: O Adquirente, ou aquele que, em nome do Adquirente, transfere recursos ao arranjo
+       estabelecido para pagamento do preço pactuado com o Fornecedor.
+   •   Pagador Original: Devedor informado no momento da iniciação da transação em arranjos iniciados pelo
+       Recebedor (Boleto, Pix Dinâmico, Pix Automático), que corresponde ao sacado da cobrança.
+   •   Pagador Efetivo: Pessoa Física ou Jurídica que efetivamente executa o pagamento da transação,
+       debitando os recursos de sua conta. Pode ser o próprio Pagador Original ou uma terceira parte que realiza
+       o pagamento em nome dele.
+   •   Recebedor: O Fornecedor, ou quem, em nome do Fornecedor, tem direito ao recebimento do preço
+       pactuado com o Adquirente.
+
+A.5 Tributos e Reforma Tributária
+   •   IBS: Imposto sobre Bens e Serviços, tributo instituído no âmbito da Reforma Tributária. No Split Payment,
+       é segregado e recolhido ao CGIBS no momento da Liquidação Financeira.
+   •   CBS: Contribuição sobre Bens e Serviços, tributo instituído no âmbito da Reforma Tributária. No Split
+       Payment, é segregado e recolhido à RFB no momento da Liquidação Financeira.
+   •   Documento Fiscal (DF): Documento Fiscal relativo à operação com bens ou serviços, que serve de
+       referência para a verificação dos valores de CBS/IBS associados à transação de pagamento e para a
+       respectiva vinculação da transação ao Documento Fiscal correspondente.
+   •   DF Único: Documento Fiscal que se refere a uma única operação comercial entre o Recebedor e o
+       Pagador. É o caso mais comum, em que uma transação de pagamento corresponde a um único Documento
+       Fiscal.
+   •   DF Agregador: Documento Fiscal que consolida múltiplos DFs em uma mesma estrutura (uma chave de
+       acesso), utilizado quando uma transação de pagamento está relacionada a várias operações comerciais
+       (cada uma com seu DF Único).
+   •   Crédito Tributário: Direito do Adquirente PJ, participante do regime regular de CBS/IBS, de receber
+       crédito de CBS/IBS sobre compras que realiza. É conceito central do modelo de IVA (Imposto sobre Valor
+       Agregado). Possui, como requisitos, o destaque de CBS/IBS no Documento Fiscal da transação de compra
+       e a efetiva extinção do débito tributário perante RFB e CGIBS (via Split, Recolhimento pelo Adquirente,
+       ou outras modalidades).
+
+A.6 Conceito do Split e Modelos de Aplicação
+   •   Split Payment: Procedimento padronizado de segregação e recolhimento do CBS e o IBS no momento da
+       Liquidação Financeira de transações de pagamento relativas a operações com bens ou serviços, de adoção
+       facultativa e aplicável às operações em que Fornecedor e Adquirente estejam inscritos no CNPJ.
+   •   Modelo Inteligente: Modelo de Split Payment em que o valor de CBS/IBS é informado pelo originador a
+       cada transação, sem correção do tributo pelo governo. Aplicável aos arranjos iniciados pelo Pagador
+       (TED, Pix Estático, TEF).
+   •   Modelo Super Inteligente: Modelo de Split Payment aplicável aos arranjos iniciados pelo Recebedor, no
+       qual pode haver retorno do governo via PP com correções ou ajustes nos valores de CBS/IBS antes da
+       liquidação, com a finalidade de orientar o valor efetivo a ser segregado e recolhido.
+   •   B2B: Business-to-Business, relação comercial entre Pessoas Jurídicas. Escopo da Fase 1 do Split (B2B
+       Opcional).
+   •   Segregação: Separação (no momento da Liquidação Financeira) dos valores de CBS e IBS a serem
+       posteriormente repassados à RFB/CGIBS no âmbito do Split Payment, conforme regras por tipo de
+       transação e responsabilidade do PSP Recebedor Direto.
+   •   Repasse Financeiro: Transferência financeira, pelo PSP responsável, dos valores de CBS/IBS segregados
+       para as contas da RFB/CGIBS, em prazos operacionais definidos.
+   •   Iniciação (Emissão, Criação): Etapa de criação ou emissão do instrumento de cobrança ou pagamento
+       (ex.: Boleto, Pix Dinâmico, Pix Automático), na qual Pessoas Jurídicas podem realizar o preenchimento
+       dos campos fiscais (CBS/IBS/DF), o que configura a opção pela utilização do Split Payment.
+   •   Pagamento: Autorização/ordem, por parte do Pagador, concedida ao seu PSP, para transferir valor que
+       está em sua titularidade, através de um arranjo de pagamento, relacionada uma operação com bens ou
+       serviços.
+   •   Liquidação Interbancária: liquidação entre PSPs distintos, com troca de reservas entre as instituições
+       por meio da infraestrutura do sistema de pagamentos (ex.: SILOC, STR, SITRAF ou SPI).
+   •   Liquidação Intrabancária: liquidação entre contas mantidas no mesmo PSP, sem troca de reservas
+       interbancárias.
+   •   Liquidação Financeira da transação: Momento em que uma transação financeira é considerada
+       liquidada para o contexto do Split Payment. É definido de forma específica conforme o arranjo.
+           ◦ Boleto: efetivação completa da baixa, parcial ou integral, em decorrência do pagamento;
+               Liquidação Intrabancária ou interbancária (via SILOC ou STR); e ausência de impeditivos não
+               contratuais para sensibilização a crédito do valor líquido ao Recebedor.
+           ◦ Pix Dinâmico, Pix Automático e Pix Estático: efetivação completa da Liquidação Intrabancária
+               ou interbancária entre PSP Pagador Direto e PSP Recebedor Direto (diretamente participantes do
+               SPI); e ausência de impeditivos não contratuais para sensibilização a crédito do valor líquido ao
+               Recebedor.
+           ◦ TED: efetivação completa da Liquidação Interbancária entre PSP Pagador Direto e PSP Recebedor
+               Direto, com status de efetivação na conta de Reservas; e ausência de impeditivos não contratuais
+               para sensibilização a crédito do valor líquido ao Recebedor.
+           ◦ TEF: sensibilização a débito do Valor Pago ao Pagador; e ausência de impeditivos não contratuais
+               para sensibilização a crédito do valor líquido ao Recebedor.
+   •   Impeditivos Não Contratuais (para sensibilização a crédito do valor líquido ao Recebedor):
+       condições ou verificações de natureza operacional, regulatória ou prudencial, não relacionadas a acordo
+       contratual entre as partes, que impedem ou postergam a sensibilização a crédito do valor líquido ao
+       Recebedor. Por serem alheias à relação contratual estabelecida, sua ocorrência posterga o marco de
+       liquidação. São exemplos as verificações internas realizadas pelo PSP, tais como análises de segurança,
+       prevenção a fraude, identificação de inconsistências, cancelamento de baixa e análises de compliance,
+       além de demais casos que possam resultar em devolução dos valores. O tratamento operacional desses
+       casos é detalhado na Seção 9 (Cenários Operacionais Específicos). Bloqueios judiciais não caracterizam
+       impeditivos para a realização do Split, pois o tributo é segregado sem passar pela conta do Recebedor.
+   •   Sensibilização (Liquidação ao Recebedor): Crédito efetivo do valor líquido na conta do Recebedor,
+       momento em que ele tem visibilidade do recebimento em extrato/saldo.
+   •   Proporcionalidade: Regra de cálculo aplicada aos valores de CBS/IBS no Split Payment quando o Valor
+       Pago é inferior ao Valor Original ou ao valor do Documento Fiscal. Reduz o valor do tributo
+       proporcionalmente, mas não o aumenta em pagamentos a maior (multas, juros).
+
+A.7 Categorias de Valor de Tributo e Valores da Transação
+   •   CBS/IBS Informado: Valor de CBS/IBS preenchido pelo originador da transação (Pagador ou Recebedor)
+       no input do arranjo. Quando o Valor Original for inferior ao valor do Documento Fiscal, deve ser
+       preenchido de forma proporcional.
+   •   CBS/IBS Corrigido: Valor de CBS/IBS retornado pela PP em substituição ao informado, quando há
+       divergência com o DF vinculado à transação, resguardada a proporcionalidade entre o Valor Original e o
+       do Documento Fiscal.
+   •   CBS/IBS Em Aberto: Limite máximo de CBS/IBS a ser recolhido, retornado pela PP, considerando que
+       parte do débito do DF já foi extinta por outros meios. Comunicado pela RFB/CGIBS somente quando já
+       houve redução total ou parcial do débito do tributo do DF vinculado à transação.
+   •   CBS/IBS Segregado: Valor de CBS/IBS efetivamente separado pelo PSP Recebedor Direto/Núclea para
+       ser repassado ao governo, limitado ao CBS/IBS Em Aberto e ao CBS/IBS Informado (ou CBS/IBS
+       Corrigido), respeitando a proporcionalidade entre Valor Pago e Valor Original.
+   •   CBS/IBS Aplicado: Valor exibido ao Pagador que representa a carga tributária sobre uma transação ou
+       pagamento, utilizado apenas no contexto de arranjos iniciados pelo Recebedor. Caso exibido antes do
+       pagamento, é o valor CBS/IBS Corrigido, ou CBS/IBS Informado (caso o CBS/IBS Corrigido não esteja
+       disponível). Caso exibido após o pagamento, é calculado pelo PSP Pagador Direto a partir do CBS/IBS
+       Corrigido ou CBS/IBS Informado (caso o CBS/IBS Corrigido não esteja disponível), Valor Original e Valor
+       Pago, aplicando-se a regra de proporcionalidade sobre o tributo caso Valor Pago seja inferior ao Valor
+       Original. O CBS/IBS Aplicado não possui qualquer relação com o CBS/IBS Em Aberto, pois eventual
+       dispensa parcial ou total do recolhimento beneficia o Recebedor e não altera o crédito que o Pagador
+       espera receber com a transação.
+   •   Valor Original: Valor monetário da transação de pagamento correspondente ao Valor Original no qual a
+       transação foi emitida, antes de quaisquer acréscimos, deduções, retenções, ajustes ou segregações
+       decorrentes do Split Payment.
+   •   Valor Líquido: Valor monetário resultante da operação de pagamento após a dedução dos valores de
+       CBS e IBS Segregados no contexto do Split Payment. Representa o montante destinado ao Recebedor:
+       Valor Pago deduzido de CBS/IBS Segregados. Não é impactado por outras taxas ou tarifas (ex: tarifa
+       cobrada pelo PSP Recebedor Direto por transação).
+   •   Valor Pago: Valor monetário efetivamente pago pelo Pagador na transação. Em arranjos iniciados pelo
+       Recebedor, pode ser superior, igual ou inferior ao Valor Original, conforme o valor sensibilizado a crédito
+       na conta do Pagador na operação (ex.: multas, descontos, pagamentos parciais).
+
+A.8 Informes e Mensageria do Split
+   •   Informe de Transação Iniciada: Mensagem enviada à PP para comunicar que a transação (Exemplo:
+       boleto/QR Code) foi criada e está apta a receber retorno da PP (quando aplicável).
+   •   Informe de Transação Atualizada: Mensagem enviada à PP para comunicar que a transação foi
+       atualizada. Caso sejam alterados campos que impactam o retorno do Super Inteligente (valor da
+       transação, CBS, IBS, DF), retornos anteriores podem ser descartados e um novo retorno pode ser emitido
+       pela PP.
+   •   Informe de Baixa (exceto por pagamento): Mensagem enviada à PP para comunicar que a transação
+       não aceita mais retornos da PP por não estar mais disponível para pagamento (ex.: cancelamento,
+       expiração). Não é necessária quando o encerramento ocorre por pagamento integral.
+   •   Retorno Super Inteligente (Correção): retorna CBS/IBS "Corrigido", possibilitando que RFB/CGIBS
+       corrijam o valor do CBS/IBS preenchido no arranjo em caso de discrepância com o valor do CBS/IBS que
+       consta no Documento Fiscal vinculado à transação.
+   •   Retorno Super Inteligente (Em Aberto): retorna CBS/IBS "Em Aberto", que serve para dispensa parcial
+       ou total do split, em função de o débito tributário do Documento Fiscal vinculado à transação já ter sido
+       extinto total ou parcialmente. Informa o limite máximo (em aberto) passível de segregação e Repasse
+       Financeiro via Split, com possibilidade de atualizações sucessivas até o momento do pagamento, sempre
+       a menor.
+   •   Informe Preliminar de Pagamento: Mensagem à PP com finalidade informativa e não vinculante,
+       enviada logo após o pagamento, para indicar preliminarmente que uma transação sujeita ao Split foi paga;
+       deve ser desconsiderada pelo governo quando do recebimento do Informe de Segregação e não gera
+       obrigação de Repasse Financeiro.
+   •   Informe de Segregação: Conjunto de informações transmitidas ao CGIBS e à RFB em relação aos valores
+       do CBS e o IBS já segregados em transações de pagamento e pendentes de recolhimento. Possui caráter
+       definitivo e gera obrigação de Repasse Financeiro.
+
+A.9 Arranjos e Instrumentos de Pagamento
+   •   Arranjo: Conjunto de regras, procedimentos e participantes que viabilizam um instrumento de
+       pagamento. Para o Split Payment, são considerados seis arranjos (que possuem tratamentos e janelas
+       específicas): Boleto, Pix Dinâmico, Pix Automático, Pix Estático, TED, e TEF (Book Transfer).
+   •   Arranjos iniciados pelo Pagador: arranjos em que a transação é originada pelo Pagador, que insere os
+       dados do split (CBS, IBS e Documento Fiscal) no momento de iniciação do pagamento. Compreende os
+       arranjos TED, TEF (Book Transfer) e Pix Estático. Nesses arranjos não há operação do Modelo Super
+       Inteligente, e o valor segregado corresponde ao valor informado pelo Pagador.
+   •   Arranjos iniciados pelo Recebedor: arranjos em que a transação é originada pelo Recebedor, que
+       insere os dados do split (CBS, IBS e, se aplicável, Documento Fiscal) ao criar a cobrança. Compreende os
+       arranjos Boleto, Pix Dinâmico e Pix Automático. Nesses arranjos pode operar o Modelo Super Inteligente,
+       com retornos de correção e de dispensa do tributo entre a criação da transação e a sua baixa.
+   •   Boleto: Arranjo iniciado pelo Recebedor. Cobrança emitida com vencimento, registrada via Núclea (PCR)
+       e liquidada via SILOC ou STR.
+   •   TED: Arranjo iniciado pelo Pagador. Transferência Eletrônica Disponível, liquidado via SITRAF (eventos
+       PAG) ou STR.
+   •   TEF (Book Transfer): Arranjo iniciado pelo Pagador. Transferência Eletrônica de Fundos, transação
+       intrabancária entre contas mantidas no mesmo PSP.
+   •   Pix Estático: Arranjo iniciado pelo Pagador, em que o Recebedor disponibiliza uma chave/QR Code
+       estático e o Pagador insere o valor ou demais dados ao executar a transação. Compreende as seguintes
+       formas de iniciação do Pix: APES (Pix por aproximação estático), DICT (Inserção manual de chave Pix),
+       MANU (Inserção manual de dados da conta transacional) e QRES (QR Code estático).
+   •   Pix Dinâmico: Arranjo iniciado pelo Recebedor, em que o conteúdo do QR Code é gerado especificamente
+       para cada cobrança, contendo valor e demais informações pré-definidas. Considera as seguintes formas
+       de iniciação do Pix: APDN (Pix por aproximação dinâmico) e QRDN (QR Code dinâmico).
+   •   Pix Automático: Arranjo iniciado pelo Recebedor. Forma de iniciação do Pix (AUTO) em que o Pagador
+       autoriza previamente cobranças recorrentes a serem executadas em periodicidades acordadas.
+   •   Open Finance: Ecossistema regulatório brasileiro de compartilhamento de dados e serviços financeiros
+       mediante consentimento do usuário. Entre os serviços que abrange está a iniciação de pagamentos por
+       terceiro (ver ITP).
+   •   ITP (Iniciador de Transação de Pagamento): Participante/serviço que, no âmbito do Open Finance,
+       inicia o pagamento em nome do usuário sem deter os recursos. Transações iniciadas por ITP estão fora
+       do escopo da Fase 1 do Split Payment, independentemente do arranjo de pagamento utilizado. O critério
+       que caracteriza essas transações é a iniciação por terceiro, sinalizada pela presença do campo de CNPJ do
+       iniciador preenchido.
+   •   QR Code: Código de leitura ótica utilizado para iniciação de pagamentos no arranjo Pix, podendo ser
+       estático (QRES) ou dinâmico (QRDN), seguindo o padrão BR Code.
+
+A.10 Identificadores de Transação
+   •   E2E (E2EID): End-to-End ID, identificador único ponta a ponta de uma transação Pix, gerado pela ponta
+       pagadora ou recebedora conforme o arranjo, usado para rastreabilidade e conciliação.
+   •   TxID: Identificador de transação utilizado nos arranjos Pix Dinâmico e Pix Automático, preenchido no
+       payload do QR Code ou no agendamento da cobrança. No Pix Estático, seu uso é opcional, e o único
+       identificador considerado no contexto do Split Payment é o E2EID.
+   •   ID DDA (NumCtrlDDA): Identificador único do boleto, gerado pela Núclea no momento de inclusão do
+       boleto e utilizado para vínculo entre transação e DF antes e após a liquidação.
+   •   NumCtrlSTR / NumCtrlPAG: Números de controle das liquidações STR e PAG, utilizados para vincular
+       transações TED a Documentos Fiscais após a liquidação.
+   •   NumCtrlTEF: Identificador interno da transação TEF, gerado pelo PSP, utilizado para vínculo entre
+       transação e DF e para exibição ao Recebedor e ao Pagador após a liquidação.
+
+A.11 Governança e Operação
+   •   ANS: Acordos de Nível de Serviço, parâmetros de nível de serviço acordados para tempos máximos de
+       comunicação e processamento (ex.: ANS para envio de informes por API e para o Repasse Financeiro ao
+       governo), segmentados por arranjo e estágio.
+   •   D+N: Notação que indica o prazo em dias úteis após o envio do Informe de Segregação para realização do
+       Repasse Financeiro ao governo.
+   •   MOC: Mecanismo de Ocorrências, canal padronizado para tratamento de transações com Split que
+       apresentaram falhas, erros ou exceções (estornos, fraudes, bloqueios), envolvendo comunicação entre o
+       PSP Recebedor Direto e RFB/CGIBS via PP.
+
+A.12 Outros Conceitos
+   •   ERP: Enterprise Resource Planning, sistema integrado de gestão empresarial utilizado por Pessoas
+       Jurídicas como repositório e camada de processamento de informações operacionais, contábeis e fiscais.
+       No contexto do Split Payment, pode atuar como sistema do Recebedor e do Pagador, podendo receber e
+       disponibilizar informações de retorno relacionadas à transação, como CBS/IBS/DF.
+

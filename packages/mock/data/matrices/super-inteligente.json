@@ -1,0 +1,22 @@
+{
+  "informe": "super-inteligente",
+  "fonte": "Manual de Integracao v1.0, secao 3.6.1 (payload de RETORNO, usado pelo motor de cenarios para emitir campos corretos por arranjo)",
+  "arranjos": ["boleto", "pix-automatico", "pix-dinamico"],
+  "topo": {},
+  "transacoes": {
+    "nsuId": ["M", "M", "M"],
+    "codMsg": ["M", "M", "M"],
+    "idDda": ["M", "NE", "NE"],
+    "numCtrlOrig": ["M", "NE", "NE"],
+    "txId": ["NE", "M", "M"],
+    "vlInf": ["M", "M", "M"],
+    "vlCbsCorr": ["O", "O", "O"],
+    "vlIbsCorr": ["O", "O", "O"],
+    "vlCbsAberto": ["O", "O", "O"],
+    "vlIbsAberto": ["O", "O", "O"],
+    "docFiscal": ["O", "O", "O"],
+    "cnpjRaizPspRecInd": ["O", "O", "O"],
+    "cnpjRaizPspRecDir": ["O", "O", "O"],
+    "cnpjRec": ["NE", "M", "M"]
+  }
+}

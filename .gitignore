@@ -1,0 +1,16 @@
+# Calculadora artifacts carry no stated license; do not redistribute until RFB/Serpro
+# publish one (D-2, projects/bmazurok__splitkit, 2026-07-20). Fetch locally via
+# scripts/download-calculadora.sh instead.
+vendor/calculadora/
+
+.DS_Store
+
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Brief estrategico local; fora do repo publico (launch task, decisao do mantenedor 2026-07-20)
+project-boostrap.md
+
+docs/site/.vitepress/dist/
+docs/site/.vitepress/cache/

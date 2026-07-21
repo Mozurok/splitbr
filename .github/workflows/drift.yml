@@ -1,0 +1,46 @@
+name: drift
+on:
+  schedule:
+    # Segundas 12:00 UTC = 09:00 America/Sao_Paulo (mesma cadencia da rotina)
+    - cron: "0 12 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["vendor/**", "scripts/drift-check.mjs", ".github/workflows/drift.yml"]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Comparar contratos hospedados vs vendorados (conteudo normalizado)
+        run: node scripts/drift-check.mjs
+      - name: Abrir issue em caso de drift
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const dia = new Date().toISOString().slice(0, 10);
+            const titulo = `Drift detectado nos contratos oficiais (${dia})`;
+            const existentes = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: "open", labels: "drift",
+            });
+            if (existentes.data.some(i => i.title === titulo)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: titulo,
+              labels: ["drift"],
+              body: [
+                "O workflow semanal de drift encontrou divergência entre um contrato hospedado e o vendorado.",
+                "",
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                "",
+                "Próximo passo: re-vendorar o artefato com nova linha no vendor/MANIFEST.md (nunca sobrescrever em silêncio) e avaliar impacto em @splitbr/client e @splitbr/mock.",
+              ].join("\n"),
+            });

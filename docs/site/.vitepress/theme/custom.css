@@ -1,0 +1,67 @@
+/**
+ * Direcao A "Fiscal claro" (D-9): base clara, acento quente ambar, grid
+ * blueprint sutil no hero. Refs: Cloudflare Workers, Firecrawl, Tailscale
+ * (REFERENCES.md ## Design do site).
+ */
+
+:root {
+  --vp-c-brand-1: #b45309;
+  --vp-c-brand-2: #d97706;
+  --vp-c-brand-3: #f59e0b;
+  --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #b45309 30%, #f59e0b);
+  --vp-button-brand-bg: #b45309;
+  --vp-button-brand-hover-bg: #d97706;
+  --vp-button-brand-active-bg: #92400e;
+}
+
+.dark {
+  --vp-c-brand-1: #fbbf24;
+  --vp-c-brand-2: #f59e0b;
+  --vp-c-brand-3: #d97706;
+  --vp-c-brand-soft: rgba(251, 191, 36, 0.16);
+  --vp-home-hero-name-background: linear-gradient(120deg, #fbbf24 30%, #f97316);
+  /* WCAG AA: texto branco sobre #b45309 = 5.5:1 (gap-check pegou 3.19:1 no #d97706) */
+  --vp-button-brand-bg: #b45309;
+  --vp-button-brand-hover-bg: #d97706;
+  --vp-button-brand-active-bg: #92400e;
+}
+
+/* Grid blueprint sutil atras do hero (so na home). */
+.VPHome .VPHero {
+  background-image:
+    linear-gradient(to right, rgba(180, 83, 9, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(180, 83, 9, 0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.dark .VPHome .VPHero {
+  background-image:
+    linear-gradient(to right, rgba(251, 191, 36, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(251, 191, 36, 0.06) 1px, transparent 1px);
+}
+
+/* Cards de feature com elevacao no hover (padrao das refs). */
+.VPFeature {
+  border: 1px solid var(--vp-c-divider);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.VPFeature:hover {
+  border-color: var(--vp-c-brand-2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.10);
+}
+
+/* Tabelas mais respiraveis nas paginas de conteudo. */
+.vp-doc table {
+  font-size: 0.9rem;
+}
+.vp-doc th {
+  background: var(--vp-c-brand-soft);
+}
+
+/* Aviso de correcoes no rodape: destacado sem gritar. */
+.VPFooter .message a {
+  color: var(--vp-c-brand-1);
+  text-decoration: underline;
+}

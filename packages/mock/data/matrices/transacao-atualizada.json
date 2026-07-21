@@ -1,0 +1,26 @@
+{
+  "informe": "transacao-atualizada",
+  "fonte": "Manual de Integracao v1.0, secao 3.2.1",
+  "arranjos": ["boleto", "pix-automatico", "pix-dinamico"],
+  "topo": {
+    "dtHrMsg": ["M", "M", "M"]
+  },
+  "transacoes": {
+    "index": ["M", "M", "M"],
+    "idDda": ["M", "NE", "NE"],
+    "numCtrlOrig": ["M", "NE", "NE"],
+    "numCodBarras": ["NE", "NE", "NE"],
+    "txId": ["NE", "M", "M"],
+    "vlInf": ["M", "M", "M"],
+    "vlCbsInf": ["M", "M", "M"],
+    "vlIbsInf": ["M", "M", "M"],
+    "docFiscal": ["O", "O", "O"],
+    "cnpjRaizPspRecInd": ["O", "O", "O"],
+    "cnpjRaizPspRecDir": ["M", "M", "M"],
+    "cnpjRec": ["NE", "M", "M"],
+    "cnpjCpfPagOrig": ["NE", "O", "O"],
+    "dtHrAtu": ["M", "M", "M"],
+    "dtVenc": ["M", "O", "O"],
+    "dtHrLimPgto": ["M", "M", "M"]
+  }
+}

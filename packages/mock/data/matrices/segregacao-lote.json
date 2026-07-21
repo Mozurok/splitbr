@@ -1,0 +1,34 @@
+{
+  "informe": "segregacao-lote",
+  "fonte": "Manual de Integracao v1.0, secao 3.5.2 (passo 2)",
+  "arranjos": ["boleto", "pix-automatico", "pix-dinamico", "pix-estatico", "ted", "tef"],
+  "topo": {
+    "cnpjRaizPspRecDir": ["M", "M", "M", "M", "M", "M"],
+    "dtHrMsg": ["M", "M", "M", "M", "M", "M"],
+    "idInfSegr": ["M", "M", "M", "M", "M", "M"],
+    "idLote": ["M", "M", "M", "M", "M", "M"]
+  },
+  "transacoes": {
+    "index": ["M", "M", "M", "M", "M", "M"],
+    "idDda": ["M", "NE", "NE", "NE", "NE", "NE"],
+    "numCtrlOrig": ["M", "NE", "NE", "NE", "NE", "NE"],
+    "numIdentcBaixa": ["M", "NE", "NE", "NE", "NE", "NE"],
+    "numPgto": ["M", "NE", "NE", "NE", "NE", "NE"],
+    "txId": ["NE", "M", "M", "NE", "NE", "NE"],
+    "e2eId": ["NE", "M", "M", "M", "NE", "NE"],
+    "numCtrlTED": ["NE", "NE", "NE", "NE", "M", "NE"],
+    "numCtrlTEF": ["NE", "NE", "NE", "NE", "NE", "M"],
+    "vlPago": ["M", "M", "M", "M", "M", "M"],
+    "vlCbsSegr": ["M", "M", "M", "M", "M", "M"],
+    "vlIbsSegr": ["M", "M", "M", "M", "M", "M"],
+    "docFiscal": ["O", "O", "O", "M", "M", "M"],
+    "indPgtoIntegral": ["M", "M", "M", "NE", "NE", "NE"],
+    "cnpjRaizPspRecInd": ["O", "O", "O", "O", "NE", "O"],
+    "cnpjRaizPspPag": ["M", "M", "M", "M", "M", "NE"],
+    "cnpjRec": ["M", "M", "M", "M", "M", "M"],
+    "cnpjCpfPagEfet": ["O", "M", "M", "M", "M", "M"],
+    "dtHrPgto": ["M", "M", "M", "M", "NE", "M"],
+    "dtHrLiq": ["M", "M", "M", "M", "M", "M"],
+    "dtHrRepasse": ["M", "M", "M", "M", "M", "M"]
+  }
+}

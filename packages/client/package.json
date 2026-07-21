@@ -1,0 +1,61 @@
+{
+  "name": "@splitbr/client",
+  "version": "0.1.0",
+  "description": "Client TypeScript tipado para a Plataforma Publica do Split Payment (IBS/CBS, LC 214/2025)",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "codegen": "node scripts/codegen.mjs"
+  },
+  "devDependencies": {
+    "tsdown": "^0.22.12",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.17.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mozurok/splitbr.git",
+    "directory": "packages/client"
+  },
+  "homepage": "https://github.com/Mozurok/splitbr/tree/main/packages/client#readme",
+  "bugs": {
+    "url": "https://github.com/Mozurok/splitbr/issues"
+  },
+  "keywords": [
+    "split-payment",
+    "reforma-tributaria",
+    "ibs",
+    "cbs",
+    "lc-214",
+    "pix",
+    "boleto",
+    "psp",
+    "brasil"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

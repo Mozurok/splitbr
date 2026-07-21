@@ -1,0 +1,1357 @@
+Plataforma Pública
+de Split Payment
+
+
+  Manual de Integração
+
+
+
+
+    Versão 1.0
+1.        Introdução ................................................................................................................................................................................................ 2
+2.        Visão Geral ................................................................................................................................................................................................ 2
+3.        Fluxos de Dados e Comunicação ...................................................................................................................................................... 2
+     Dicionário de campos ................................................................................................................................................................................ 3
+     3.1.          Informe de Transação Iniciada .............................................................................................................................................. 9
+     3.1.1.             Dados do Informe de Transação Iniciada.................................................................................................................. 10
+     3.2.          Informe de Transação Atualizada...................................................................................................................................... 12
+     3.2.1.             Dados do Informe de Transação Atualizada ............................................................................................................ 13
+     3.3.          Informe de Baixa (Exceto por Pagamento).................................................................................................................... 14
+     3.3.1.             Dados do Informe de Baixa (Exceto por Pagamento) .......................................................................................... 15
+     3.4.          Informe Preliminar de Pagamento.................................................................................................................................... 16
+     3.4.1.             Dados do Informe Preliminar de Pagamento .......................................................................................................... 18
+     3.5.          Informe de Segregação (transação financeira liquidada)........................................................................................ 20
+     3.5.1.             Dados do informe de remessa de segregação iniciada (Passo 1) .................................................................... 23
+     3.5.2.             Dados do informe de lote de transações (Passo 2) ............................................................................................... 23
+     3.5.3.             Dados do informe de finalização de remessa da segregação (Passo 3) ........................................................ 24
+     3.6.          Retorno Super Inteligente para Núclea/PSPs. ............................................................................................................. 24
+     3.6.1.             Dados do Retorno Super Inteligente para Núclea/PSPs. .................................................................................... 28
+     3.7.          Consulta Retroativa Super Inteligente para Núclea/PSPs. ..................................................................................... 28
+4.        Contrato de mensagens e payloads ............................................................................................................................................. 33
+     4.1.          Exemplos de requisições e respostas da API ................................................................................................................ 33
+5.        Política de tratamento de erros .................................................................................................................................................... 34
+6.        Tabela de código de mensagens por arranjo ........................................................................................................................... 37
+7.        Tabela de endpoints dos informes por arranjo ...................................................................................................................... 37
+8.        Definição de Headers Padrão ......................................................................................................................................................... 40
+1.   Introdução
+     A Plataforma Pública de Split Payment funcionará como um HUB de comunicação entre as instituições
+     operadoras de sistemas de pagamento ou prestadoras de serviços de pagamento eletrônico (PSPs) e os
+     entes governamentais – Comitê Gestor do IBS (CGIBS) e Receita Federal do Brasil (RFB). A Plataforma
+     pretende facilitar o processo de integração por parte das instituições, permitir o compartilhamento de
+     experiências e manter uma forte padronização. A Plataforma não implementa regras de negócio,
+     seguindo os princípios de baixo acoplamento e alta coesão. Ela tem a responsabilidade de receber
+     eventos, aplicar validações sintáticas e semânticas, registrar informações para garantir rastreabilidade
+     e auditoria e repassar eventos ao destinatário adequado. Não é escopo da plataforma executar regras de
+     negócio relacionadas a split payment, arrecadação, apuração assistida, entre outras. Como ponto de
+     contato único, integra todos os PSPs, otimizando os custos por meio de desenvolvimento centralizado;
+     oferece melhor controle de segurança e compliance; proporciona facilidade na gestão (especificações,
+     métricas, versionamento, volumetria); e garante maior escalabilidade técnica.
+
+
+2.   Visão Geral
+     A Plataforma Pública é o canal de transmissão dos dados do split-payment(CBS e IBS) entre as
+     instituições financeiras e o governo. Ela conecta as operadoras financeiras e PSPs (produtores de
+     dados) a dois entes consumidores: Receita Federal e Comitê Gestor do IBS (CGIBS). A troca dessas
+     informações visa garantir alta disponibilidade, escalabilidade e segurança.
+
+
+3.   Fluxos de Dados e Comunicação
+     O processo de efetivação do Split entre as instituições financeiras e os entes de governo são descritos
+     pelos seguintes fluxos de processo:
+
+     •   Fluxo de Informe de Transação Iniciada.
+         − Participam desse fluxo os arranjos de boleto, Pix Dinâmico e Pix Automático.
+
+     •   Fluxo de Informe de Transação Atualizada.
+         − Participam desse fluxo os arranjos de boleto, Pix Dinâmico e Pix Automático.
+
+     •   Fluxo de Informe de Baixa (Exceto por Pagamento).
+         − Participam desse fluxo os arranjos de boleto, Pix Dinâmico e Pix Automático.
+
+     •   Fluxo de Informe Preliminar de Pagamento.
+         − Participam desse fluxo os arranjos de boleto, Pix Dinâmico, Pix Automático, Pix Estático, TED e
+             TEF.
+
+     •   Fluxo de Informe de Segregação (transação financeira liquidada).
+         − Participam desse fluxo os arranjos de boleto, Pix Dinâmico, Pix Automático, Pix Estático, TED e
+             TEF.
+
+     •   Fluxo de Retorno Super Inteligente para Núclea/PSPs.
+              −   Participam desse fluxo os arranjos de boleto, Pix Dinâmico e Pix Automático.
+
+          •   Fluxo de Consulta Retroativa Super Inteligente para Núclea/PSPs.
+              − Participam desse fluxo os arranjos de boleto, Pix Dinâmico e Pix Automático.
+
+
+
+
+Os diagramas de fluxo de processos e o detalhamento dos dados transportados estão descritos em detalhes nas
+seções a seguir deste manual.
+
+OBS.: Cada informe poderá enviar, no máximo, 1.000 transações por requisição. Caso sejam enviadas mais
+transações, o envio será rejeitado.
+
+
+
+Dicionário de campos
+
+
+Nome do campo             Campo JSON     Formato         Tam.    Tam. Regex      Descrição
+                                                         Min     Máx
+
+Código da mensagem        codMsg         Alfanumérico      1       9             Código identificador da mensagem,
+                                                                                 conforme o arranjo aplicável (ex.:
+                                                                                 RSUP101, RSUP102).
+
+Arranjo                   arrj           Alfanumérico      3       3             Arranjo financeiro ao qual a
+                                                                                 mensagem está associada (Pix
+                                                                                 Automático, Pix Dinâmico, Pix
+                                                                                 Estático, Boleto, TED, TEF).
+                                                                                 O campo prevê os seguintes
+                                                                                 valores: PXA, PXD, PXE, BOL, TED
+                                                                                 ou TEF.
+
+Indice do item na lista   index          Numérico          1       5             Número sequencial da transação
+de transações                                                                    na lista, iniciando em 1.
+
+Identificador do repasse idRepasse       Alfanumérico     30      30   ^[A-Za- Identificador do repasse financeiro
+                                                                       z0-      associado à transação.
+                                                                       9]{16}(P
+                                                                       XA|PXD
+                                                                       |PXE|B
+                                                                       OL|TED
+                                                                       |TEF)\d
+                                                                       {11}$
+Identificador do informe idInfSegr   Alfanumérico   34    34     ^[A-Za- Identificador do informe de
+de segregação                                                    z0-      segregação gerado pelo PSP
+                                                                 9]{16}(P Recebedor Direto.
+                                                                 XA|PXD
+                                                                 |PXE|B
+                                                                 OL|TED
+                                                                 |TEF)\d
+                                                                 {15}$
+Identificador do lote    idLote      Alfanumérico   1     16             Identificador do lote enviado no
+                                                                         informe de segregação
+
+
+
+ID DDA                   idDda       Alfanumérico   1     20             Identificador único do documento
+                                                                         de cobrança no sistema DDA.
+
+Número de controle do numCtrlOrig    Alfanumérico   1     20             Identificador utilizado pela Núclea
+originador da transação                                                  para controle interno da transação.
+
+Identificador do número numPgto      Numérico       1     9              Indica a sequência do pagamento
+do pagamento do                                                          no arranjo (ex.: quantidade de
+Arranjo                                                                  pagamentos do boleto).
+
+Número Código Barras     numCodBarra Alfanumérico   1     44     ^\d{1,4 Número correspondente ao código
+                         s                                       4}$     de barras do boleto.
+
+Número Identificação     numIdentcBai Numérico      1     19             Identificador específico do evento
+Baixa                    xa                                              de baixa da transação.
+
+Identificador de         txId        Alfanumérico   1     35             Identificador único da transação
+transação (TxID)                                                         Pix (TxID).
+
+Identificador de         e2eId       Alfanumérico   1     35             Identificador único da transação no
+transação (E2EID)                                                        arranjo de pagamentos Pix (E2EID).
+
+Número de controle TED numCtrlTED    Alfanumérico   1     35             Identificador único da transação
+                                                                         TED gerado na liquidação
+                                                                         (NumCtrlSTR ou NumCtrlPAG).
+
+Número de controle TEF numCtrlTEF    Alfanumérico   1     35             Identificador da transação TEF
+                                                                         gerado pelo PSP.
+
+Valor Informado          vlInf       Decimal             18,02           Valor da transação informado pelo
+                                                                         originador ao preencher (emitir) a
+                                                                         transação.
+
+Valor Pago               vlPago      Decimal             18,02           Valor efetivamente pago na
+                                                                 transação.
+
+CBS Informado         vlCbsInf       Decimal             18,02   Valor de CBS informado pelo
+                                                                 originador no preenchimento da
+                                                                 transação.
+
+IBS Informado         vlIbsInf       Decimal             18,02   Valor de IBS informado pelo
+                                                                 originador no preenchimento da
+                                                                 transação.
+
+CBS Corrigido         vlCbsCorr      Decimal             18,02   Valor de CBS corrigido pela RFB,
+                                                                 quando divergente do Documento
+                                                                 Fiscal vinculado.
+
+IBS Corrigido         vlIbsCorr      Decimal             18,02   Valor de IBS corrigido pelo Comitê
+                                                                 Gestor do IBS, quando divergente
+                                                                 do Documento Fiscal vinculado.
+
+CBS Em Aberto         vlCbsAberto    Decimal             18,02   Valor de CBS não extinto do
+                                                                 Documento Fiscal vinculado à
+                                                                 transação, conforme retorno da
+                                                                 RFB.
+
+IBS Em Aberto         vlIbsAberto    Decimal             18,02   Valor de IBS não extinto do
+                                                                 Documento Fiscal vinculado à
+                                                                 transação, conforme retorno do
+                                                                 Comitê Gestor do IBS.
+
+CBS Segregado         vlCbsSegr      Decimal             18,02   Valor de CBS efetivamente
+                                                                 segregado pelo PSP Recebedor
+                                                                 Direto na transação.
+
+IBS Segregado         vlIbsSegr      Decimal             18,02   Valor de IBS efetivamente
+                                                                 segregado pelo PSP Recebedor
+                                                                 Direto na transação.
+
+Documento Fiscal      docFiscal      Alfanumérico    1    50     Identificador do Documento Fiscal
+                                                                 vinculado à transação.
+
+Indicador de Pagamento indPgtoIntegra Alfanumérico   1    1      Indica se a transação foi
+Integral               l                                         integralmente paga, considerando
+                                                                 todos os pagamentos até o
+                                                                 momento. 1 = pagamento integral;
+                                                                 0 = não integral.
+Raiz CNPJ PSP           cnpjRaizPspRe Alfanumérico   8     8      ^[A-Za- Raiz do CNPJ do PSP Recebedor
+Recebedor Indireto      cInd                                      z0-     Indireto onde o recebedor mantém
+                                                                  9]{8}$  a conta. (CNPJ alfanumérico, IN
+                                                                          RFB 2.229/2024, vigente a partir de
+                                                                          07/2026)
+
+Raiz CNPJ PSP           cnpjRaizPspRe Alfanumérico   8     8      ^[A-Za- Raiz do CNPJ do PSP Recebedor
+Recebedor Direto        cDir                                      z0-     Direto. (CNPJ alfanumérico, IN RFB
+                                                                  9]{8}$  2.229/2024, vigente a partir de
+                                                                          07/2026)
+
+Raiz CNPJ PSP Pagador   cnpjRaizPspPa Alfanumérico   8     8      ^[A-Za- Raiz do CNPJ do PSP Pagador.
+                        g                                         z0-     (CNPJ alfanumérico, IN RFB
+                                                                  9]{8}$  2.229/2024, vigente a partir de
+                                                                          07/2026)
+
+CNPJ Recebedor          cnpjRec      Alfanumérico    14    14     ^[A-Za- Identificação do Recebedor (que
+                                                                  z0-     recebe o valor líquido da
+                                                                  9]{14}$ transação). Em caso de cessão de
+                                                                          recebíveis, preencher com o
+                                                                          Recebedor original (e não com o
+                                                                          novo detentor de direitos). (CNPJ
+                                                                          alfanumérico, IN RFB 2.229/2024,
+                                                                          vigente a partir de 07/2026)
+
+CNPJ ou CPF Pagador     cnpjCpfPagOri Alfanumérico   11    14     ^(\d{11} Identificador do pagador informado
+Original                g                                         |[A-Za- na emissão da transação. CPF: 11
+                                                                  z0-      dígitos. CNPJ: 14 caracteres
+                                                                  9]{14})$ alfanuméricos (CNPJ alfanumérico,
+                                                                           IN RFB 2.229/2024, vigente a partir
+                                                                           de 07/2026)
+
+CNPJ ou CPF Pagador     cnpjCpfPagEfe Alfanumérico   11    14     ^(\d{11} Identificador do pagador que
+Efetivo                 t                                         |[A-Za- efetivamente realizou o
+                                                                  z0-      pagamento. CPF: 11 dígitos. CNPJ:
+                                                                  9]{14})$ 14 caracteres alfanuméricos (CNPJ
+                                                                           alfanumérico, IN RFB 2.229/2024,
+                                                                           vigente a partir de 07/2026)
+
+Total de transações     totalTrans   Numérico        1     17              Número total de transações
+                                                                           enviadas no Informe de Segregação
+
+Valor Total CBS         valorTotalCbs Decimal             18,02            Valor total de CBS enviado no
+                                                                           Informe de Segregação
+Valor Total IBS         valorTotalIbs   Decimal                18,02   Número total de IBS enviado no
+                                                                       Informe de Segregação
+
+Número Sequencial       nsuId           Numérico          1     19     Número Sequencial Único da
+Único da mensagem                                                      mensagem (Super Inteligente)
+
+Data Hora Iniciação     dtHrIni         Data e Hora       25    25     Data e hora de emissão da
+                                                                       transação após processamento
+                                                                       pelo PSP/Núclea.
+
+Data Hora Atualização   dtHrAtu         Data e Hora       25    25     Data e hora da atualização da
+                                                                       transação.
+
+Data Hora Pagamento     dtHrPgto        Data e Hora       25    25     Data e hora em que o pagamento
+                                                                       foi realizado pelo pagador.
+
+Data Hora Liquidação    dtHrLiq         Data e Hora       25    25     Data e hora em que ocorreu a
+                                                                       efetiva liquidação financeira no
+                                                                       arranjo.
+
+Data Hora Baixa (Exceto dtHrBaixa       Data e Hora       25    25     Data e hora da baixa da transação
+por pagamento)                                                         sem ocorrência de pagamento.
+
+Data Vencimento         dtVenc          Data              10    10     Data de vencimento da transação.
+
+Data Hora Mensagem      dtHrMsg         Data e Hora       25    25     Data e hora da mensagem que está
+                                                                       sendo transmitida entre
+                                                                       PSP/Núclea e a Plataforma Pública.
+
+Data Hora Limite        dtHrLimPgto     Data e Hora       25    25     Data e hora limite para realização
+Pagamento                                                              do pagamento da transação.
+
+Data Hora Repasse ao    dtHrRepasse     Data e Hora       25    25     Data e hora limite para repasse de
+CG/RFB                                                                 CBS à RFB e de IBS ao Comitê
+                                                                       Gestor.
+
+NSU inicial             fromNsu         Numérico      1        19      Número Sequencial Único da
+                                                                       mensagem que se deseja iniciar a
+                                                                       consulta retroativa de Super
+                                                                       Inteligente.
+NSU final               toNsu           Numérico          1     19     Número Sequencial Único da
+                                                                       mensagem que se deseja finalizar a
+                                                                       consulta retroativa de Super
+                                                                       Inteligente.
+
+Campos Técnicos
+Identificador único da     messageId       Alfanumérico   36    36    UUID v4 Identificador único da requisição
+requisição                                                            ^[0-9a-
+                                                                      f]{8}-[0-
+                                                                      9a-f]{4}-
+                                                                      4[0-9a-
+                                                                      f]{3}-
+                                                                      [89ab][0
+                                                                      -9a-
+                                                                      f]{3}-[0-
+                                                                      9a-
+                                                                      f]{12}$
+String única para          correlationId   Alfanumérico    19    19            String única para correlacionar
+correlacionar múltiplos                                                        múltiplos eventos da mesma
+eventos da mesma                                                               transação
+transação
+
+
+Identificador do cliente   tenantId        Alfanumérico    14    14   ^[A-Za- Identificador do cliente ou
+ou instituição (CNPJ do                                               z0-     instituição (CNPJ do PSP)
+PSP)                                                                  9]{14}$
+
+
+Data/hora da requisição timestamp          Data e Hora     25    25   ^\d{4}- Data/hora da requisição para
+para auditoria                                                        \d{2}-    auditoria
+                                                                      \d{2}T\d
+                                                                      {2}:\d{2}
+                                                                      :\d{2}-
+                                                                      03:00$
+     3.1.    Informe de Transação Iniciada
+
+
+
+
+#   Camada                  Tipo          Descrição
+                                          Início do processo. Núclea/PSPs envia os dados do Informe de
+1   Núclea/PSPs             Comunicação   Transação Iniciada para a Plataforma Pública de Split
+                                          Payment (PP).
+    Plataforma Pública de                 A PP recebe os dados do informe enviados pela Núclea/PSPs.
+2                           Comunicação
+    Split Payment (PP)
+                                          A PP gera um número de controle “ResourceId”, que
+    Plataforma Pública de
+3                           Ação          representa a operação iniciada pela Núclea/PSPs e grava logs
+    Split Payment (PP)
+                                          da operação.
+                                          A PP informa, no retorno da chamada à API, o número de
+    Plataforma Pública de
+                            Comunicação   controle “ResourceId”, que representa a operação iniciada
+4   Split Payment (PP)
+                                          pela Núclea/PSPs.
+                                          *ResourceId: Possibilita à Núclea/PSPSs consultar o recurso
+                                                      incluído. A consulta será especificada nas próximas versões do
+                                                      manual.
+5    Núclea/PSPs                    Comunicação       A Núclea/PSPs recebe o retorno da chamada à API
+     Plataforma Pública de                            A PP envia os dados do Informe de Transação Iniciada para
+6                                   Comunicação
+     Split Payment (PP)                               Receita/Comitê Gestor.
+                                                      A Receita/Comitê Gestor recebem os dados do Informe de
+7    Receita/Comitê Gestor          Comunicação
+                                                      Transação Iniciada enviados pela PP.
+                                                      A Receita/Comitê Gestor gravam os dados do Informe de
+8    Receita/Comitê Gestor          Ação
+                                                      Transação Iniciada enviados pela PP.
+
+
+
+
+             3.1.1.      Dados do Informe de Transação Iniciada
+
+
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+             Nome do Campo                     Campo JSON               Boleto     Pix Automático     Pix Dinâmico
+Data e hora da mensagem                    dtHrMsg                         M             M                 M
+
+                                                   TRANSACOES [1...n]
+
+Índice do item na lista de transações      index                          M              M                 M
+enviada no informe.
+ID DDA                                     idDda                          M             N/E               N/E
+Número de controle do originador da        numCtrlOrig                    M             N/E               N/E
+transação
+Número de Código de Barras                 numCodBarras                   M             N/E               N/E
+Identificador de transação (TxID)          txId                          N/E             M                 M
+
+Valor Informado                            vlInf                          M              M                 M
+
+CBS Informado                              vlCbsInf                       M              M                 M
+
+IBS Informado                              vlIbsInf                       M              M                 M
+
+Documento Fiscal                           docFiscal                      O              O                 O
+
+Raiz CNPJ PSP Recebedor Indireto           cnpjRaizPspRecInd              O              O                 O
+
+Raiz CNPJ PSP Recebedor Direto             cnpjRaizPspRecDir              M               M                M
+
+CNPJ Recebedor (Fornecedor)                cnpjRec                        M              M                 M
+
+CNPJ ou CPF Pagador Original               cnpjCpfPagOrig                 M              O                 O
+
+Data hora Iniciação                        dtHrIni                        M              M                 M
+
+Data Vencimento                            dtVenc                         M              O                 O
+Data Hora Limite Pagamento   dtHrLimPgto   M   M   M
+    3.2.   Informe de Transação Atualizada
+
+
+
+
+#    Camada                  Tipo            Descrição
+                                             Início do processo. Núclea/PSPs envia os dados do
+1    Núclea/PSPs             Comunicação     Informe de Transação Atualizada para a Plataforma
+                                             Pública de Split Payment (PP).
+     Plataforma Pública de   Comunicação     A PP recebe os dados do informe enviados pela
+2
+     Split Payment (PP)                      Núclea/PSPs.
+                                             A PP gera um número de controle “ResourceId” que
+     Plataforma Pública de   Ação
+3                                            representa o Informe de Transação Atualizada enviado
+     Split Payment (PP)
+                                             pela Núclea/PSPs e grava logs da operação.
+     Plataforma Pública de                   A PP informa, no retorno da chamada à API, o número
+4    Split Payment (PP)      Comunicação     de controle “ResourceId” que representa o Informe de
+                                             Transação Atualizada enviado pela Núclea/PSPs.
+                                             *ResourceId: Possibilita a Núclea/PSP consultar o
+                                                          recurso incluído. Consulta será especificada nas
+                                                          próximas versões do manual.
+  5      Núclea/PSPs                    Ação              Núclea/PSPs recebe o ResourceId gerado
+         Plataforma Pública de          Comunicação       A PP envia os dados do Informe de Transação
+  6
+         Split Payment (PP)                               Atualizada para Receita/Comitê Gestor.
+                                        Comunicação       A Receita/Comitê Gestor recebem os dados do Informe
+  7      Receita/Comitê Gestor
+                                                          de Transação Atualizada enviados pela PP.
+                                                          A Receita/Comitê Gestor gravam os dados do Informe
+  8      Receita/Comitê Gestor          Ação
+                                                          de Transação Atualizada enviados pela PP.
+
+
+
+
+              3.2.1.     Dados do Informe de Transação Atualizada
+
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+             Nome do Campo                       Campo JSON             Boleto   Pix Automático     Pix Dinâmico
+Data e hora da mensagem                            dtHrMsg               M             M                 M
+
+                                                   TRANSACOES [1...n]
+Índice do item na lista de transações     index                          M            M                  M
+enviada no informe.
+ID DDA                                    idDda                          M           N/E                N/E
+
+Número de controle do originador da       numCtrlOrig                    M           N/E                N/E
+transação
+Número de Código de Barras                numCodBarras                  N/E          N/E                N/E
+
+Identificador de transação (TxID)         txId                          N/E           M                  M
+
+Valor Informado                           vlInf                          M            M                  M
+
+CBS Informado                             vlCbsInf                       M            M                  M
+
+IBS Informado                             vlIbsInf                       M            M                  M
+
+Documento Fiscal                          docFiscal                      O            O                  O
+
+Raiz CNPJ PSP Recebedor Indireto          cnpjRaizPspRecInd              O            O                  O
+
+Raiz CNPJ PSP Recebedor Direto            cnpjRaizPspRecDir              M             M                 M
+
+CNPJ Recebedor (Fornecedor)               cnpjRec                       N/E           M                  M
+
+CNPJ ou CPF Pagador Original              cnpjCpfPagOrig                N/E           O                  O
+
+Data hora atualização                     dtHrAtu                        M            M                  M
+
+Data Vencimento                           dtVenc                         M            O                  O
+
+Data Hora Limite Pagamento                dtHrLimPgto                    M            M                  M
+3.3.   Informe de Baixa (Exceto por Pagamento)
+
+
+O informe de Baixa (Exceto por Pagamento) indica que o Boleto ou PIX foi baixado por outro motivo
+distinto de pagamento, ex. Boleto/PIX cobrança expirou. Esse informe sinaliza para a Receita e Comitê
+Gestor o encerramento da janela de retorno do Super Inteligente.
+
+
+
+
+#       Camada              Tipo              Descrição
+1       Núclea/PSPs         Comunicação       Início do processo. Núclea/PSPs envia os
+                                              dados do Informe de Baixa (Exceto por
+                                              Pagamento) para a Plataforma Pública de
+                                              Split Payment (PP).
+2       Plataforma          Comunicação       A PP recebe os dados do Informe de Baixa
+                   Pública de Split                           (Exceto por Pagamento) enviados pela
+                   Payment (PP)                               Núclea/PSPs.
+        3          Plataforma              Ação               A PP gera um número de controle
+                   Pública de Split                           “ResourceId” que representa o Informe de
+                   Payment (PP)                               Baixa (Exceto por Pagamento) enviado
+                                                              pela Núclea/PSPs e grava logs da
+                                                              operação.
+
+        4          Plataforma              Comunicação        A PP informa, no retorno da chamada à
+                   Pública de Split                           API, o número de controle “ResourceId”
+                   Payment (PP)                               que representa o Informe de Baixa (Exceto
+                                                              por Pagamento) enviado pela
+                                                              Núclea/PSPs.
+                                                              *ResourceId: Possibilita a Núclea/PSP
+                                                              consultar o recurso incluído. A consulta
+                                                              será especificada nas próximas versões do
+                                                              manual.
+        5          Núclea/PSPs             Ação               Núclea/PSPs recebe o ResourceId gerado
+
+        6          Plataforma              Comunicação        A PP envia os dados do Informe de Baixa
+                   Pública de Split                           (Exceto por Pagamento) para
+                   Payment (PP)                               Receita/Comitê Gestor.
+
+        7          Receita/Comitê          Comunicação        A Receita/Comitê Gestor recebem os
+                   Gestor                                     dados do Informe de Baixa (Exceto por
+                                                              Pagamento) enviados pela PP.
+
+        8          Receita/Comitê          Ação               A Receita/Comitê Gestor gravam os dados
+                   Gestor                                     do Informe de Baixa (Exceto por
+                                                              Pagamento) enviados pela PP.
+
+
+
+              3.3.1.         Dados do Informe de Baixa (Exceto por Pagamento)
+
+
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+ Nome do Campo                     Nome campo JSON                      Boleto      Pix          Pix
+                                                                                    Automático   Dinâmico
+
+Data e hora da mensagem            dtHrMsg                                M             M               M
+                                                  TRANSACOES [1...n]
+
+Índice do item na lista de         index                                  M              M              M
+transações enviadas no
+informe.
+ID DDA                             idDda                                  M             N/E             N/E
+
+Número de controle do              numCtrlOrig                            M             N/E             N/E
+originador da transação
+Identificador do número do    numPgto                           M            N/E          N/E
+pagamento do Arranjo
+Identificador de transação    txId                              N/E          M             M
+(TxID)
+Raiz CNPJ PSP Recebedor       cnpjRaizPspRecInd                  O            O            O
+Indireto
+Raiz CNPJ PSP Recebedor       cnpjRaizPspRecDir                 M            M             M
+Direto
+Data Hora Baixa (Exceto por   dtHrBaixa                          M           M             M
+pagamento)
+
+
+
+
+       3.4.     Informe Preliminar de Pagamento
+
+
+Através do Informe Preliminar de Pagamento, o PSP envia os dados de pagamento de uma transação quando ela
+ocorre no PSP. Esse envio precede o momento do Informe de Segregação detalhado na seção seguinte.
+#   Camada             Tipo          Descrição
+1   Núclea/PSPs        Comunicação   Início do processo. Núclea/PSPs envia os
+                                     dados do Informe Preliminar de
+                                     Pagamento para a Plataforma Pública de
+                                     Split Payment (PP).
+2   Plataforma         Comunicação   A PP recebe os dados do Informe
+    Pública de Split                 Preliminar de Pagamento enviados pela
+    Payment (PP)                     Núclea/PSPs.
+3   Plataforma         Ação          A PP gera um número de controle
+    Pública de Split                 “ResourceId” que representa o Informe
+    Payment (PP)                     Preliminar de Pagamento enviado pela
+                                     Núclea/PSPs e grava logs da operação.
+4   Plataforma         Comunicação   A PP informa, no retorno da chamada à
+    Pública de Split                 API, o número de controle “ResourceId”
+    Payment (PP)                     que representa o Informe Preliminar de
+                                     Pagamento enviado pela Núclea/PSPs.
+                                                           *ResourceId: Possibilita a Núclea/PSP
+                                                           consultar o recurso incluído. A consulta
+                                                           será especificada nas próximas versões do
+                                                           manual.
+        5         Núclea/PSPs          Ação                Núclea/PSPs recebe o ResourceId gerado
+
+        6         Plataforma           Comunicação         A PP envia os dados do Informe
+                  Pública de Split                         Preliminar de Pagamento para
+                  Payment (PP)                             Receita/Comitê Gestor.
+
+        7         Receita/Comitê       Comunicação         A Receita/Comitê Gestor recebem os
+                  Gestor                                   dados do Informe Preliminar de
+                                                           Pagamento enviados pela PP.
+
+        8         Receita/Comitê       Ação                A Receita/Comitê Gestor gravam os dados
+                  Gestor                                   do Informe Preliminar de Pagamento
+                                                           enviados pela PP e encerra a janela do
+                                                           Super Inteligente
+
+
+
+              3.4.1.     Dados do Informe Preliminar de Pagamento
+
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+ Nome do Campo               Nome Campo JSON      Boleto         Pix         Pix        Pix       TED   TEF
+                                                              Automátic   Dinâmico     Estátic
+                                                                  o                       o
+Data e hora da               dtHrMsg                 M           M           M          M         M     M
+mensagem
+                                               TRANSACOES [1...n]
+
+Índice do item na lista de   index                   M           M           M              M      M    M
+transações enviadas no
+informe.
+ID DDA                       idDda                   M          N/E          N/E        N/E       N/E   N/E
+
+Número de controle do        numCtrlOrig             M          N/E          N/E        N/E       N/E   N/E
+originador da transação
+Identificador do número      numPgto                 M          N/E          N/E        N/E       N/E   N/E
+do pagamento do Arranjo
+Número Identificação         numIdentcBaixa          M          N/E          N/E        N/E       N/E   N/E
+Baixa
+Identificador de             txId                 N/E            M           M          N/E       N/E   N/E
+transação (TxID)
+Identificador de             e2eId                N/E            M           M              M     N/E   N/E
+transação (E2EID)
+Número de controle TED       numCtrlTED           N/E           N/E          N/E        N/E        M    N/E
+
+Número de controle TEF       numCtrlTEF           N/E           N/E          N/E        N/E       N/E   M
+Valor Pago                vlPago              M     M   M   M     M     M
+
+CBS Segregado             vlCbsSegr           M     M   M   M     M     M
+
+IBS Segregado             vlIbsSegr           M     M   M   M     M     M
+
+Documento Fiscal          docFiscal           O     O   O   M     M     M
+
+Indicador de Pagamento    indPgtoIntegral     M     M   M   N/E   N/E   N/E
+Integral
+Raiz CNPJ PSP Recebedor   cnpjRaizPspRecInd   O     O   O   O     N/E   O
+Indireto
+Raiz CNPJ PSP Recebedor   cnpjRaizPspRecDir   M     M   M   M     M     M
+Direto
+Raiz CNPJ PSP Pagador     cnpjRaizPspPag      M     M   M   M     M     N/E
+
+CNPJ Recebedor            cnpjRec             M     M   M   M     M     M
+
+CNPJ ou CPF Pagador       cnpjCpfPagEfet      O     M   M   M     M     M
+Efetivo
+
+
+Data Hora Pagamento       dtHrPgto            M     M   M   M     N/E   M
+
+Data Hora da Liquidação   dtHrLiq             N/E   M   M   M     M     M
+3.5.       Informe de Segregação (transação financeira liquidada)
+
+
+O informe analítico do repasse financeiro “Segregação” ocorre antes do repasse propriamente dito dos
+valores ao fisco. O envio do Informe de Segregação à plataforma pública se dará em três passos:
+
+       •   1- O informe de remessa da segregação iniciada,
+       •   2- O(s) informe(s) de lote de transações e
+       •   3- O informe de finalização de remessa da segregação.
+
+O processo do envio da segregação se inicia com o informe de remessa da segregação iniciada em que a
+Núclea/PSP informa à plataforma que iniciará a transmissão dos dados. A Núclea/PSP envia o(s) lote(s)
+de transações para o informe de remessa de segregação iniciado. Por fim, a Núclea/PSP informa a
+finalização da remessa.
+
+
+
+
+#           Camada             Tipo               Descrição
+1           Núclea/PSPs        Comunicação        Início do processo. Núclea/PSPs enviam os dados
+                                                  do informe de remessa de segregação iniciada
+                                                  para a Plataforma Pública de Split Payment (PP).
+2           Plataforma         Comunicação        A PP recebe os dados do informe de remessa de
+            Pública de Split                      segregação iniciada enviados pela Núclea/PSPs.
+            Payment (PP)
+3           Plataforma         Ação               A PP gera um número de controle “ResourceId” e
+            Pública de Split                      grava logs da operação.
+            Payment (PP)
+4           Plataforma         Comunicação        A PP informa, no retorno da chamada à API, o
+            Pública de Split                      número de controle “ResourceId” que representa
+            Payment (PP)                          a operação iniciada pela Núclea/PSPs.
+5           Núclea/PSPs        Comunicação        A Núclea/PSPs recebem o retorno da chamada à
+                                       API.
+6    Núclea/PSPs         Comunicação   A Núclea/PSPs enviam os dados do informe de
+                                       lote de transações para a PP.
+7    Plataforma          Comunicação   A PP recebe os dados do informe de lote de
+     Pública de Split                  transações enviados pela Núclea/PSPs.
+     Payment (PP)
+
+8    Plataforma          Ação          A PP gera um ResourceId para o lote recebido e
+     Pública de Split                  grava os dados das transações enviadas pela
+     Payment (PP)                      Núclea/PSPs.
+
+9    Plataforma          Comunicação   A PP devolve para a Núclea/PSPs o ResourceId
+     Pública de Split                  gerado para o lote.
+     Payment (PP)
+10   Núclea/PSPs         Comunicação   A Núclea/PSPs recebem o ResourceId do lote da
+                                       remessa em processamento pela PP.
+
+11   Núclea/PSPs         Ação          Os passos de 6 a 10 são repetidos enquanto
+     Plataforma                        houver lote de transações não remetidos
+     Pública de Split
+     Payment (PP)
+
+12   Núclea/PSPs         Comunicação   A Núclea/PSPs enviam os dados do informe de
+                                       finalização de remessa da segregação para a PP.
+
+13   Plataforma          Comunicação   A PP recebe os dados do informe de finalização de
+     Pública de Split                  remessa da segregação enviado pela Núclea/PSPs.
+     Payment (PP)
+
+14   Plataforma          Ação          A PP valida o total de registros e o valor total de
+     Pública de Split                  CBS e IBS da remessa, gera um número de
+     Payment (PP)                      controle “ResourceId” e grava logs da operação.
+
+
+15   Plataforma          Comunicação   A PP informa, no retorno da chamada à API, o
+     Pública de Split                  resultado da finalização da remessa e o número de
+     Payment (PP)                      controle “ResourceId” gerado.
+
+16   Núclea/PSPs         Comunicação   A Núclea/PSPs recebem o resultado da finalização
+                                       da remessa e o ResourceId.
+
+17   Plataforma          Comunicação   Se a remessa for validada com sucesso, A PP envia
+     Pública de Split                  dados da remessa de segregação para a
+     Payment (PP)                      Receita/Comitê Gestor.
+
+18   Receita Federal /   Comunicação   A Receita / Comitê Gestor recebem os dados da
+     Comitê Gestor                     remessa de segregação.
+
+19   Receita Federal /   Ação          A Receita / Comitê Gestor gravam os dados da
+     Comitê Gestor                     remessa recebida nas suas respectivas bases de
+                                       dados. Fim do processo.
+             3.5.1.      Dados do informe de remessa de segregação iniciada (Passo 1)
+
+
+ Nome do Campo                                                   Campo JSON
+ Raiz CNPJ PSP Recebedor Direto                                  cnpjRaizPspRecDir
+ Data e hora da mensagem                                         dtHrMsg
+ Identificador do Repasse                                        idRepasse
+ Arranjo                                                         arrj
+ Identificador do informe de segregação                          idInfSegr
+
+
+
+
+             3.5.2.      Dados do informe de lote de transações (Passo 2)
+
+
+Nesse passo, a plataforma realizará uma validação prévia quanto ao formato e à obrigatoriedade dos campos
+das transações enviadas no lote. Caso seja identificado algum erro em um ou mais itens, todo o lote será
+rejeitado, sendo necessária a correção dos dados e o envio de um novo lote.
+
+
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+                                                            Pix               Pix       Pix
+   Nome do Campo            Campo JSON        Boleto                                              TED      TEF
+                                                        Automático         Dinâmico   Estático
+ Raiz CNPJ PSP           cnpjRaizPspRecDir     M           M                  M         M          M       M
+ Recebedor Direto
+ Data e hora da          dtHrMsg               M            M                M          M          M       M
+ mensagem
+ Identificador do        idInfSegr             M            M                M          M          M       M
+ informe da remessa
+ de segregação
+ Identificador do Lote   idLote                M            M                M          M          M       M
+
+                                              TRANSACOES [1...n]
+
+ Índice do item na       index                 M            M                M          M          M       M
+ lista de transações
+ enviadas pelo
+ informe.
+ ID DDA                  idDda                 M           N/E               N/E       N/E        N/E      N/E
+
+ Número de controle      numCtrlOrig           M           N/E               N/E       N/E        N/E      N/E
+ do originador da
+ transação
+ Número                  numIdentcBaixa        M           N/E               N/E       N/E        N/E      N/E
+ Identificação Baixa
+ Identificador do        numPgto               M           N/E               N/E       N/E        N/E      N/E
+ número do
+pagamento do
+Arranjo
+Identificador de        txId                N/E             M      M         N/E      N/E    N/E
+transação (TxID)
+Identificador de        e2eId               N/E             M      M          M       N/E    N/E
+transação (E2EID)
+Número de controle      numCtrlTED          N/E             N/E   N/E        N/E       M     N/E
+TED
+Número de controle      numCtrlTEF          N/E             N/E   N/E        N/E      N/E    M
+TEF
+Valor Pago              vlPago               M              M      M          M        M     M
+
+CBS Segregado           vlCbsSegr            M              M      M          M        M     M
+
+IBS Segregado           vlIbsSegr            M              M      M          M        M     M
+
+Documento Fiscal        docFiscal             O             O      O          M        M     M
+
+Indicador de            indPgtoIntegral      M              M      M         N/E      N/E    N/E
+Pagamento Integral
+Raiz CNPJ PSP           cnpjRaizPspRecInd     O             O      O          O       N/E    O
+Recebedor Indireto
+Raiz CNPJ PSP           cnpjRaizPspPag       M              M      M          M        M     N/E
+Pagador
+CNPJ Recebedor          cnpjRec              M              M      M          M        M     M
+(Fornecedor)
+CNPJ ou CPF             cnpjCpfPagEfet        O             M      M          M        M     M
+Pagador Efetivo
+Data Hora               dtHrPgto             M              M      M          M       N/E    M
+Pagamento
+Data Hora               dtHrLiq              M              M      M          M        M     M
+Liquidação
+Data Hora Repasse       dtHrRepasse          M              M      M          M        M     M
+ao CG/RFB
+
+             3.5.3.     Dados do informe de finalização de remessa da segregação (Passo 3)
+
+
+Nome do Campo                               Campo JSON
+Raiz CNPJ PSP Recebedor Direto              cnpjRaizPspRecDir
+Data e hora da mensagem                     dtHrMsg
+Identificador do informe de segregação      idInfSegr
+Total de transações                         totalTrans
+Valor Total CBS                             valorTotalCbs
+Valor Total IBS                             valorTotalIbs
+
+
+
+      3.6.        Retorno Super Inteligente para Núclea/PSPs.
+ Nesse fluxo, os PSPs consultam a PP (Plataforma Pública) para saber se há novas mensagens do Super
+ Inteligente. Para atender a essas consultas, a PP utiliza o modelo de "pull-based event streaming" em que o
+ consumidor faz leituras sequenciais utilizando cursores baseados em token, e esses são transportados via
+ HTTP long polling.
+
+ Fluxo de funcionamento do Long Polling
+
+   1. O PSP abre uma requisição HTTPS para a PP.
+
+   2. A PP não responde imediatamente se não houver mensagens disponíveis.
+
+   3. A PP mantém a conexão aberta por um período configurado.
+
+   4. Se surgir uma mensagem, a PP envia imediatamente a resposta ao PSP.
+
+   5. Se não surgir nada até o timeout, a PP responde sem mensagens.
+
+   6. O PSP envia nova requisição, reiniciando o ciclo.
+
+
+ Token de posição trocado entre PP e PSP
+
+ A PP possui um mecanismo de controle de leitura que utiliza um token de posição, enviado pela PP para o PSP
+ em cada resposta do long polling. Esse token indica qual foi o último lote de mensagens entregue ao PSP e
+ serve para:
+
+   •   Garantir ordem na leitura;
+
+   •   Permitir que o PSP continue a leitura exatamente de onde parou;
+
+   •   Viabilizar reprocessamento adequado caso o PSP perca a conexão.
+
+
+Como funciona a troca do token
+
+   1. PSP envia uma requisição de "/start" para iniciar o ciclo de consultas.
+
+   2. PP envia resposta contendo:
+
+       •   Id da stream. (Esse id poderá ser usado na consulta retroativa)
+       •   Uma ou mais mensagens (se houver). Se não surgir nenhuma mensagem até o timeout, retorna o
+           status “204 – No Content”;
+       •   Um token que deverá compor a URL a ser usada na próxima requisição.
+
+   3. PSP envia nova requisição com o token recebido /{token}.
+
+   4. PP envia nova resposta contendo:
+
+       •   Uma ou mais mensagens a partir da posição do token recebido na requisição do passo 3. Se não
+           surgir nenhuma mensagem até o timeout, retorna o status “204 – No Content”.
+       •   Um novo token para a próxima requisição.
+    5. PSP repete os passos 3 e 4 enquanto enquanto quiser manter o fluxo de recebimento de mensagens.
+
+
+    6. PSP envia nova requisição finalizando o ciclo, quando quiser encerrar o fluxo do stream.
+
+
+
+* A uri usada nesse fluxo faz uso de dois pathParams “{arrj}” e “{idPsp} ” a fim de indicar para que arranjo e psp se deseja o retorno das
+mensagens do Super Inteligente.
+
+
+
+
+A figura abaixo retrata o fluxo descrito:
+                3.6.1.   Dados do Retorno Super Inteligente para Núclea/PSPs.
+Consulta dicionário de campos
+M = Mandatório, O = Opcional, N/E = Não existe
+
+            Nome do Campo                        Nome Campo JSON     Boleto   Pix Automático   Pix Dinâmico
+                                                  TRIBUTOS [1...n]
+
+Número Sequencial Único da mensagem      nsuId                         M            M               M
+
+Código da mensagem                       codMsg                        M            M               M
+ID DDA                                   idDda                         M           N/E             N/E
+Número de controle do originador da      numCtrlOrig                   M           N/E             N/E
+transação
+Identificador de transação (TxID)        txId                         N/E           M               M
+Valor Informado                          vlInf                         M            M               M
+CBS Corrigido                            vlCbsCorr                     O            O               O
+IBS Corrigido                            vlIbsCorr                     O            O               O
+CBS Em Aberto                            vlCbsAberto                   O            O               O
+IBS Em Aberto                            vlIbsAberto                   O            O               O
+Documento Fiscal                         docFiscal                     O            O               O
+Raiz CNPJ PSP Recebedor Indireto         cnpjRaizPspRecInd             O            O               O
+Raiz CNPJ PSP Recebedor Direto           cnpjRaizPspRecDir             O            O               O
+CNPJ Recebedor (Fornecedor)              cnpjRec                      N/E           M               M
+
+
+
+
+         3.7.     Consulta Retroativa Super Inteligente para Núclea/PSPs.
+
+
+ Nesse fluxo, os PSPs acessam a PP (Plataforma Pública) para consultar mensagens de retorno de Split do
+ Super Inteligente de forma retroativa. Diferente do fluxo principal de retorno do Super Inteligente que
+ entrega as mensagens mais recentes, esse fluxo devolve mensagens já entregues anteriormente baseado em
+ tokens.
+ Os dados retornados nessa consulta serão os mesmos retornados na seção 3.6.1. Essa consulta também utiliza
+ o modelo de "pull-based event streaming" e “long polling” descrito anteriormente.
+
+
+ Como funciona a troca de tokens entre PP e PSP no retroativo:
+
+         1. PSP envia uma requisição de consulta retroativa Super Inteligente.
+            Exemplo: "/api/v1/retroativo/boleto/{idPsp}/tributos/stream/start" ;
+
+         2. PP envia resposta contendo:
+
+                  a. Uma ou mais mensagens (se houver);
+
+                  b. O próximo token indicando a nova posição fim de leitura. O token comporá a URL a ser
+                     usada na próxima requisição.
+                    Ex Header retornado:
+                    proximoToken = /api/v1/retroativo/boleto/{idPsp}/tributos/stream/token=R1
+
+        3. PSP envia requisição com o token recebido “.../tributos/stream/token=R1".
+
+        4. PP envia nova resposta contendo:
+
+                a. Uma ou mais mensagens referentes ao token recebido na requisição do passo 3. Se não
+                   houver mais mensagens, retorna o status “204 – No Content” e um último token. Neste
+                   caso o PSP deve fazer a chamada do passo 6, “HTTP DELETE”, com o último token retornado
+                   para finalizar, pois indica que o stream retroativo chegou ao fim.
+
+                b. O próximo token indicando a nova posição fim de leitura.
+
+        5. PSP repete os passos 3 e 4 se deseja recuperar as mensagens seguintes.
+
+        6. PSP envia nova requisição encerrando o ciclo.
+
+            Exemplo: DELETE /api/v1/retroativo/boleto/{idPsp}/tributos/stream/{token}
+
+
+
+A figura abaixo retrata o fluxo descrito:
+A consulta retroativa Super Inteligente poderá ser realizada de 3 maneiras:
+
+   •   Consulta por intervalo de NSU:
+       Ex: /api/v1/retroativo/boleto/{idPsp}/tributos/stream/start?fromNsu=501&toNsu=550
+
+   •   Consulta por stream:
+       Ex: /api/v1/retroativo/boleto/{idPsp}/tributos/stream/start?fromNsu=501&toNsu=550&streamId=A
+
+   •   Consulta por stream encerrada:
+       Ex: /api/v1/retroativo/boleto/{idPsp}/tributos/stream/start?fromNsu=501&streamId=A
+
+
+Ilustração das Consultas Retroativas de Split Super Inteligente:
+Observações:
+
+• Cabe ao cliente realizar as consultas da forma indicada, para minimizar o tráfego na rede e otimizar a
+comunicação como um todo.
+
+• Serão estabelecidos mecanismos para limitar as chamadas de consulta retroativa e incentivar as boas práticas
+em seu uso.
+
+
+ 4.    Contrato de mensagens e payloads
+
+       A API da Plataforma Pública de Split Payment fornece endpoints HTTP para recebimento das
+       mensagens de transação do split.
+
+       4.1.    Exemplos de requisições e respostas da API
+       Para cada arranjo, a plataforma disponibiliza um endpoint para transmissão do informe. Ver tabela de
+       endpoints por arranjo.
+
+       Os exemplos de payload de request e response da API estão presentes na documentação da API baseada
+       no padrão OpenAPI Specification (OAS) v3 que será disponibilizada junto com esse documento.
+5.   Política de tratamento de erros
+
+
+     A Política de Tratamento de Erros estabelece as diretrizes adotadas pela Plataforma para identificar,
+     classificar, registrar e responder adequadamente às falhas ocorridas durante o processamento das
+     requisições. Seu objetivo é garantir previsibilidade, transparência e robustez operacional, permitindo
+     que os participantes (PSPs) compreendam de forma clara como a Plataforma se comporta em diferentes
+     cenários de erro e quais ações são esperadas de cada parte.
+
+     Ao padronizar o comportamento diante de falhas, a Plataforma assegura:
+
+     •    Consistência nas respostas enviadas aos clientes;
+     •    Confiabilidade no fluxo de integração, reduzindo ambiguidades e comportamentos inesperados;
+     •    Observabilidade completa, por meio de trilhas de auditoria com correlação ponta a ponta;
+     •    Melhor experiência de integração, especialmente em cenários de alta concorrência ou degradação
+          parcial;
+     •    Aderência às melhores práticas de arquiteturas distribuídas, incluindo mecanismos como backoff
+          exponencial e circuit breakers.
+
+
+     Para notificar erros nas requisições ou problemas internos, a API utiliza um objeto baseado no padrão
+     descrito na especificação técnica RFC 7807 respondendo com o media type
+     application/problem+json.
+
+
+
+
+     Lista de possíveis retornos de erro da API:
+
+         Tipo de       Descrição       HTTP Status     Retentabilida    Headers         Exemplos de
+          Erro                                              de          Retornad          Cenários
+                                                                           os
+        Erro        Dados              400 – Bad       Não retry       X-Error-     Validação de schema;
+     Permanent      inválidos;         Request                         Type:        JSON mal formado
+         e–         schema                                             permanen
+     Requisição     inválido;                                          t
+      Inválida      campos
+      (Cliente)     obrigatórios
+                    ausentes
+         Erro       Violação de        422 –           Não retry       X-Error-
+     Permanent      regra funcional,   Unprocessa                      Type:        Id informe de
+      e – Regra     operação não       ble Entity                      business     segregação não
+     de Negócio     permitida
+                                                                           encontrado;
+
+    Erro      Falha de          401 –          Não retry      —            Certificado expirado;
+Permanent     certificado       Unauthorize                                header ausente
+     e–       digital,          d
+Autenticaç    expiração,
+ão inválida   token inválido
+   Erro       PSP não possui    403 –          Não retry      —            PSP não homologado
+Permanent     permissão de      Forbidden                                  na API.
+    e–        acesso
+Autorizaçã
+ o negada
+ Recurso      Entidade não      404 – Not      Não retry      —            Consulta de registro
+   Não        existe na         Found                                      inexistente
+Encontrad     plataforma
+    o
+  Erro de     Cliente           429 – Too      Retry          Retry-       PSP enviando
+   Carga      ultrapassou       Many           permitido      After: 60    requisições acima de
+ Excedida     limite definido   Requests       após janela                 limite
+   (Rate
+  Limit)
+  Erro de     Erro inesperado   500 –          Retry          X-Retry-     NullPointer; erro
+Plataforma    não tratado       Internal       permitido      Allowed:     interno
+ – Interno                      Server Error   limitado       true
+   Erro       Instabilidade  503 –             Retry          Retry-       Instabilidade na
+Transitóri    temporária,    Service           permitido      After: 30    persistência dos logs;
+    o–        congestionamen Unavailable       após           X-Retry-     fila congestionada
+Plataforma    to, timeout                      intervalo      Allowed:
+                                                              true
+   Circuit    Proteção do       503 –          Não retentar   X-Circuit-   Publicação na Fila
+ Breaker –    serviço: ao       Service        imediatamen    Breaker:     interna
+    Fila      detectar falhas   Unavailable    te; retentar   open         indisponível/degrad
+  interna     repetidas, alta                  após o         X-Retry-     ada; buffers cheios
+Degradada     latência, buffers                intervalo      Allowed:
+      /       cheios ou                        indicado       false
+indisponív    indisponibilidad                                Retry-
+      el      e na Fila interna                               After: 30*
+              das transações.
+              O circuit
+              breaker abre e
+              a API não
+              aceita novas
+              requisições
+              temporariamen
+              te
+Manutençã Plataforma         503 –              Retry após       Retry-       Janelas operacionais
+o ou Janela indisponível por Service            horário          After
+Programad manutenção         Unavailable        informado        <tempo da
+     a                                                           janela>
+   Erro       Serviço terceiro   504 –          Retry            Retry-       Timeout de consulta
+Transitóri    indisponível       Gateway        permitido        After        externa;
+    o–        (ex.: RFB, CG)     Timeout        com backoff      30
+Dependênc                                       exponencial
+ia Externa
+     2
+
+
+Registro e Auditoria: Todos os erros serão registrados em trilhas de logs com correlationId para
+rastreamento, garantindo integridade e suporte a auditorias.
+
+
+
+Canal dedicado para suporte e acompanhamento: <em construção>
+ 6.     Tabela de código de mensagens por arranjo
+
+        As mensagens transmitidas no retorno do Super Inteligente e na consulta retroativa de Super
+        Inteligente devem ser identificadas com um código de mensagem a fim de indicar o tipo de retorno e o
+        arranjo, conforme a matriz abaixo.
+
+                 Informe
+                                   Retorno Super Inteligente / Consulta Retroativa Super
+                     x
+                                                        Inteligente
+                 Arranjo
+        Boleto                    RSUP101 - cbs correção;
+                                  RSUP102 - cbs em aberto;
+                                  RSUP103 -Ibs correção;
+                                  RSUP104 - Ibs em aberto;
+        Pix Dinâmico              RSUP201 - cbs correção;
+                                  RSUP202 - cbs em aberto;
+                                  RSUP203 -Ibs correção;
+                                  RSUP204 - Ibs em aberto;
+        Pix Automático            RSUP601 - cbs correção;
+                                  RSUP602 - cbs em aberto;
+                                  RSUP603 -Ibs correção;
+                                  RSUP604 - Ibs em aberto;
+
+
+
+
+ 7.     Tabela de endpoints dos informes por arranjo
+
+        Para cada arranjo e tipo de informe, a plataforma disponibiliza um endpoint para transmissão da
+        mensagem conforme a tabela abaixo:
+
+            Informe                   Arranjo                              Endpoint
+
+                                  Boleto                                     POST
+                                                                        /api/v1/boleto
+Informe de Transação Iniciada     Pix Dinâmico                               POST
+                                                                     /api/v1/pix-dinamico
+                                  Pix Automático                             POST
+                                                                    /api/v1/pix-automatico
+                                  Boleto                                    PATCH
+                                                                        /api/v1/boleto
+Informe de Transação Atualizada   Pix Dinâmico                              PATCH
+                                                                     /api/v1/pix-dinamico
+                                  Pix Automático                            PATCH
+                                                                    /api/v1/pix-automatico
+                                  Boleto                                    POST
+                                                           /api/v1/boleto/baixa-exceto-pagamento
+Informe de Baixa (Exceto por      Pix Dinâmico                              POST
+Pagamento)                                             /api/v1/pix-dinamico/baixa-exceto-pagamento
+                                  Pix Automático                            POST
+                                                      /api/v1/pix-automatico/baixa-exceto-pagamento
+                                  Boleto                                    POST
+                                                       /api/v1/boleto/informe-preliminar-pagamento
+                                  Pix Dinâmico                              POST
+                                                    /api/v1/pix-dinamico/informe-preliminar-pagamento
+                                  Pix Automático                            POST
+Informe Preliminar de Pagamento                    /api/v1/pix-automatico/informe-preliminar-pagamento
+                                  Pix Estático                              POST
+                                                     /api/v1/pix-estatico/informe-preliminar-pagamento
+                                  TED                                       POST
+                                                         /api/v1/ted/informe-preliminar-pagamento
+                                  TEF                                       POST
+                                                         /api/v1/tef/informe-preliminar-pagamento
+                                                                            POST
+                                                                    /api/v1/segregacao
+
+                                  Boleto                                 POST
+                                                       /api/v1/boleto/segregacao/{idInfSegr}/lotes
+
+                                                                          POST
+                                                              /api/v1/segregacao/finalizacao
+                                                                          POST
+                                                                   /api/v1/segregacao
+
+                                  Pix Dinâmico                           POST
+                                                    /api/v1/pix-dinamico/segregacao/{idInfSegr}/lotes
+
+                                                                          POST
+                                                              /api/v1/segregacao/finalizacao
+
+                                                                          POST
+Informe de Segregação                                              /api/v1/segregacao
+
+                                                                         POST
+                                  Pix Automático
+                                                   /api/v1/pix-automatico/segregacao/{idInfSegr}/lotes
+
+                                                                          POST
+                                                              /api/v1/segregacao/finalizacao
+
+                                                                          POST
+                                                                   /api/v1/segregacao
+
+                                                                           POST
+                                  Pix Estático
+                                                     /api/v1/pix-estatico/segregacao/{idInfSegr}/lotes
+
+                                                                          POST
+                                                              /api/v1/segregacao/finalizacao
+
+                                                                          POST
+                                  TED
+                                                                   /api/v1/segregacao
+                                                                      POST
+                                                     /api/v1/ted/segregacao/{idInfSegr}/lotes
+
+                                                                      POST
+                                                          /api/v1/segregacao/finalizacao
+
+                                                                       POST
+                                                                /api/v1/segregacao
+
+                                                                      POST
+                            TEF
+                                                     /api/v1/tef/segregacao/{idInfSegr}/lotes
+
+                                                                      POST
+                                                          /api/v1/segregacao/finalizacao
+
+                                                                       GET
+                                                 /api/v1/out/boleto/{idPsp}/tributos/stream/start
+
+                                                                       GET
+                            Boleto
+                                                /api/v1/out/boleto/{idPsp}/tributos/stream/{token}
+
+                                                                     DELETE
+                                                /api/v1/out/boleto/{idPsp}/tributos/stream/{token}
+
+                                                                      GET
+                                              /api/v1/out/pix-dinamico/{idPsp}/tributos/stream/start
+
+                                                                       GET
+                            Pix Dinâmico
+                                             /api/v1/out/pix-dinamico/{idPsp}/tributos/stream/{token}
+Retorno Super Inteligente
+                                                                     DELETE
+                                             /api/v1/out/pix-dinamico/{idPsp}/tributos/stream/{token}
+
+                                                                       GET
+                                             /api/v1/out/pix-automatico/{idPsp}/tributos/stream/start
+
+                                                                       GET
+                                                                 /api/v1/out/pix-
+                            Pix Automático
+                                                    automatico/{idPsp}/tributos/stream/{token}
+
+                                                                     DELETE
+                                                                 /api/v1/out/pix-
+                                                    automatico/{idPsp}/tributos/stream/{token}
+
+                                                                       GET
+                                              /api/v1/retroativo/boleto/{idPsp}/tributos/stream/start
+
+                                                                        GET
+                            Boleto
+                                             /api/v1/retroativo/boleto/{idPsp}/tributos/stream/{token}
+Retroativo de Split Super
+                                                                      DELETE
+Inteligente                                  /api/v1/retroativo/boleto/{idPsp}/tributos/stream/{token}
+
+                                                                       GET
+                                                             /api/v1/retroativo/pix-
+                            Pix Dinâmico
+                                                      dinamico/{idPsp}/tributos/stream/start
+
+                                                                       GET
+                                                                      /api/v1/retroativo/pix-
+                                                             dinamico/{idPsp}/tributos/stream/{token}
+
+                                                                             DELETE
+                                                                      /api/v1/retroativo/pix-
+                                                             dinamico/{idPsp}/tributos/stream/{token}
+
+                                                                                GET
+                                                                      /api/v1/retroativo/pix-
+                                                              automatico/{idPsp}/tributos/stream/start
+
+                                                                                GET
+                                   Pix Automático                      /api/v1/retroativo/pix-
+                                                             automatico/{idPsp}/tributos/stream/{token}
+
+                                                                              DELETE
+                                                                       /api/v1/retroativo/pix-
+                                                             automatico/{idPsp}/tributos/stream/{token}
+
+
+
+
+ 8.     Definição de Headers Padrão
+
+Esta seção define os cabeçalhos obrigatórios que devem acompanhar todas as requisições enviadas à API. Esses
+headers garantem rastreabilidade, correlação entre eventos, segurança e suporte a multi-tenancy.
+
+Headers Obrigatórios:
+
+
+          Header      Finalidade            Formato           Exemplo
+                        Identificar de         UUID v4                `550e8400-e29b-41d4-a716-
+      messageId       forma única cada                                      446655440000`
+                          requisição
+      correlationId      Correlacionar        String única               `txn-20251222-abc123`
+                      múltiplos eventos
+                          da mesma
+                           transação
+      tenantId        Identificar o         CNPJ                           12345678000199
+                      cliente ou
+                      instituição (multi-
+                      tenancy)
+      timestamp       Registrar             ISO 8601                  2025-12-22T14:30:45-03:00
+                      data/hora da
+                      requisição para
+                      auditoria
+Requisitos de Rastreabilidade
+
+      •      Todos os headers devem ser registrados nos logs para auditoria.
+
+      •      correlationId deve ser propagado entre serviços para rastreamento distribuído.
+
+      •      messageId deve ser único por requisição para evitar duplicidade.
+
+      •       Ferramentas de observabilidade (ex.: OpenTelemetry) devem capturar esses IDs para geração
+      de traceId e spanId.
+Histórico de Versões
+
+
+   Data        Versão    Descrição
+
+03/06/2026       1.0    Versão Inicial
+

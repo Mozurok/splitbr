@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (não publicado)
+## 0.1.0 (2026-07-21)
 
 - Client tipado gerado do OpenAPI oficial v0.0.10 (32 endpoints, hash pinado).
 - Middleware dos 4 headers obrigatórios nos formatos exatos do Manual v1.0.

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (nao publicado; publicacao no momento do lancamento)
+## 0.1.0 (2026-07-21)
 
 - Mock local da Plataforma Publica do Split Payment (spec oficial OAS v0.0.10, pinado por hash).
 - Sete fluxos: Transacao Iniciada/Atualizada/Baixa, Informe Preliminar (6 arranjos), Segregacao em 3 passos, Retorno Super Inteligente e Consulta Retroativa (long polling com token de posicao).

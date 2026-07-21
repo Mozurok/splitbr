@@ -4,6 +4,8 @@ Toolkit open source de **Split Payment** do Brasil (IBS/CBS, LC 214/2025) para N
 
 [![@splitbr/client no npm](https://img.shields.io/npm/v/@splitbr/client?label=%40splitbr%2Fclient&color=cb3837)](https://www.npmjs.com/package/@splitbr/client) [![@splitbr/mock no npm](https://img.shields.io/npm/v/@splitbr/mock?label=%40splitbr%2Fmock&color=cb3837)](https://www.npmjs.com/package/@splitbr/mock)
 
+**Português** · [English ↓](#english)
+
 O split payment da Reforma Tributária segrega o tributo no momento do pagamento: a parcela de CBS/IBS vai direto ao fisco antes de o valor chegar ao vendedor. Isso afeta todo mundo que vende no Brasil, mas quase ninguém consegue ver o mecanismo funcionando, porque a Plataforma Pública é restrita a PSPs homologados. Este repositório abre essa caixa-preta para qualquer pessoa:
 
 - **Quer entender o que muda para a sua empresa?** Leia o [guia em português claro](docs/site/split-payment.md), sem código.
@@ -48,6 +50,21 @@ Os artefatos oficiais (OAS v0.0.10, manuais, NTs) estão em `vendor/` com SHA-25
 ## Desenvolvimento
 
 Monorepo pnpm: `pnpm install && pnpm -r build && pnpm -r test` (Node >= 22). Contribuições são bem-vindas depois do lançamento inicial; diretrizes de contribuição e CLA chegam em seguida.
+
+## English
+
+**splitbr** is the first open-source toolkit for Brazil's **Split Payment**, the withhold-the-tax-at-settlement mechanism introduced by the 2023 consumption-tax reform (the new CBS and IBS taxes, phasing in from 2026). Payment platforms split the tax out of each payment and send it straight to the tax authority before the seller is paid. The official platform is restricted to licensed payment providers (PSPs), so almost no one can see how it actually works. This repo opens that black box:
+
+- **[@splitbr/mock](https://www.npmjs.com/package/@splitbr/mock)** is a faithful local mock of the whole platform: the 7 documented flows, the exact RFC 7807 error taxonomy, the per-arrangement field matrices as data, three-step segregation, Super Inteligente long-polling, and a chaos + divergence engine. Any developer can `npx @splitbr/mock` and test against it, no license required.
+- **[@splitbr/client](https://www.npmjs.com/package/@splitbr/client)** is a typed TypeScript SDK generated from the official OpenAPI contract: the four mandatory headers injected by middleware, typed RFC 7807 errors, and the settlement formula as a pure function.
+
+Engineering notes:
+
+- The official contract is vendored with a **pinned SHA-256**; a weekly CI diffs the live contract against the vendored copy and **breaks the build on drift** instead of updating silently.
+- Money math is **integer cents only** (BigInt), never floating point, truncated toward zero to match the official rounding.
+- The interactive [demo](https://mozurok.github.io/splitbr/) computes every figure with the **same published function the SDK ships**, so it doubles as a live validation of the packages.
+
+Independent, unofficial project: not affiliated with the Brazilian tax authorities, and not legal or tax advice. The guides and docs are in Portuguese, since the audience is Brazilian companies and developers preparing for the reform.
 
 ## Licença
 

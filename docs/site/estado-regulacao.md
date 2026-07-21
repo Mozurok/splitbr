@@ -6,6 +6,10 @@ title: Estado da regulação
 
 Este quadro mostra, em uma olhada, a superfície regulatória atual do Split Payment e da Reforma Tributária do Consumo que o splitbr acompanha: cada artefato oficial, sua versão vigente, a data e a fonte. Última verificação: 20/07/2026. As fontes são checadas toda segunda-feira, e qualquer diferença em relação a este quadro vira registro em [Novidades](/novidades).
 
+As siglas do quadro: **IBS** (Imposto sobre Bens e Serviços) e **CBS** (Contribuição sobre Bens e Serviços) são os tributos novos da reforma; **CGIBS** é o Comitê Gestor do IBS; **NT** é Nota Técnica e **IT** é Informe Técnico do Portal NF-e; **PL** é Pacote de Liberação de esquemas XML.
+
+> Projeto independente e não oficial, sem afiliação com a Receita Federal, o Comitê Gestor do IBS, o Serpro ou a Núclea. Nada aqui é aconselhamento jurídico nem tributário; a pilha legal completa está em [Base legal](/base-legal).
+
 ## Quadro de artefatos
 
 | Artefato | Versão atual | Data | Fonte oficial |

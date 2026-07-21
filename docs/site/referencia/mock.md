@@ -8,11 +8,11 @@ title: "@splitbr/mock"
 
 Esta página é gerada do README do pacote a cada build.
 
-Mock local da **Plataforma Pública do Split Payment** (IBS/CBS, LC 214/2025) para qualquer dev entender e testar o comportamento da plataforma. Você não precisa ser PSP homologado para usar isto: o mock roda local, sem licença nenhuma.
+Mock local da **Plataforma Pública do Split Payment** (IBS/CBS, LC 214/2025) para qualquer dev entender e testar o comportamento da plataforma. Você não precisa ser um PSP homologado (banco ou instituição de pagamento autorizada) para usar isto: o mock roda local, sem licença nenhuma.
 
 A plataforma real é restrita a PSPs homologados. Este mock reproduz o contrato oficial na sua máquina: os sete fluxos documentados, os quatro headers obrigatórios, a taxonomia de erros RFC 7807, a segregação em 3 passos e o streaming do Super Inteligente, mais um motor de caos e cenários que a plataforma real nunca vai te dar em homologação.
 
-> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS ou à Núclea. A fonte da verdade é o contrato oficial (OAS v0.0.10), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
+> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é o contrato oficial (OAS v0.0.10), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
 
 ## Instalação e uso
 
@@ -52,7 +52,8 @@ Os quatro headers obrigatórios (messageId, correlationId, tenantId, timestamp) 
 
 | Fluxo | Endpoints | Arranjos |
 |---|---|---|
-| Transação Iniciada / Atualizada | `POST/PATCH /api/v1/{arranjo}` | boleto, pix-automatico, pix-dinamico |
+| Transação Iniciada | `POST /api/v1/{arranjo}` | boleto, pix-automatico, pix-dinamico |
+| Transação Atualizada | `PATCH /api/v1/{arranjo}` | boleto, pix-automatico, pix-dinamico |
 | Baixa (exceto pagamento) | `POST .../baixa-exceto-pagamento` | boleto, pix-automatico, pix-dinamico |
 | Informe Preliminar de Pagamento | `POST .../informe-preliminar-pagamento` | os 6 arranjos |
 | Segregação (3 passos) | `POST /api/v1/segregacao` → `POST .../lotes` → `POST /api/v1/segregacao/finalizacao` | os 6 arranjos |

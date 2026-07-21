@@ -7,7 +7,7 @@ description: O que é o split payment da Reforma Tributária (CBS e IBS), quem �
 
 Esta página é para quem tem empresa e quer entender o que o split payment muda no dinheiro que entra na conta. Sem juridiquês e sem código. Cada termo técnico é explicado na hora em que aparece.
 
-> Quer ver acontecer em vez de só ler? A [demo interativa](/demo) simula uma venda e mostra o imposto sendo separado, com os valores que você escolher.
+> Quer ver acontecer em vez de só ler? A [demo interativa](/) simula uma venda e mostra o imposto sendo separado, com os valores que você escolher.
 
 ## O que muda, em uma frase
 

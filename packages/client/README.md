@@ -1,8 +1,8 @@
 # @splitbr/client
 
-> **Para quem é este pacote:** engenheiros integrando a Plataforma Pública diretamente, hoje PSPs homologados e provedores de conexão autorizados. Se você quer entender ou simular o split payment sem essa licença, comece pelo [@splitbr/mock](https://github.com/Mozurok/splitbr/tree/main/packages/mock) e pelo [guia em português claro](https://mozurok.github.io/splitbr/split-payment) do site.
+> **Para quem é este pacote:** engenheiros integrando a Plataforma Pública diretamente, hoje PSPs (bancos e instituições de pagamento homologados) e provedores de conexão autorizados. Se você quer entender ou simular o split payment sem essa licença, comece pelo [@splitbr/mock](https://github.com/Mozurok/splitbr/tree/main/packages/mock) e pelo [guia em português claro](https://mozurok.github.io/splitbr/split-payment) do site.
 
-> Client TypeScript tipado para a Plataforma Pública do Split Payment (IBS/CBS, LC 214/2025), gerado a partir do OpenAPI oficial com hash pinado.
+> Client TypeScript tipado para a Plataforma Pública do Split Payment (IBS/CBS, os dois tributos novos da Reforma Tributária, LC 214/2025), gerado a partir do OpenAPI oficial com hash pinado.
 
 **Avisos:** esta biblioteca não é aconselhamento jurídico nem tributário. Não tem afiliação com RFB, CGIBS, Serpro ou Núclea. O comportamento deriva de especificações oficiais públicas (spec v0.0.10, pré-1.0) e pode mudar; confira sempre a fonte primária.
 

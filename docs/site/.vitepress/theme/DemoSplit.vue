@@ -96,7 +96,7 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
     <header class="cabeca">
       <p class="olho">Simulador ao vivo &middot; sem instalar nada</p>
       <h2 class="titulo">Veja seu dinheiro se dividir</h2>
-      <p class="sub">Siga o passo a passo abaixo. Cada valor e calculado pelo codigo publicado no <code>@splitbr/client</code>.</p>
+      <p class="sub">Siga o passo a passo abaixo. Cada valor é calculado pelo código publicado no <code>@splitbr/client</code>.</p>
       <div class="modos" role="tablist" aria-label="Modo da demo">
         <button role="tab" :aria-selected="modo === 'guiado'" :class="{ ativo: modo === 'guiado' }" @click="trocarModo('guiado')">
           <span class="modo-i">1</span> Passo a passo
@@ -125,17 +125,17 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
           <p v-if="passo.coachTip" class="coach">{{ passo.coachTip }}</p>
           <div class="nav">
             <button class="btn ghost" type="button" :disabled="passoIdx === 0" @click="voltar">Voltar</button>
-            <button v-if="!ultimoPasso" class="btn primario" type="button" @click="proximo">Proximo passo &rarr;</button>
-            <button v-else class="btn ghost" type="button" @click="escolherCaso(casoIdx)">Rever do inicio</button>
+            <button v-if="!ultimoPasso" class="btn primario" type="button" @click="proximo">Próximo passo &rarr;</button>
+            <button v-else class="btn ghost" type="button" @click="escolherCaso(casoIdx)">Rever do início</button>
           </div>
         </section>
 
         <!-- LIVRE -->
-        <section v-else class="palco" aria-label="Valores da simulacao">
+        <section v-else class="palco" aria-label="Valores da simulação">
           <label class="campo">
             <span class="rotulo">Valor da nota</span>
-            <div class="valor-in"><span class="prefixo">R$</span><input v-model.number="entrada.valorNotaReais" type="number" min="0" step="50" inputmode="decimal" /></div>
-            <input v-model.number="entrada.valorNotaReais" type="range" min="0" max="5000" step="50" aria-label="Valor da nota" />
+            <div class="valor-in"><span class="prefixo">R$</span><input v-model.number="entrada.valorNotaReais" type="number" min="0" max="1000000000" step="50" inputmode="decimal" /></div>
+            <input v-model.number="entrada.valorNotaReais" type="range" min="0" max="1000000" step="1000" aria-label="Valor da nota" />
           </label>
           <label class="campo"><span class="rotulo">CBS informada <span class="tag">{{ pct(entrada.cbsPct) }}</span></span><input v-model.number="entrada.cbsPct" type="range" min="0" max="5" step="0.1" /></label>
           <label class="campo"><span class="rotulo">IBS informado <span class="tag">{{ pct(entrada.ibsPct) }}</span></span><input v-model.number="entrada.ibsPct" type="range" min="0" max="5" step="0.1" /></label>
@@ -145,7 +145,7 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
               <button type="button" :class="{ ativo: !parcial }" @click="entrada.fracaoPaga = 1">Integral</button>
               <button type="button" :class="{ ativo: parcial }" @click="entrada.fracaoPaga = entrada.fracaoPaga < 1 ? entrada.fracaoPaga : 0.5">Parcial</button>
             </div>
-            <input v-if="parcial" v-model.number="entrada.fracaoPaga" type="range" min="0.05" max="0.95" step="0.05" aria-label="Fracao paga" />
+            <input v-if="parcial" v-model.number="entrada.fracaoPaga" type="range" min="0.05" max="0.95" step="0.05" aria-label="Fração paga" />
           </div>
         </section>
 
@@ -165,13 +165,13 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
             <div class="fluxo-empresa" :style="{ width: pctEmpresa + '%' }"></div>
             <div class="fluxo-fisco" :style="{ width: pctFisco + '%' }"></div>
           </div>
-          <p v-if="!mostraResultado" class="placeholder">O imposto aparece aqui no momento do pagamento &mdash; avance ate la.</p>
+          <p v-if="!mostraResultado" class="placeholder">O imposto aparece aqui no momento do pagamento. Avance até lá.</p>
           <details v-else class="breakdown">
             <summary>Como esse valor se divide</summary>
             <div class="linha"><span>Valor pago</span><span class="v">{{ formatarBRL(valorPagoCentavos) }}</span></div>
             <div class="linha sub"><span>CBS</span><span class="v">{{ formatarBRL(resultado.cbsCentavos) }}</span></div>
             <div class="linha sub"><span>IBS</span><span class="v">{{ formatarBRL(resultado.ibsCentavos) }}</span></div>
-            <div class="linha total"><span>Liquido para a empresa</span><span class="v">{{ formatarBRL(resultado.sobrouParaEmpresaCentavos) }}</span></div>
+            <div class="linha total"><span>Líquido para a empresa</span><span class="v">{{ formatarBRL(resultado.sobrouParaEmpresaCentavos) }}</span></div>
           </details>
         </section>
       </div>
@@ -180,11 +180,11 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
       <aside class="coluna-codigo">
         <div class="cod-cab"><span class="cod-titulo">Como um PSP integra</span><button type="button" class="cod-copiar" @click="copiar">{{ copiado ? "Copiado!" : "Copiar" }}</button></div>
         <pre class="cod-bloco"><code>{{ codigoSnippet }}</code></pre>
-        <p class="cod-nota">Assim um PSP chama a plataforma real com o <code>@splitbr/client</code>. Esta demo calcula o mesmo split localmente, com a formula publicada, sem servidor.</p>
+        <p class="cod-nota">Assim um PSP chama a plataforma real com o <code>@splitbr/client</code>. Esta demo calcula o mesmo split localmente, com a fórmula publicada, sem servidor.</p>
       </aside>
     </div>
 
-    <p class="aviso">Aliquotas de teste de 2026 (fase de transicao); as definitivas ainda nao valem. Veja a <a href="/splitbr/base-legal">base legal</a> ou o <a href="/splitbr/tutorial">tutorial</a>.</p>
+    <p class="aviso">Alíquotas de teste de 2026 (fase de transição); as definitivas ainda não valem. Veja a <a href="/splitbr/base-legal">base legal</a> ou o <a href="/splitbr/tutorial">tutorial</a>.</p>
   </div>
 </template>
 
@@ -203,8 +203,7 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
 .modo-i { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 999px; background: color-mix(in srgb, var(--demo-cta-fg) 22%, transparent); font-size: 0.78rem; font-weight: 800; }
 .modos button:not(.ativo) .modo-i { background: var(--demo-border); color: var(--demo-accent-text); }
 
-.principal { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--demo-gap); align-items: start; }
-@media (max-width: 860px) { .principal { grid-template-columns: 1fr; } }
+.principal { display: grid; grid-template-columns: 1fr; gap: var(--demo-gap); align-items: start; }
 .coluna-demo { display: flex; flex-direction: column; gap: var(--demo-gap); }
 
 .palco { display: flex; flex-direction: column; gap: 14px; background: var(--demo-surface); border-radius: var(--demo-radius-sm); padding: 22px; }
@@ -242,7 +241,7 @@ input[type="range"] { width: 100%; accent-color: var(--demo-cta-bg); }
 @media (max-width: 480px) { .manchetes { grid-template-columns: 1fr; } }
 .manchete { border-radius: var(--demo-radius-sm); padding: 18px 20px; background: var(--demo-card); border: 1px solid var(--demo-border); box-shadow: var(--demo-shadow-card); }
 .m-rotulo { display: block; font-size: 0.85rem; color: var(--demo-text-2); font-weight: 600; }
-.m-num { display: block; font: var(--demo-num); font-variant-numeric: tabular-nums; margin-top: 6px; transition: color var(--demo-dur) var(--demo-ease); }
+.m-num { display: block; font: var(--demo-num); font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.02em; margin-top: 6px; transition: color var(--demo-dur) var(--demo-ease); }
 .manchete.fisco.vivo .m-num { color: var(--demo-fisco); }
 .manchete.empresa.vivo { border-color: var(--demo-empresa); background: color-mix(in srgb, var(--demo-empresa) 7%, var(--demo-card)); }
 .manchete.empresa.vivo .m-num { color: var(--demo-empresa); }

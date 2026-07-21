@@ -4,11 +4,11 @@ layout: home
 hero:
   name: splitbr
   text: Split Payment do Brasil, aberto e testável
-  tagline: "A Reforma Tributária vai separar o imposto no momento do pagamento. Você não precisa ser PSP para usar isto: este toolkit deixa você entender, simular e integrar isso hoje, na sua máquina, de graça."
+  tagline: "A Reforma Tributária vai separar o imposto no momento do pagamento. Você não precisa ser um PSP (banco ou instituição de pagamento homologada) para usar isto: o toolkit deixa você entender e simular isso hoje, na sua máquina, de graça."
   actions:
     - theme: brand
       text: Veja seu dinheiro se dividir
-      link: /demo
+      link: "#veja-o-split-payment-acontecer"
     - theme: alt
       text: Entenda o split payment
       link: /split-payment
@@ -49,7 +49,7 @@ Quer os detalhes em português claro? Leia [o guia completo](/split-payment). Pr
 
 ## Por que este projeto existe
 
-A Plataforma Pública do Split Payment é restrita a PSPs homologados, e até julho de 2026 não existia nenhuma ferramenta open source de split payment em nenhuma linguagem. Quem precisa se preparar (bancos, fintechs, ERPs, software houses e as próprias empresas) não tinha onde encostar a mão. Mas você não precisa ser PSP para usar o splitbr: o guia em português serve para qualquer empresa, e o mock roda para qualquer dev, sem licença nenhuma.
+A Plataforma Pública do Split Payment é restrita a PSPs homologados, e até julho de 2026 não encontramos nenhuma ferramenta open source de split payment em nenhuma linguagem. Quem precisa se preparar (bancos, fintechs, ERPs, software houses e as próprias empresas) não tinha onde encostar a mão. Mas você não precisa ser PSP para usar o splitbr: o guia em português serve para qualquer empresa, e o mock roda para qualquer dev, sem licença nenhuma.
 
 O splitbr fecha esse buraco com dois pacotes testados e um princípio: o contrato oficial, vendorado com hash pinado, é sempre a fonte da verdade. Quando o contrato muda, o build quebra em vez de mentir.
 

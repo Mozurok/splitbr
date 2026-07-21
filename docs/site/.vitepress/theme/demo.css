@@ -42,7 +42,7 @@
   /* Tipografia */
   --demo-font-display: 800 clamp(2rem, 6vw, 3.25rem) / 1.05 var(--vp-font-family-base);
   --demo-font-title: 700 1.25rem / 1.3 var(--vp-font-family-base);
-  --demo-num: 800 clamp(1.9rem, 5vw, 2.9rem) / 1 var(--vp-font-family-base);
+  --demo-num: 800 clamp(1.6rem, 3.6vw, 2.5rem) / 1 var(--vp-font-family-base);
 
   /* Ritmo / forma / elevacao */
   --demo-radius: 18px;

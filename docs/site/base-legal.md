@@ -4,10 +4,10 @@ title: Base legal
 
 # Base legal
 
-O split payment não nasce de uma lei só. Ele desce por uma pilha: a Emenda Constitucional 132/2023 cria o IBS e a CBS na Constituição; a Lei Complementar 214/2025 institui esses tributos e o próprio split, com ajustes da LC 227/2026; o Decreto 12.955/2026 (lado CBS) e a Resolução CGIBS 6/2026 (lado IBS) regulamentam o funcionamento; e por fim os atos conjuntos infralegais operacionalizam a plataforma e publicam os manuais técnicos. Cada camada só vale dentro do que a camada de cima autoriza. Esta página percorre a pilha nessa ordem.
+O split payment não nasce de uma lei só. Ele desce por uma pilha: a Emenda Constitucional 132/2023 cria o IBS (Imposto sobre Bens e Serviços) e a CBS (Contribuição sobre Bens e Serviços) na Constituição; a Lei Complementar 214/2025 institui esses tributos e o próprio split, com ajustes da LC 227/2026; o Decreto 12.955/2026 (lado CBS) e a Resolução CGIBS 6/2026 (lado IBS) regulamentam o funcionamento; e por fim os atos conjuntos infralegais operacionalizam a plataforma e publicam os manuais técnicos. Cada camada só vale dentro do que a camada de cima autoriza. Esta página percorre a pilha nessa ordem.
 
 ::: warning Cronograma fluido, e isto não é aconselhamento jurídico
-As datas de entrada em vigor do split payment divergem entre fontes e mudam com frequência. Tudo nesta página deriva de documentos oficiais públicos cujo comportamento e cronograma podem mudar. Nada aqui é aconselhamento jurídico nem tributário: antes de construir ou decidir, confira a fonte primária.
+As datas de entrada em vigor do split payment divergem entre fontes e mudam com frequência. Tudo nesta página deriva de documentos oficiais públicos cujo comportamento e cronograma podem mudar. O splitbr é um projeto independente e não oficial, sem afiliação com a Receita Federal, o Comitê Gestor do IBS, o Serpro ou a Núclea. Nada aqui é aconselhamento jurídico nem tributário: antes de construir ou decidir, confira a fonte primária.
 :::
 
 ## EC 132/2023 (Emenda Constitucional)
@@ -70,7 +70,7 @@ Dois fatos de contrato do Manual de Integração ajudam a situar quem entra ness
 
 ## O que ainda não foi publicado
 
-A família documental do Split Payment tem 7 documentos. Até jul/2026, apenas os manuais de Integração e de Operações são públicos. Quatro documentos ainda não saíram: os Manuais de Tempos, de Redes, de Segurança e de Onboarding. Acompanhe o [CGIBS](https://www.cgibs.gov.br/) para as próximas publicações.
+A família documental do Split Payment tem 6 manuais. Até jul/2026, o Manual de Integração já está em versão final (v1.0) e o Manual de Operações existe apenas como minuta (jun/2026). Os outros quatro ainda não saíram: os Manuais de Tempos, de Redes, de Segurança e de Onboarding. Acompanhe o [CGIBS](https://www.cgibs.gov.br/) para as próximas publicações.
 
 ## Para ir além
 

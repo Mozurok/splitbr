@@ -1,7 +1,10 @@
 /**
- * Direcao A "Fiscal claro" (D-9): base clara, acento quente ambar, grid
- * blueprint sutil no hero. Refs: Cloudflare Workers, Firecrawl, Tailscale
- * (REFERENCES.md ## Design do site).
+ * Direcao "Fiscal claro" evoluida para a linguagem da demo (D-1, restyle leve):
+ * gradiente ambar->coral, cards elevados, tipo display forte no hero, foco
+ * visivel e micro-movimento. Mantem claro + escuro; NAO retuna a escada global
+ * de fundo (--vp-c-bg / --vp-c-bg-soft) nem toca no palco isolado da demo.
+ * Doador da linguagem: demo.css / DemoSplit.vue. Refs originais: Cloudflare
+ * Workers, Firecrawl, Tailscale (REFERENCES.md ## Design do site).
  */
 
 :root {
@@ -9,11 +12,23 @@
   --vp-c-brand-2: #d97706;
   --vp-c-brand-3: #f59e0b;
   --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
+
+  /* Gradiente ambar->coral, ancorado no escuro para legibilidade do hero. */
   --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #b45309 30%, #f59e0b);
+  --vp-home-hero-name-background: linear-gradient(120deg, #b45309 18%, #ea580c 55%, #f43f5e);
+
+  /* Botao: acento unico alinhado a CTA da demo; hover/active mais escuros (AA). */
   --vp-button-brand-bg: #b45309;
-  --vp-button-brand-hover-bg: #d97706;
-  --vp-button-brand-active-bg: #92400e;
+  --vp-button-brand-hover-bg: #92400e;
+  --vp-button-brand-active-bg: #7c2d12;
+
+  /* Movimento compartilhado (curva da demo). */
+  --site-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --site-dur: 220ms;
+
+  /* Elevacao dos cards (repouso + hover). */
+  --site-shadow-card: 0 6px 20px -8px rgba(28, 25, 23, 0.14);
+  --site-shadow-card-hover: 0 18px 40px -16px rgba(146, 64, 14, 0.30);
 }
 
 .dark {
@@ -21,11 +36,22 @@
   --vp-c-brand-2: #f59e0b;
   --vp-c-brand-3: #d97706;
   --vp-c-brand-soft: rgba(251, 191, 36, 0.16);
-  --vp-home-hero-name-background: linear-gradient(120deg, #fbbf24 30%, #f97316);
-  /* WCAG AA: texto branco sobre #b45309 = 5.5:1 (gap-check pegou 3.19:1 no #d97706) */
+
+  /* No escuro, cores mais claras: alto contraste sobre fundo escuro. */
+  --vp-home-hero-name-background: linear-gradient(120deg, #fbbf24 18%, #fb923c 55%, #fb7185);
+
+  /* Branco sobre #b45309 = 5.5:1; hover/active mais escuros passam AA. */
   --vp-button-brand-bg: #b45309;
-  --vp-button-brand-hover-bg: #d97706;
-  --vp-button-brand-active-bg: #92400e;
+  --vp-button-brand-hover-bg: #92400e;
+  --vp-button-brand-active-bg: #7c2d12;
+
+  --site-shadow-card: 0 6px 20px -8px rgba(0, 0, 0, 0.45);
+  --site-shadow-card-hover: 0 18px 40px -16px rgba(0, 0, 0, 0.55);
+}
+
+/* Hero: tipo display mais forte (so o nome do hero, nunca o corpo). */
+.VPHero .name {
+  font-weight: 800;
 }
 
 /* Grid blueprint sutil atras do hero (so na home). */
@@ -41,27 +67,53 @@
     linear-gradient(to bottom, rgba(251, 191, 36, 0.06) 1px, transparent 1px);
 }
 
-/* Cards de feature com elevacao no hover (padrao das refs). */
+/* Cards de feature ELEVADOS no repouso (nao so no hover). */
 .VPFeature {
   border: 1px solid var(--vp-c-divider);
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--site-shadow-card);
+  transition: border-color var(--site-dur) var(--site-ease),
+              transform var(--site-dur) var(--site-ease),
+              box-shadow var(--site-dur) var(--site-ease);
 }
 .VPFeature:hover {
   border-color: var(--vp-c-brand-2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(180, 83, 9, 0.10);
+  transform: translateY(-3px);
+  box-shadow: var(--site-shadow-card-hover);
 }
 
-/* Tabelas mais respiraveis nas paginas de conteudo. */
+/* Tabelas: numerais tabulares para figuras (aliquotas/impostos). */
 .vp-doc table {
   font-size: 0.9rem;
 }
+.vp-doc td,
+.vp-doc th {
+  font-variant-numeric: tabular-nums;
+}
 .vp-doc th {
   background: var(--vp-c-brand-soft);
+}
+
+/* Foco visivel unico no site inteiro (a11y). */
+:focus-visible {
+  outline: 3px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
 }
 
 /* Aviso de correcoes no rodape: destacado sem gritar. */
 .VPFooter .message a {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
+}
+
+/* Respeita prefers-reduced-motion: colapsa o micro-movimento. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --site-dur: 0.01ms;
+  }
+  .VPFeature {
+    transition: none;
+  }
+  .VPFeature:hover {
+    transform: none;
+  }
 }

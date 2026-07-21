@@ -6,13 +6,17 @@ title: "Rode a plataforma na sua máquina em 10 minutos"
 
 # Rode a plataforma na sua máquina em 10 minutos
 
-A partir de 2027, todo pagamento no Brasil vai passar por uma plataforma do governo que separa os impostos na hora. Essa plataforma é fechada: só bancos e instituições de pagamento homologados podem tocar nela. Para o que vem a seguir, você não precisa de nenhuma licença: o `@splitbr/mock` é um simulador local, aberto para qualquer dev. Neste tutorial você vai ligar uma cópia dele no seu computador e fazer o ciclo completo: informar um boleto, pagar, provocar uma correção de imposto e receber o aviso do fisco.
+A Reforma Tributária vai fazer todo pagamento no Brasil passar por uma plataforma do governo que separa os impostos na hora. Essa plataforma é fechada: só bancos e instituições de pagamento homologados podem tocar nela. Para o que vem a seguir, você não precisa de nenhuma licença: o `@splitbr/mock` é um simulador local, aberto para qualquer dev. Neste tutorial você vai ligar uma cópia dele no seu computador e fazer o ciclo completo: informar um boleto, pagar, provocar uma correção de imposto e receber o aviso do fisco.
 
 Você não precisa saber programar. Se nunca usou um terminal na vida, tudo bem: é para você que este guia foi escrito. Cada passo mostra o comando exato para copiar e colar e a resposta exata que vai aparecer na sua tela.
 
 Você vai precisar de: um computador (macOS, Windows ou Linux), internet e 10 minutos.
 
-> Só quer ver o mecanismo sem instalar nada? A [demo interativa](/demo) roda no navegador.
+::: warning As datas ainda estão em discussão, e isto não é aconselhamento
+O cronograma do split payment ainda está sendo fechado: o piloto está previsto para o segundo semestre de 2026 e as datas de 2027 seguem em discussão. Não trate nenhuma data como definitiva; confira o [CGIBS](https://www.cgibs.gov.br/) e as [notícias da Receita Federal](https://www.gov.br/receitafederal/pt-br/assuntos/noticias). O splitbr é um projeto independente e não oficial, sem afiliação com a RFB, o Comitê Gestor do IBS, o Serpro ou a Núclea, e nada aqui é aconselhamento jurídico ou tributário. A base legal completa está em [Base legal](/base-legal).
+:::
+
+> Só quer ver o mecanismo sem instalar nada? A [demo interativa](/) roda no navegador.
 
 ## Passo 1: Abra o terminal
 
@@ -99,7 +103,7 @@ O primeiro terminal está ocupado segurando o servidor. Para conversar com ele, 
 
 ## Passo 6: Envie sua primeira transação de boleto
 
-Na vida real, quando um boleto é registrado, o banco avisa a plataforma: "existe um boleto de R$ 1.000,00, com R$ 9,00 de CBS e R$ 1,00 de IBS". Vamos fazer exatamente esse aviso. Cole o bloco inteiro no segundo terminal e aperte Enter:
+Na vida real, quando um boleto é registrado, o banco avisa a plataforma: "existe um boleto de R$ 1.000,00, com R$ 9,00 de CBS e R$ 1,00 de IBS". Os R$ 9,00 de CBS (o tributo federal) e o R$ 1,00 de IBS (o dos estados e municípios) são a alíquota de teste de 2026 (0,9% + 0,1% sobre R$ 1.000), não uma alíquota final; o [guia](/split-payment) explica. Vamos fazer exatamente esse aviso. Cole o bloco inteiro no segundo terminal e aperte Enter:
 
 ```bash
 curl -X POST http://127.0.0.1:8377/api/v1/boleto \
@@ -205,7 +209,7 @@ Resposta esperada:
 {"publicado":{"codMsg":"RSUP101","vlCbsCorr":9,"idDda":"DDA1","numCtrlOrig":"CTRL000001","vlInf":1000,"cnpjRaizPspRecDir":"12345678","nsuId":1}}
 ```
 
-**O que acabou de acontecer:** o mock fez o papel do fisco: recalculou a CBS do boleto `CTRL000001`, montou um evento de correção (código `RSUP101`, com o valor correto em `vlCbsCorr`) e colocou na fila de avisos do PSP `PSP00001`, para ser lido no próximo passo.
+**O que acabou de acontecer:** o mock fez o papel do fisco: recalculou a CBS do boleto `CTRL000001`, montou um evento de correção (código `RSUP101`, com o valor correto em `vlCbsCorr`) e colocou na fila de avisos do PSP (o prestador de serviços de pagamento, a instituição que processa pagamentos) `PSP00001`, para ser lido no próximo passo.
 
 **Se deu errado:** se veio `422` com `Transacao 'CTRL000001' nao registrada para 'boleto'`, os passos 6 e 7 não rodaram nesta sessão do mock. Refaça a sequência desde o passo 6.
 
@@ -259,7 +263,7 @@ O cursor volta a piscar, esperando comandos. Pode fechar as janelas.
 
 ## O que você acabou de fazer
 
-Sem perceber, você percorreu o ciclo de vida real do split payment na pele de um PSP (a instituição que processa pagamentos): informou à plataforma que uma transação de boleto existia (passo 6), avisou que ela foi paga com os impostos já separados (passo 7), viu o fisco conferir as contas e publicar uma correção (passo 8) e consumiu esse retorno pelo canal oficial de avisos, na ordem certa e sem perder nada (passo 9). É exatamente esse vai e vem que todo banco e fintech do Brasil vai precisar dominar até 2027; a diferença é que você rodou tudo na sua máquina, de graça, em 10 minutos.
+Sem perceber, você percorreu o ciclo de vida real do split payment na pele de um PSP (a instituição que processa pagamentos): informou à plataforma que uma transação de boleto existia (passo 6), avisou que ela foi paga com os impostos já separados (passo 7), viu o fisco conferir as contas e publicar uma correção (passo 8) e consumiu esse retorno pelo canal oficial de avisos, na ordem certa e sem perder nada (passo 9). É exatamente esse vai e vem que todo banco e fintech do Brasil vai precisar dominar nos próximos anos; a diferença é que você rodou tudo na sua máquina, de graça, em 10 minutos.
 
 Para continuar:
 

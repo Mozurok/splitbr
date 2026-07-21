@@ -28,13 +28,13 @@ export interface CasoDemo {
 export const casoCicloFeliz: CasoDemo = {
   id: "ciclo-feliz",
   titulo: "Uma venda comum",
-  promessa: "Do boleto ao imposto separado, sem voce fazer nada.",
+  promessa: "Do boleto ao imposto separado, sem você fazer nada.",
   entrada: cicloFeliz,
   passos: [
     {
-      titulo: "Voce emite a nota",
+      titulo: "Você emite a nota",
       narrativa:
-        "Voce vendeu R$ 1.000,00 e emitiu a nota. Ate aqui, nada de imposto: so o registro de que a venda aconteceu.",
+        "Você vendeu R$ 1.000,00 e emitiu a nota. Até aqui, nada de imposto: só o registro de que a venda aconteceu.",
       mostraResultado: false,
       tecnico: {
         endpoint: "POST /api/v1/boleto",
@@ -44,9 +44,9 @@ export const casoCicloFeliz: CasoDemo = {
     {
       titulo: "O boleto entra na plataforma",
       narrativa:
-        "O banco registrou o boleto na Plataforma Publica do Split Payment, o sistema por onde os pagamentos passam.",
+        "O banco registrou o boleto na Plataforma Pública do Split Payment, o sistema por onde os pagamentos passam.",
       coachTip:
-        "A plataforma e fechada: so bancos e instituicoes de pagamento homologados falam com ela. Voce nunca chama a API; quem chama e o seu banco.",
+        "A plataforma é fechada: só bancos e instituições de pagamento homologados falam com ela. Você nunca chama a API; quem chama é o seu banco.",
       mostraResultado: false,
       tecnico: { endpoint: "POST /api/v1/boleto", descricao: "Resposta 201 com um resourceId." },
     },
@@ -60,10 +60,10 @@ export const casoCicloFeliz: CasoDemo = {
       },
     },
     {
-      titulo: "A segregacao acontece",
+      titulo: "A segregação acontece",
       narrativa:
-        "No pagamento, o imposto e separado: CBS e IBS vao direto ao fisco antes de o dinheiro chegar em voce. O que sobra e seu.",
-      coachTip: "Isto e a segregacao: o imposto sai no pagamento, nao meses depois.",
+        "No pagamento, o imposto é separado: CBS e IBS vão direto ao fisco antes de o dinheiro chegar em você. O que sobra é seu.",
+      coachTip: "Isto é a segregação: o imposto sai no pagamento, não meses depois.",
       mostraResultado: true,
       tecnico: {
         endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
@@ -73,7 +73,7 @@ export const casoCicloFeliz: CasoDemo = {
     {
       titulo: "Pronto",
       narrativa:
-        "O imposto foi separado automaticamente. Voce recebeu o liquido e o fisco recebeu o dele, sem boleto extra.",
+        "O imposto foi separado automaticamente. Você recebeu o líquido e o fisco recebeu o dele, sem boleto extra.",
       mostraResultado: true,
     },
   ],
@@ -88,22 +88,22 @@ export const casoCorrecao: CasoDemo = {
     {
       titulo: "Uma venda com CBS informada a menor",
       narrativa:
-        "Voce vendeu R$ 1.000,00, mas a CBS foi informada como R$ 6,00 (o correto seria R$ 9,00). Acontece.",
+        "Você vendeu R$ 1.000,00, mas a CBS foi informada como R$ 6,00 (o correto seria R$ 9,00). Acontece.",
       mostraResultado: false,
       tecnico: { endpoint: "POST /api/v1/boleto", descricao: "CBS informada abaixo do devido." },
     },
     {
       titulo: "O cliente paga",
-      narrativa: "O boleto e pago. A plataforma recebe o informe com o valor a menor.",
+      narrativa: "O boleto é pago. A plataforma recebe o informe com o valor a menor.",
       mostraResultado: false,
       tecnico: { endpoint: "POST /api/v1/boleto/informe-preliminar-pagamento", descricao: "Informe preliminar." },
     },
     {
       titulo: "O fisco confere e discorda",
       narrativa:
-        "O fisco recalcula e ve que a CBS certa era R$ 9,00, nao R$ 6,00. Um aviso de correcao e emitido.",
+        "O fisco recalcula e vê que a CBS certa era R$ 9,00, não R$ 6,00. Um aviso de correção é emitido.",
       coachTip:
-        "O Retorno Super Inteligente e o canal por onde o fisco devolve correcoes (codigo RSUP). Nada se perde.",
+        "O Retorno Super Inteligente é o canal por onde o fisco devolve correções (código RSUP). Nada se perde.",
       mostraResultado: false,
       tecnico: {
         endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
@@ -111,7 +111,7 @@ export const casoCorrecao: CasoDemo = {
       },
     },
     {
-      titulo: "A correcao entra",
+      titulo: "A correção entra",
       narrativa:
         "A plataforma aplica o valor corrigido automaticamente. O imposto separado passa a refletir os R$ 9,00 corretos.",
       mostraResultado: true,
@@ -127,7 +127,7 @@ export const casoParcial: CasoDemo = {
   passos: [
     {
       titulo: "Uma nota de R$ 1.000,00",
-      narrativa: "Voce emitiu a nota de R$ 1.000,00, com CBS R$ 9,00 e IBS R$ 1,00 informados.",
+      narrativa: "Você emitiu a nota de R$ 1.000,00, com CBS R$ 9,00 e IBS R$ 1,00 informados.",
       mostraResultado: false,
       tecnico: { endpoint: "POST /api/v1/boleto", descricao: "Nota de R$ 1.000,00." },
     },
@@ -141,10 +141,10 @@ export const casoParcial: CasoDemo = {
       },
     },
     {
-      titulo: "A segregacao proporcional",
+      titulo: "A segregação proporcional",
       narrativa:
-        "O imposto separado e proporcional ao que foi pago: sobre os R$ 500,00 pagos, o fisco leva a parte correspondente. O resto fica em aberto para o proximo pagamento.",
-      coachTip: "A formula segrega min((pago/nota) x tributo; tributo), truncado em centavos.",
+        "O imposto separado é proporcional ao que foi pago: sobre os R$ 500,00 pagos, o fisco leva a parte correspondente. O resto fica em aberto para o próximo pagamento.",
+      coachTip: "A fórmula segrega min((pago/nota) x tributo; tributo), truncado em centavos.",
       mostraResultado: true,
       tecnico: {
         endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",

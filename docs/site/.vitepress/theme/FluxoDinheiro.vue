@@ -1,6 +1,20 @@
 <script setup lang="ts">
-// Diagrama estatico do caminho do dinheiro (hoje vs com split), padrao
-// Tailscale/Mercury das referencias: comparacao lado a lado, sem JS.
+// Caminho do dinheiro (hoje vs com split), padrao Tailscale/Mercury: comparacao
+// lado a lado. Os numeros NAO sao hardcoded (D-1): vem da funcao publicada
+// calcularSegregacao (via calcularSplit, o mesmo motor da demo), sobre a
+// aliquota-teste de 2026 (CBS 0,9% + IBS 0,1%) numa nota de R$ 1.000.
+import { calcularSplit } from "./demo/engine.js";
+
+const notaCentavos = 100_000; // R$ 1.000,00
+const split = calcularSplit({
+  valorNotaCentavos: notaCentavos,
+  valorPagoCentavos: notaCentavos,
+  cbsInformadoCentavos: 900, // 0,9%
+  ibsInformadoCentavos: 100, // 0,1%
+});
+
+// Formatacao limpa (reais inteiros quando exatos), para casar com a prosa da pagina.
+const brl = (centavos: number) => "R$ " + (centavos / 100).toLocaleString("pt-BR", { maximumFractionDigits: 2 });
 </script>
 
 <template>
@@ -10,17 +24,17 @@
       <div class="cadeia">
         <div class="no">
           <span class="rotulo">Pagador</span>
-          <span class="valor">R$ 1.000</span>
+          <span class="valor">{{ brl(notaCentavos) }}</span>
         </div>
         <div class="seta">→</div>
         <div class="no destaque">
           <span class="rotulo">Vendedor recebe tudo</span>
-          <span class="valor">R$ 1.000</span>
+          <span class="valor">{{ brl(notaCentavos) }}</span>
         </div>
         <div class="seta">→</div>
         <div class="no fraco">
           <span class="rotulo">Imposto recolhido meses depois</span>
-          <span class="valor">R$ 10</span>
+          <span class="valor">{{ brl(split.foiParaFiscoCentavos) }}</span>
         </div>
       </div>
     </div>
@@ -30,25 +44,25 @@
       <div class="cadeia">
         <div class="no">
           <span class="rotulo">Pagador</span>
-          <span class="valor">R$ 1.000</span>
+          <span class="valor">{{ brl(notaCentavos) }}</span>
         </div>
         <div class="seta">→</div>
         <div class="ramos">
           <div class="no destaque">
             <span class="rotulo">Vendedor</span>
-            <span class="valor">R$ 990</span>
+            <span class="valor">{{ brl(split.sobrouParaEmpresaCentavos) }}</span>
           </div>
           <div class="no fisco">
             <span class="rotulo">CBS → Receita Federal</span>
-            <span class="valor">R$ 9</span>
+            <span class="valor">{{ brl(split.cbsCentavos) }}</span>
           </div>
           <div class="no fisco">
             <span class="rotulo">IBS → Comitê Gestor</span>
-            <span class="valor">R$ 1</span>
+            <span class="valor">{{ brl(split.ibsCentavos) }}</span>
           </div>
         </div>
       </div>
-      <p class="nota">Separação automática na liquidação, com a alíquota-teste de 2026 (1%).</p>
+      <p class="nota">Separação automática na liquidação, com a alíquota-teste de 2026 (1%). Cada valor vem da fórmula publicada no <code>@splitbr/client</code>.</p>
     </div>
   </div>
 </template>
@@ -67,9 +81,10 @@
 }
 .painel {
   border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px;
   background: var(--vp-c-bg-soft);
+  box-shadow: var(--site-shadow-card, 0 6px 20px -8px rgba(28, 25, 23, 0.14));
 }
 .painel.comsplit {
   border-color: var(--vp-c-brand-2);
@@ -84,7 +99,11 @@
   margin: 0 0 14px;
 }
 .comsplit .titulo {
-  color: var(--vp-c-brand-1);
+  font-weight: 800;
+  background: linear-gradient(120deg, var(--vp-c-brand-1), #f43f5e);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 .cadeia {
   display: flex;
@@ -106,7 +125,7 @@
   color: var(--vp-c-text-2);
 }
 .no .valor {
-  font-weight: 700;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 .no.destaque {
@@ -134,5 +153,8 @@
   margin: 12px 0 0;
   font-size: 0.8rem;
   color: var(--vp-c-text-2);
+}
+.nota code {
+  color: var(--vp-c-brand-1);
 }
 </style>

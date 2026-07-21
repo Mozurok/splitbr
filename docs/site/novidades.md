@@ -13,7 +13,13 @@ Ordem: mais recente primeiro. Semana sem mudança não gera entrada.
 
 # Novidades
 
-Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções da CGIBS, publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
+Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções do Comitê Gestor do IBS (CGIBS), publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
+
+## 2026-07-20: OpenAPIs da Calculadora e do Split Simplificado capturados; divergência piloto vs portal
+
+- O que mudou: foram capturados e pinados no registro do splitbr (20/07/2026) os contratos OpenAPI da Calculadora de Tributos (produção e piloto, OAS 3.1.0, 36 rotas cada) e, pela primeira vez, o do Split Payment Simplificado (api-split, OAS 3.1.0, 2 rotas). Uma divergência de contrato entre piloto e produção foi documentada: no piloto, o campo `cTribNac` aceita 4 ou 6 dígitos; na produção (portal), só 4.
+- Impacto: a produção é a referência estável para o codegen; o piloto antecipa mudanças. Os percentuais do split simplificado seguem indefinidos oficialmente.
+- Fonte: https://consumo.tributos.gov.br/ (api-docs da Calculadora e do api-split)
 
 ## 2026-07-19: Manual de Integração v1.0 e contrato OpenAPI da API de Split verificados
 

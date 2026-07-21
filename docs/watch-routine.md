@@ -31,7 +31,7 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 
 ## Trigger mechanism
 
-Decided (D-3, 2026-07-20): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline (`vendor/MANIFEST.md`). Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Baseline at 2026-07-20: NT 2025.002 v1.50, IT v1.60, PL 010e_v1.02, componente 1.2.4, 4 manuais da familia Split Payment ainda nao publicados.
+Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: 4 manuais da familia Split Payment ainda nao publicados (Tempos, Redes, Seguranca, Onboarding).
 
 ## Saída para o site (novidades)
 

@@ -2,7 +2,7 @@
 title: "Rode a plataforma na sua máquina em 10 minutos"
 ---
 
-<!-- OUTPUTS capturados do build local em 2026-07-20; re-capturar do pacote npm publicado no gate de launch (D-8) -->
+<!-- OUTPUTS re-capturados em 2026-07-21 do pacote publicado (npx @splitbr/mock@0.1.0 do registro real, seed 1): passos 3-4 e 6-9 identicos byte a byte; so a linha Date do passo 9 varia, como o texto avisa (D-8 cumprido) -->
 
 # Rode a plataforma na sua máquina em 10 minutos
 

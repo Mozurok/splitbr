@@ -7,6 +7,8 @@ description: O que é o split payment da Reforma Tributária (CBS e IBS), quem �
 
 Esta página é para quem tem empresa e quer entender o que o split payment muda no dinheiro que entra na conta. Sem juridiquês e sem código. Cada termo técnico é explicado na hora em que aparece.
 
+> Quer ver acontecer em vez de só ler? A [demo interativa](/demo) simula uma venda e mostra o imposto sendo separado, com os valores que você escolher.
+
 ## O que muda, em uma frase
 
 Hoje, o imposto que está embutido no preço entra na sua conta junto com o resto da venda, e você recolhe depois, na apuração do mês. Com o split payment, a parte do imposto (a CBS e o IBS, os dois tributos novos da Reforma Tributária) é separada no momento do pagamento e vai direto para o governo. Você recebe o valor já sem essa parte.

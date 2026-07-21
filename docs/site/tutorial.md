@@ -12,6 +12,8 @@ Você não precisa saber programar. Se nunca usou um terminal na vida, tudo bem:
 
 Você vai precisar de: um computador (macOS, Windows ou Linux), internet e 10 minutos.
 
+> Só quer ver o mecanismo sem instalar nada? A [demo interativa](/demo) roda no navegador.
+
 ## Passo 1: Abra o terminal
 
 O terminal é um programa onde você conversa com o computador digitando, em vez de clicando. Ele já vem instalado.

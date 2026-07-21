@@ -9,11 +9,16 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "drift-check": "node scripts/drift-check.mjs",
-    "site:dev": "vitepress dev docs/site",
-    "site:build": "node scripts/site-sync-readmes.mjs && vitepress build docs/site",
-    "site:preview": "vitepress preview docs/site"
+    "site:dev": "pnpm --filter @splitbr/client build && vitepress dev docs/site",
+    "site:build": "pnpm --filter @splitbr/client build && node scripts/site-sync-readmes.mjs && vitepress build docs/site",
+    "site:preview": "vitepress preview docs/site",
+    "test:site": "pnpm --filter @splitbr/client build && vitest run --config docs/site/vitest.config.ts"
   },
   "devDependencies": {
-    "vitepress": "1.6.4"
+    "vitepress": "1.6.4",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "@splitbr/client": "workspace:*"
   }
 }

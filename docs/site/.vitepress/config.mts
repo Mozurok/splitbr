@@ -11,6 +11,7 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: {
     nav: [
+      { text: "Demo", link: "/demo" },
       { text: "Guia", link: "/tutorial" },
       { text: "Entenda", link: "/split-payment" },
       { text: "Referência", link: "/referencia/client" },
@@ -20,6 +21,7 @@ export default defineConfig({
       {
         text: "Começar",
         items: [
+          { text: "Demo interativa", link: "/demo" },
           { text: "Split payment em português claro", link: "/split-payment" },
           { text: "Rode em 10 minutos", link: "/tutorial" },
         ],

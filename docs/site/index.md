@@ -7,14 +7,14 @@ hero:
   tagline: "A Reforma Tributária vai separar o imposto no momento do pagamento. Você não precisa ser PSP para usar isto: este toolkit deixa você entender, simular e integrar isso hoje, na sua máquina, de graça."
   actions:
     - theme: brand
+      text: Veja seu dinheiro se dividir
+      link: /demo
+    - theme: alt
       text: Entenda o split payment
       link: /split-payment
     - theme: alt
       text: Rode em 10 minutos
       link: /tutorial
-    - theme: alt
-      text: Ver no GitHub
-      link: https://github.com/Mozurok/splitbr
 
 features:
   - icon: 🏢
@@ -39,11 +39,13 @@ features:
     linkText: Ver novidades
 ---
 
-## Como o dinheiro passa a fluir
+## Veja o split payment acontecer
 
-<FluxoDinheiro />
+Antes de qualquer código ou conta, siga o passo a passo abaixo e veja o imposto ser separado no momento do pagamento. Depois, brinque com os valores você mesmo.
 
-Quer os detalhes em português claro? Leia [o guia completo](/split-payment).
+<DemoSplit />
+
+Quer os detalhes em português claro? Leia [o guia completo](/split-payment). Prefere rodar na sua máquina? Siga o [tutorial de 10 minutos](/tutorial).
 
 ## Por que este projeto existe
 

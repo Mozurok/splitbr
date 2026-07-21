@@ -9,6 +9,11 @@ export default defineConfig({
     "Toolkit open source do Split Payment brasileiro (IBS/CBS, LC 214/2025): client tipado, mock local da plataforma e guia em portugues claro",
   base: "/splitbr/",
   lastUpdated: true,
+  head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/splitbr/favicon.svg" }],
+    ["link", { rel: "icon", type: "image/png", sizes: "32x32", href: "/splitbr/favicon-32.png" }],
+    ["link", { rel: "apple-touch-icon", href: "/splitbr/apple-touch-icon.png" }],
+  ],
   themeConfig: {
     nav: [
       { text: "Guia", link: "/tutorial" },

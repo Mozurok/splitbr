@@ -2,6 +2,8 @@
 
 Toolkit open source de **Split Payment** do Brasil (IBS/CBS, LC 214/2025) para Node/TypeScript.
 
+[![@splitbr/client no npm](https://img.shields.io/npm/v/@splitbr/client?label=%40splitbr%2Fclient&color=cb3837)](https://www.npmjs.com/package/@splitbr/client) [![@splitbr/mock no npm](https://img.shields.io/npm/v/@splitbr/mock?label=%40splitbr%2Fmock&color=cb3837)](https://www.npmjs.com/package/@splitbr/mock)
+
 O split payment da Reforma Tributária segrega o tributo no momento do pagamento: a parcela de CBS/IBS vai direto ao fisco antes de o valor chegar ao vendedor. Isso afeta todo mundo que vende no Brasil, mas quase ninguém consegue ver o mecanismo funcionando, porque a Plataforma Pública é restrita a PSPs homologados. Este repositório abre essa caixa-preta para qualquer pessoa:
 
 - **Quer entender o que muda para a sua empresa?** Leia o [guia em português claro](docs/site/split-payment.md), sem código.
@@ -25,6 +27,8 @@ Roadmap (próxima fase, priorizada): validadores NF-e da NT 2025.002, que tocam 
 npm install @splitbr/client
 npx @splitbr/mock --port 8377
 ```
+
+Os dois estão publicados no npm: [@splitbr/client](https://www.npmjs.com/package/@splitbr/client) e [@splitbr/mock](https://www.npmjs.com/package/@splitbr/mock).
 
 ```ts
 import { createSplitClient } from "@splitbr/client";

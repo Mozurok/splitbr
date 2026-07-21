@@ -1,5 +1,7 @@
 # @splitbr/mock
 
+[![npm](https://img.shields.io/npm/v/@splitbr/mock?color=cb3837&label=npm)](https://www.npmjs.com/package/@splitbr/mock)
+
 Mock local da **Plataforma Pública do Split Payment** (IBS/CBS, LC 214/2025) para qualquer dev entender e testar o comportamento da plataforma. Você não precisa ser um PSP homologado (banco ou instituição de pagamento autorizada) para usar isto: o mock roda local, sem licença nenhuma.
 
 A plataforma real é restrita a PSPs homologados. Este mock reproduz o contrato oficial na sua máquina: os sete fluxos documentados, os quatro headers obrigatórios, a taxonomia de erros RFC 7807, a segregação em 3 passos e o streaming do Super Inteligente, mais um motor de caos e cenários que a plataforma real nunca vai te dar em homologação.

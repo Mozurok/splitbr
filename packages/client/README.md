@@ -1,5 +1,7 @@
 # @splitbr/client
 
+[![npm](https://img.shields.io/npm/v/@splitbr/client?color=cb3837&label=npm)](https://www.npmjs.com/package/@splitbr/client)
+
 > **Para quem é este pacote:** engenheiros integrando a Plataforma Pública diretamente, hoje PSPs (bancos e instituições de pagamento homologados) e provedores de conexão autorizados. Se você quer entender ou simular o split payment sem essa licença, comece pelo [@splitbr/mock](https://github.com/Mozurok/splitbr/tree/main/packages/mock) e pelo [guia em português claro](https://mozurok.github.io/splitbr/split-payment) do site.
 
 > Client TypeScript tipado para a Plataforma Pública do Split Payment (IBS/CBS, os dois tributos novos da Reforma Tributária, LC 214/2025), gerado a partir do OpenAPI oficial com hash pinado.

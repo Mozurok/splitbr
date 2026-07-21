@@ -58,6 +58,8 @@ O splitbr fecha esse buraco com dois pacotes testados e um princípio: o contrat
 | [@splitbr/mock](/referencia/mock) | A plataforma inteira rodando local, sem precisar de licença nenhuma: 7 fluxos, matrizes de campos como dados, segregação em 3 passos, long polling do Super Inteligente, motor de caos e divergências RSUP. |
 | [@splitbr/client](/referencia/client) | SDK TypeScript tipado da plataforma, para PSPs homologados (o pedaço de nicho do toolkit): tipos gerados do OpenAPI oficial, os 4 headers obrigatórios injetados, erros RFC 7807 tipados e a fórmula de segregação como função pura. |
 
+Os dois estão publicados no npm: [@splitbr/client](https://www.npmjs.com/package/@splitbr/client) e [@splitbr/mock](https://www.npmjs.com/package/@splitbr/mock).
+
 Roadmap: a prioridade são os validadores NF-e da NT 2025.002, porque tocam toda empresa que emite nota fiscal. Depois vêm o client da Calculadora oficial e um simulador de fluxo de caixa. A lista curada de fontes oficiais vive no [awesome-split-payment](https://github.com/Mozurok/awesome-split-payment).
 
 > Projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea, e nada aqui é aconselhamento jurídico ou tributário. Confira sempre a [fonte primária](/base-legal).

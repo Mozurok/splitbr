@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="mark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f59e0b"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M 28 0 L 0 0 0 28" fill="none" stroke="rgba(180,83,9,0.07)" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- badge: exact favicon mark, scaled 7.5x (32 -> 240) -->
+  <g transform="translate(90,195) scale(7.5)">
+    <rect width="32" height="32" rx="7" fill="url(#mark)"/>
+    <g fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 6 V15"/>
+      <path d="M16 15 L9.5 25"/>
+      <path d="M16 15 L22.5 25"/>
+    </g>
+  </g>
+
+  <text x="380" y="330" font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="108" font-weight="800" letter-spacing="-2" fill="#7c2d12">splitbr</text>
+  <text x="382" y="382" font-family="system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif" font-size="34" font-weight="500" fill="#57534e">Split Payment do Brasil, aberto e testável</text>
+</svg>

@@ -33,6 +33,12 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 
 Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: 4 manuais da familia Split Payment ainda nao publicados (Tempos, Redes, Seguranca, Onboarding).
 
+## Checagem manual extra
+
+Além da rotina agendada, `docs/watch-routine-prompt.md` tem um prompt pronto
+pra rodar essa mesma checklist por conta própria, quando quiser, como camada
+extra de garantia.
+
 ## Saída para o site (novidades)
 
 Decidido (D-8, 2026-07-20): quando a rotina de segunda-feira encontra diff vs a baseline vendorizada, ela abre um PR acrescentando uma entrada em `docs/site/novidades.md`, no contrato fixo daquela página: `## AAAA-MM-DD: <o que saiu>` seguido de 2 a 4 linhas (o que mudou, impacto em uma frase, link da fonte oficial), mais recente primeiro. O mantenedor revisa o PR e faz o merge; nada é publicado sem revisão humana. Semana sem mudança não gera PR nem entrada.

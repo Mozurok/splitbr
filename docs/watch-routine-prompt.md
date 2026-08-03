@@ -1,8 +1,9 @@
 # Prompt pronto: checagem manual da vigilância regulatória
 
 Complementa `docs/watch-routine.md` (a checklist e a rotina agendada, toda
-segunda) e `.github/workflows/drift.yml` (só compara hash de 3 specs
-OpenAPI). Este arquivo existe pra rodar a mesma checagem por conta própria,
+segunda) e `.github/workflows/drift.yml` (compara só 3 specs OpenAPI da
+Calculadora, por conteúdo normalizado, e não cobre o spec que gera os
+pacotes). Este arquivo existe pra rodar a mesma checagem por conta própria,
 quando quiser, como camada extra de garantia. Não substitui a rotina
 agendada, só reduz a chance de uma mudança passar despercebida entre um
 Monday e outro.
@@ -62,6 +63,15 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
 
 ## Histórico de execuções manuais
 
+- **2026-08-03**: DOIS ACHADOS. NT 2026.001 v1.02b (PAA), publicada em
+  31/07/2026, e o pacote de esquemas de eventos da NT 2025.002 v1.40 (RTC),
+  publicado em 27/07/2026: nenhum dos dois estava vendorado. Seguem iguais à
+  baseline: NT 2025.002 v1.50 (03/06/2026), IT 2025.002 v1.60 (23/06/2026),
+  esquemas 010e v1.02 e 010d v1.03 (10/07/2026), Calculadora em V0039
+  (08/07/2026, igual à linha do banco vendorado). CGIBS sem manual novo; os 4
+  manuais inéditos seguem inéditos. Contratos: portal e api-split MATCH, piloto
+  divergente (issue #1) e re-vendorado no mesmo dia. Próximo passo: vendorar os
+  dois artefatos novos (D-5 da task drift-detector-hardening).
 - **2026-07-22**: nada mudou. NT 2025.002 segue v1.50 (03/06/2026), IT
   2025.002 segue v1.60 (23/06/2026), esquemas 010e/010d seguem v1.02/v1.03
   (10/07/2026), Calculadora em V0039 (08/07/2026, anterior à captura

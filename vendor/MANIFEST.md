@@ -4,6 +4,8 @@ Pinned inventory of vendored official artifacts. Every file in vendor/ (except t
 
 Conventions: `Retrieved` is the date the artifact was obtained from its source. `[to be confirmed]` marks a source URL to pin down during P0 (Slice 2 or Slice 4). Calculadora artifacts: license `[unknown yet]`, pending Slice 4; do not redistribute or commit them publicly until that resolves.
 
+When a file carries more than one row, the row with the latest `Retrieved` date is the pinned one; the earlier rows stay as history. Rows are never overwritten or deleted, so a re-vendoring is always readable as a before and after from this file alone, without consulting git history.
+
 ## swagger/
 
 | File | Version | Source | Retrieved | SHA-256 |
@@ -11,11 +13,14 @@ Conventions: `Retrieved` is the date the artifact was obtained from its source. 
 | swagger/openapi-v0_0_10.json | OAS 3.1, API v0.0.10 | consumo.tributos.gov.br > menu > Manuais [exact URL to be confirmed] | 2026-07-19 | c5f60c849b22149d90ac2e3df6fcbe3ff9b0fb1f0c8b6463622fabb415629e2b |
 | swagger/calculadora-openapi.portal.json | OAS 3.1.0, info.version v0, 36 paths | https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/api-docs | 2026-07-20 | fc821c94dcfc3efebdddbbe033a0cdaeb0041a210e12111c169af7f452918c36 |
 | swagger/calculadora-openapi.piloto.json | OAS 3.1.0, info.version v0, 36 paths | https://piloto-cbs.tributos.gov.br/servico/calculadora-consumo/api/api-docs | 2026-07-20 | 7483d0029c985c46da901509977a1f4644e172d27168d4c53421202b468464be |
+| swagger/calculadora-openapi.piloto.json | OAS 3.1.0, info.version v0, 36 paths (re-vendorado apos o drift da issue #1; PINADO) | https://piloto-cbs.tributos.gov.br/servico/calculadora-consumo/api/api-docs | 2026-08-03 | 1ce6a0cb9a695669f751f9ab76d9068b4e82fbdd9df202d9fc61b58cd4b17ae0 |
 | swagger/calculadora-openapi.local.json | OAS 3.1.0, info.version v0, 37 paths (component api-regime-geral 1.2.4 via Docker) | http://localhost:18080/api/api-docs (container from calculadora/calculadora.tar.gz) | 2026-07-20 | 957593b74a81109fa66acfe570ab875225e620facf60f13258042220a075cf35 |
 | swagger/api-split-openapi.portal.json | OAS 3.1.0, info.version v0, 2 paths (Split Payment Simplificado) | https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api-split/api-docs | 2026-07-20 | 82c95912c1aed19ae77059a0b99afa42eb2f868bb198e9b9a74bf23581c9be42 |
 | swagger/api-split-openapi.local.json | OAS 3.1.0, info.version v0, 2 paths (api-split-payment-simplificado.jar via Docker, :8081/api) | http://localhost:18081/api/api-docs (container from calculadora/calculadora.tar.gz) | 2026-07-20 | 43ca11b929d01abecf4b249c4351cf56383ce5deaeda025135071bf5f43954d9 |
 
-Contract diff note (2026-07-20): portal and piloto share the same 36-path set but differ in content: piloto's cTribNac accepts 4 or 6 digits (`^\d{4}$|^\d{6}$`) while portal accepts only 4 (`^\d{4}$`), plus example-formatting differences; per the brief, prefer portal as the stable codegen reference and read piloto as change-anticipation. Local (1.2.4) adds `/versao/status` and has further minor diffs vs portal. api-split note: the hosted spec's `servers[0].url` stamps the responding backend instance's port (observed :11088 then :11011 an hour apart), so its byte hash is capture-specific; the local api-split spec is content-identical to the portal one after removing the servers block.
+Contract diff note (2026-07-20) **[SUPERSEDIDA em 2026-08-03, veja a nota abaixo; mantida como registro do que era verdade naquela data]**: portal and piloto share the same 36-path set but differ in content: piloto's cTribNac accepts 4 or 6 digits (`^\d{4}$|^\d{6}$`) while portal accepts only 4 (`^\d{4}$`), plus example-formatting differences; per the brief, prefer portal as the stable codegen reference and read piloto as change-anticipation.
+
+Contract diff note (2026-08-03, ATUAL): o piloto **convergiu para o portal**. O `cTribNac` do piloto agora aceita só 4 dígitos (`^\d{4}$`), igual ao portal, e a descrição do campo mudou junto ("4 ou 6 dígitos" virou "4 dígitos"). Ou seja, a divergência descrita na nota de 2026-07-20 deixou de existir, e na direção oposta à esperada: o piloto recuou para o comportamento do portal em vez de anteceder uma mudança dele. Portal e api-split seguem inalterados (verificado ao vivo em 2026-08-03). Uma segunda diferença apareceu no mesmo intervalo: no exemplo `Transferências CBS Example` de `/calculadora/dados-abertos/transferencias-cbs`, o valor deixou de ser um array JSON e virou uma string contendo JSON, e essa string tem vírgula sobrando, então não é JSON válido. É regressão de autoria upstream num exemplo, não mudança de schema, e não afeta geração de código. Detectado pelo workflow semanal (issue #1, run 30274464570). Local (1.2.4) adds `/versao/status` and has further minor diffs vs portal. api-split note: the hosted spec's `servers[0].url` stamps the responding backend instance's port (observed :11088 then :11011 an hour apart), so its byte hash is capture-specific; the local api-split spec is content-identical to the portal one after removing the servers block.
 
 ## manual/
 
@@ -28,6 +33,12 @@ Contract diff note (2026-07-20): portal and piloto share the same 36-path set bu
 | manual/30084927-res-cgibs-n-6-30-abr-2026-regulamenta-o-ibs.pdf | Resolucao CGIBS 6/2026 (30/04/2026) | https://www.cgibs.gov.br/upload/arquivos/202604/30084927-res-cgibs-n-6-30-abr-2026-regulamenta-o-ibs.pdf | 2026-07-19 | 9ed7032ef9c25bbee51bdb5e90f60e1ad01a2bf56cb41a28221c3db7f61d419a |
 
 ## nt/
+
+Captura de 2026-08-03 (D-5 da task drift-detector-hardening): dois artefatos publicados depois da baseline de 2026-07-20 foram vendorados, o pacote de esquemas de eventos RTC da NT 2025.002 v1.40 (27/07/2026) e a NT 2026.001 v1.02b (31/07/2026, PAA). Seguem CURRENT e inalterados desde a baseline: NT 2025.002 v1.50, IT 2025.002 v1.60, PL 010e v1.02, PL 010d v1.03.
+
+**Backlog conhecido, deliberadamente NAO vendorado nesta captura** (anterior a baseline, portanto lacuna de cobertura e nao drift; registrado aqui em vez de ficar silencioso): NT 2026.002 v1.00 e NT 2026.003 v1.00 (ambas de 25/05/2026, DANFE Simplificado Tipo 2 e Operacoes, assuntos fora do Split Payment) e o Pacote de Liberacao Distribuicao de DF-e v1.04 (03/07/2026). Vendorar quando algum deles passar a importar para o escopo do projeto.
+
+Aviso de coleta: os links `exibirArquivo.aspx?conteudo=<token>` do portal podem conter espaco no token (visto em 2026-08-03: `conteudo=kp0SXLu ZdI=`). Um extrator que corta no primeiro espaco produz URL errada em silencio; codifique o espaco como `%20` ou `%2B` (os dois retornam o mesmo arquivo). O portal tambem exige user-agent de navegador e cookie jar, senao devolve 302.
 
 All downloaded 2026-07-20 directly from the Portal NF-e via `exibirArquivo.aspx?conteudo=<token>` links on three listings: Notas Tecnicas (tipoConteudo=04BIflQt1aY=), Esquemas XML (tipoConteudo=BMPFMBoln3w=), Informes Tecnicos (tipoConteudo=hXzemuyNHW4=). Version notes vs plan: IT 2025.002 current is v1.60 (23/06/2026, matches the pending-table date the CFC deck announced; v1.50 kept for diffing, byte-identical to the previously scratchpad-held TOTVS mirror); latest NF-e/NFC-e schema package is 010e_v1.02 (10/07/2026), newer than the brief's 010b (also kept as baseline).
 
@@ -53,6 +64,8 @@ All downloaded 2026-07-20 directly from the Portal NF-e via `exibirArquivo.aspx?
 | nt/esquemas-pl-010d-v1.03-cnpj-alfanumerico.zip | PL 010d v1.03 (CNPJ alfanumerico, NT 2026.004 v1.01, 10/07/2026) | Portal NF-e Esquemas XML listing | 2026-07-20 | 45ceefe4dfbbfec93958283b650a2f1e1734784f4770d070b9907754de081d9b |
 | nt/esquemas-pl-010e-v1.02.zip | PL 010e v1.02 (NT 2025.002 v1.40 plus NT 2026.002/003, 10/07/2026, LATEST) | Portal NF-e Esquemas XML listing | 2026-07-20 | d44ae5aa6a0d1cabf6235d2d2d47b75be5dd87bc6b90a7ec3dcec99c3d41bda1 |
 | nt/esquemas-eventos-nt2025002-v1.30-rtc.zip | Schema dos eventos RTC (NT 2025.002 v1.30, upd. 2025) | Portal NF-e Esquemas XML listing | 2026-07-20 | e033e97cba218020ef492fc5af18a07eb4fd57d484ac3550ff331f01ae441783 |
+| nt/esquemas-eventos-nt2025002-v1.40-rtc.zip | Schema dos eventos RTC (NT 2025.002 v1.40, publicado 27/07/2026, CURRENT) | Portal NF-e Esquemas XML listing | 2026-08-03 | a4c57ce95b225cd8852f90bd6c39ca28ae551636ff3f67eb2602b9fa847129b2 |
+| nt/nt-2026-001-v1.02b.pdf | NT 2026.001 v1.02b (31/07/2026, PAA: Provedor de Assinatura e Autorizacao) | Portal NF-e NT listing | 2026-08-03 | 703310f95bff855aad9a4a7004515ce29ffff343334c53f0c45e9b32390296cd |
 
 ## calculadora/
 

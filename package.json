@@ -9,6 +9,7 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "drift-check": "node scripts/drift-check.mjs",
+    "test:scripts": "vitest run scripts/",
     "site:dev": "pnpm --filter @splitbr/client build && vitepress dev docs/site",
     "site:build": "pnpm --filter @splitbr/client build && node scripts/site-sync-readmes.mjs && vitepress build docs/site",
     "site:preview": "vitepress preview docs/site",

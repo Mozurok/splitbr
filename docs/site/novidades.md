@@ -15,11 +15,18 @@ Ordem: mais recente primeiro. Semana sem mudança não gera entrada.
 
 Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções do Comitê Gestor do IBS (CGIBS), publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
 
+## 2026-08-03: piloto da Calculadora converge para a produção; divergência do `cTribNac` acabou
+
+- O que mudou: no contrato do piloto, o campo `cTribNac` passou a aceitar só 4 dígitos (`^\d{4}$`), igual ao da produção, e a descrição do campo acompanhou. A divergência registrada aqui em 20/07/2026 deixou de existir, e na direção contrária à esperada: o piloto recuou para o comportamento da produção em vez de antecipar uma mudança dela. O contrato do piloto foi re-capturado e re-pinado no registro do splitbr.
+- Impacto: quem tratava o piloto como prévia de uma flexibilização do `cTribNac` não tem mais essa expectativa para observar; produção e piloto agora dizem a mesma coisa nesse campo. Nenhuma mudança nos pacotes `@splitbr/client` e `@splitbr/mock`, que são gerados de outro contrato.
+- Fonte: https://piloto-cbs.tributos.gov.br/servico/calculadora-consumo/api/api-docs e https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/api-docs
+
 ## 2026-07-20: OpenAPIs da Calculadora e do Split Simplificado capturados; divergência piloto vs portal
 
 - O que mudou: foram capturados e pinados no registro do splitbr (20/07/2026) os contratos OpenAPI da Calculadora de Tributos (produção e piloto, OAS 3.1.0, 36 rotas cada) e, pela primeira vez, o do Split Payment Simplificado (api-split, OAS 3.1.0, 2 rotas). Uma divergência de contrato entre piloto e produção foi documentada: no piloto, o campo `cTribNac` aceita 4 ou 6 dígitos; na produção (portal), só 4.
 - Impacto: a produção é a referência estável para o codegen; o piloto antecipa mudanças. Os percentuais do split simplificado seguem indefinidos oficialmente.
 - Fonte: https://consumo.tributos.gov.br/ (api-docs da Calculadora e do api-split)
+- Atualização: a divergência do `cTribNac` descrita acima acabou em 03/08/2026, quando o piloto convergiu para a produção. Veja a entrada de 2026-08-03.
 
 ## 2026-07-19: Manual de Integração v1.0 e contrato OpenAPI da API de Split verificados
 

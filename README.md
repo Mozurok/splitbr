@@ -45,7 +45,11 @@ Cada pacote tem README próprio com exemplos completos. O mock também roda via 
 
 ## Contrato oficial e drift
 
-Os artefatos oficiais (OAS v0.0.10, manuais, NTs) estão em `vendor/` com SHA-256 pinado em `vendor/MANIFEST.md`. Um workflow semanal compara os contratos hospedados com os vendorados por conteúdo normalizado; divergência quebra o build e vira issue, nunca atualização silenciosa. A Calculadora oficial não é redistribuída (a distribuição não declara licença); use `scripts/download-calculadora.sh`.
+Os artefatos oficiais (OAS v0.0.10, manuais, NTs) estão em `vendor/` com SHA-256 pinado em `vendor/MANIFEST.md`. Um workflow semanal compara os contratos hospedados da Calculadora com os vendorados por conteúdo normalizado; divergência vira issue, nunca atualização silenciosa. A Calculadora oficial não é redistribuída (a distribuição não declara licença); use `scripts/download-calculadora.sh`.
+
+A severidade é por alvo: portal e api-split reprovam o run tanto em divergência quanto em indisponibilidade; o piloto sinaliza sem reprovar, porque é infraestrutura de teste com janela até 31/12/2026 e mudar antes do portal é o comportamento esperado dele.
+
+**Limite de cobertura conhecido**: o contrato que gera `@splitbr/client` e `@splitbr/mock` é `vendor/swagger/openapi-v0_0_10.json`, e ele **não** é monitorado por esse workflow. Não existe endpoint público para compará-lo: as URLs candidatas de `api-docs` da plataforma redirecionam para login e o acesso é restrito a PSP homologado. A integridade local dele é garantida de outra forma, pelo hash pinado que `packages/client/scripts/codegen.mjs` confere antes de gerar os tipos; o que não temos é detecção automática de mudança upstream nesse arquivo. Mudanças nele dependem da [rotina semanal de acompanhamento](docs/watch-routine.md).
 
 ## Desenvolvimento
 
@@ -60,7 +64,7 @@ Monorepo pnpm: `pnpm install && pnpm -r build && pnpm -r test` (Node >= 22). Con
 
 Engineering notes:
 
-- The official contract is vendored with a **pinned SHA-256**; a weekly CI diffs the live contract against the vendored copy and **breaks the build on drift** instead of updating silently.
+- The official contracts are vendored with a **pinned SHA-256**; a weekly CI diffs the live Calculadora contracts against the vendored copies and **opens an issue on drift** instead of updating silently. Severity is per target: the production endpoints fail the run, the pilot one reports without failing (it is test infrastructure and moving ahead is its job). The spec the packages are generated from has no public endpoint to poll, so it is covered by a pinned-hash check at codegen time rather than by this workflow; that gap is stated above rather than left implied.
 - Money math is **integer cents only** (BigInt), never floating point, truncated toward zero to match the official rounding.
 - The interactive [demo](https://mozurok.github.io/splitbr/) computes every figure with the **same published function the SDK ships**, so it doubles as a live validation of the packages.
 

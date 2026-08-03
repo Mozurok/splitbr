@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import {
   TARGETS,
   diffSummary,
+  fetchLive,
   exitCodeFor,
   normalize,
   overallStatus,
@@ -181,6 +182,84 @@ describe("report", () => {
     const linhas = [];
     report([verdictFor(PORTAL, comSeisDigitos, reachable(soQuatroDigitos))], (l) => linhas.push(l));
     expect(linhas.join("\n")).not.toContain("não reprova");
+  });
+});
+
+// Adicionados apos o run 30833379724 reprovar por soluco de rede: os tres alvos
+// deram "fetch failed" enquanto outro runner falava com os mesmos endpoints 3s
+// antes, e o re-run do mesmo commit passou.
+describe("fetchLive: retry e causa do erro", () => {
+  const alvo = { name: "t", live: "https://exemplo/api-docs", severity: "fail" };
+  const semEspera = { esperaMs: 0, dormir: async () => {} };
+
+  it("erro de rede pontual e retentado e o sucesso na 2a tentativa vale", async () => {
+    let chamadas = 0;
+    const fake = async () => {
+      chamadas += 1;
+      if (chamadas === 1) throw Object.assign(new TypeError("fetch failed"), { cause: { code: "ECONNRESET" } });
+      return { ok: true, status: 200, json: async () => ({ a: 1 }) };
+    };
+    const r = await fetchLive(alvo, fake, semEspera);
+    expect(r.ok).toBe(true);
+    expect(r.doc).toEqual({ a: 1 });
+    expect(chamadas).toBe(2);
+  });
+
+  it("esgotadas as tentativas, devolve falha e conta quantas foram", async () => {
+    let chamadas = 0;
+    const fake = async () => {
+      chamadas += 1;
+      throw Object.assign(new TypeError("fetch failed"), { cause: { message: "getaddrinfo ENOTFOUND" } });
+    };
+    const r = await fetchLive(alvo, fake, { ...semEspera, tentativas: 3 });
+    expect(r.ok).toBe(false);
+    expect(chamadas).toBe(3);
+    expect(r.tentativas).toBe(3);
+    expect(verdictFor(alvo, { a: 1 }, r).detail).toContain("apos 3 tentativas");
+  });
+
+  it("a mensagem carrega a causa, nao so o 'fetch failed' generico", async () => {
+    const fake = async () => {
+      throw Object.assign(new TypeError("fetch failed"), { cause: { message: "certificate has expired" } });
+    };
+    const r = await fetchLive(alvo, fake, { ...semEspera, tentativas: 1 });
+    expect(r.error).toContain("fetch failed");
+    expect(r.error).toContain("certificate has expired");
+  });
+
+  it("404 NAO e retentado: resposta definitiva, insistir so atrasa o sinal", async () => {
+    let chamadas = 0;
+    const fake = async () => {
+      chamadas += 1;
+      return { ok: false, status: 404, json: async () => ({}) };
+    };
+    const r = await fetchLive(alvo, fake, semEspera);
+    expect(chamadas).toBe(1);
+    expect(r.error).toBe("HTTP 404");
+  });
+
+  it("500 e retentado, porque e transitorio do lado deles", async () => {
+    let chamadas = 0;
+    const fake = async () => {
+      chamadas += 1;
+      if (chamadas < 3) return { ok: false, status: 503, json: async () => ({}) };
+      return { ok: true, status: 200, json: async () => ({ b: 2 }) };
+    };
+    const r = await fetchLive(alvo, fake, semEspera);
+    expect(chamadas).toBe(3);
+    expect(r.ok).toBe(true);
+  });
+
+  it("corpo quebrado nao e retentado: o host respondeu, o contrato e que veio torto", async () => {
+    let chamadas = 0;
+    const fake = async () => {
+      chamadas += 1;
+      return { ok: true, status: 200, json: async () => { throw new SyntaxError("Unexpected token"); } };
+    };
+    const r = await fetchLive(alvo, fake, semEspera);
+    expect(chamadas).toBe(1);
+    expect(r.kind).toBe("parse");
+    expect(verdictFor(alvo, { a: 1 }, r).status).toBe("malformed");
   });
 });
 

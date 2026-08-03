@@ -95,7 +95,9 @@ export function verdictFor(target, vendoredDoc, liveResult) {
   }
   if (!liveResult || !liveResult.ok) {
     const status = liveResult?.kind === "parse" ? "malformed" : "unreachable";
-    return { ...base, status, detail: liveResult?.error ?? "sem resposta" };
+    const tentativas = liveResult?.tentativas;
+    const sufixo = tentativas && tentativas > 1 ? ` (apos ${tentativas} tentativas)` : "";
+    return { ...base, status, detail: `${liveResult?.error ?? "sem resposta"}${sufixo}` };
   }
   if (canonical(vendoredDoc) === canonical(liveResult.doc)) return { ...base, status: "match" };
   return { ...base, status: "drift", changed: diffSummary(vendoredDoc, liveResult.doc) };
@@ -156,19 +158,64 @@ export function readVendored(target) {
 // `kind` separa "nao consegui falar com o host" de "falei, respondeu 200, mas o
 // corpo nao e JSON". Sao problemas diferentes: um manda olhar a rede, o outro
 // manda olhar o contrato.
-export async function fetchLive(target, fetchImpl = fetch) {
-  let res;
-  try {
-    res = await fetchImpl(target.live, { signal: AbortSignal.timeout(30_000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  } catch (err) {
-    return { ok: false, kind: "fetch", error: err.message };
+// O fetch do Node sempre lanca com a mensagem generica "fetch failed"; o motivo
+// de verdade (DNS, TLS, ECONNREFUSED) fica em err.cause. Sem isso o log diz que
+// falhou e nao diz por que, que e exatamente o defeito que este script existe
+// para nao ter.
+export function descreveErroDeRede(err) {
+  const causa = err?.cause?.message ?? err?.cause?.code;
+  return causa ? `${err.message} (${causa})` : err.message;
+}
+
+// Uma falha de rede pontual nao e um contrato que sumiu. Em 2026-08-03 um run
+// reprovou com os tres alvos inalcancaveis enquanto outro runner falava com os
+// mesmos endpoints 3 segundos antes; o re-run do mesmo commit passou. Sem
+// retry, o detector reprova o build por soluco de rede, e detector que grita
+// lobo acaba silenciado.
+//
+// 4xx NAO e retentado de proposito: e resposta definitiva (a URL mudou ou
+// sumiu), e insistir so atrasa o sinal que queremos receber rapido.
+export const TENTATIVAS_PADRAO = 3;
+export const ESPERA_PADRAO_MS = 2000;
+
+export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
+  const {
+    tentativas = TENTATIVAS_PADRAO,
+    esperaMs = ESPERA_PADRAO_MS,
+    dormir = (ms) => new Promise((r) => setTimeout(r, ms)),
+  } = opts;
+
+  let ultimaFalha;
+  for (let tentativa = 1; tentativa <= tentativas; tentativa += 1) {
+    let res;
+    try {
+      res = await fetchImpl(target.live, { signal: AbortSignal.timeout(30_000) });
+    } catch (err) {
+      ultimaFalha = { ok: false, kind: "fetch", error: descreveErroDeRede(err), tentativas: tentativa };
+      if (tentativa < tentativas) {
+        await dormir(esperaMs);
+        continue;
+      }
+      return ultimaFalha;
+    }
+
+    if (!res.ok) {
+      const valeRetentar = res.status >= 500;
+      ultimaFalha = { ok: false, kind: "fetch", error: `HTTP ${res.status}`, tentativas: tentativa };
+      if (valeRetentar && tentativa < tentativas) {
+        await dormir(esperaMs);
+        continue;
+      }
+      return ultimaFalha;
+    }
+
+    try {
+      return { ok: true, doc: await res.json() };
+    } catch (err) {
+      return { ok: false, kind: "parse", error: `resposta ${res.status} nao e JSON valido: ${err.message}` };
+    }
   }
-  try {
-    return { ok: true, doc: await res.json() };
-  } catch (err) {
-    return { ok: false, kind: "parse", error: `resposta 200 nao e JSON valido: ${err.message}` };
-  }
+  return ultimaFalha;
 }
 
 const isMain =

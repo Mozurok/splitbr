@@ -15,6 +15,12 @@ Ordem: mais recente primeiro. Semana sem mudança não gera entrada.
 
 Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções do Comitê Gestor do IBS (CGIBS), publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
 
+## 2026-09-04: splitbr 0.2.0 acompanha o contrato v1.1.0
+
+- O que mudou: o `@splitbr/client` e o `@splitbr/mock` passaram a ser gerados do OpenAPI **v1.1.0**, publicado pelo CGIBS em 24/08/2026. É quebra de compatibilidade: os quatro headers obrigatórios deixaram de existir e entrou a assinatura `X-JWS-Signature` em todas as operações, as 12 rotas de stream mudaram de caminho, entraram as três rotas do Mecanismo de Ocorrências e vários campos foram renomeados ou mudaram de tipo. O mock agora simula o ciclo do MOC, incluindo a resposta da RFB/CGIBS.
+- Impacto: quem está na linha 0.1.x precisa migrar para integrar a plataforma real, porque o contrato antigo saiu da lista de versões correntes. O `^0.1.1` não puxa a 0.2.0 sozinho, então a atualização é deliberada. O passo a passo campo a campo está no [guia de migração](/migracao).
+- Fonte: https://www.cgibs.gov.br/split-payment
+
 ## 2026-08-31: Calculadora vai para o banco V0043 e sai o Pacote de Liberação 010f
 
 - O que mudou: o endpoint público de versão da Calculadora passou a responder `versaoApp` 1.3.1 e `versaoDb` V0043, datado de 31/08/2026, com a descrição oficial "Ajustes na vigência das tabelas CLASSIF_NBS_INDOP_LC e INDICADOR_OPERACAO_IBS_CBS". A referência anterior registrada aqui era o componente 1.2.4 com o banco V0039. No mesmo dia, o Portal NF-e publicou o Pacote de Liberação 010f (NT 2025.002 v1.50 e NT 2026.007 v1.00) e moveu o 010e v1.02 para a lista de versões em desuso.

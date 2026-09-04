@@ -32,7 +32,7 @@ As siglas do quadro: **IBS** (Imposto sobre Bens e Serviços) e **CBS** (Contrib
 | IT 2026.001 (tabela de meios de pagamento) | v1.01 | 25/08/2026 | [Portal NF-e, Informes Técnicos](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=hXzemuyNHW4=) |
 | Resolução CGIBS nº 6/2026 (regulamenta o IBS) | 6/2026 | 30/04/2026 | [PDF na CGIBS](https://www.cgibs.gov.br/upload/arquivos/202604/30084927-res-cgibs-n-6-30-abr-2026-regulamenta-o-ibs.pdf) |
 
-A distribuição offline da Calculadora vendorada no repositório (componente `api-regime-geral` 1.2.4, banco V0039, obtida em 10/07/2026) está atrás da produção desde 31/08/2026. O `@splitbr/client` e o `@splitbr/mock` continuam gerados do OpenAPI **v0.0.10**, não do v1.1.0: a migração é uma quebra de contrato e está em aberto.
+A distribuição offline da Calculadora vendorada no repositório (componente `api-regime-geral` 1.2.4, banco V0039, obtida em 10/07/2026) está atrás da produção desde 31/08/2026. Desde a versão 0.2.0, o `@splitbr/client` e o `@splitbr/mock` são gerados do OpenAPI **v1.1.0**. O [guia de migração](/migracao) cobre o que mudou para quem estava na 0.1.x.
 
 ## O que ainda não existe
 

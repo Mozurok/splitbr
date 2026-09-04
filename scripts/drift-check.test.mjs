@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import {
   TARGETS,
   diffSummary,
+  extrairInventario,
   fetchLive,
   exitCodeFor,
   normalize,
@@ -268,5 +269,78 @@ describe("diffSummary", () => {
     const changed = diffSummary(comSeisDigitos, soQuatroDigitos, 10);
     expect(changed.join("\n")).toContain("cTribNac");
     expect(diffSummary(comSeisDigitos, soQuatroDigitos, 0)).toHaveLength(0);
+  });
+});
+
+// O quarto alvo existe porque a premissa oposta custou 11 dias de deteccao: o
+// OAS v1.1.0 saiu em 24/08/2026 numa pagina publica que ninguem observava.
+describe("inventario de artefatos do CGIBS (quarto alvo)", () => {
+  const CGIBS = { name: "cgibs (teste)", severity: "fail", kind: "inventario-html" };
+  const pagina = (hrefs) =>
+    `<html><body>${hrefs.map((h) => `<a href="${h}">doc</a>`).join("")}</body></html>`;
+
+  it("extrai so os links de /upload/arquivos/, sem o host", () => {
+    const doc = extrairInventario(
+      pagina([
+        "https://www.cgibs.gov.br/upload/arquivos/202608/24154448-openapi-v1-1-0.zip",
+        "/upload/arquivos/202606/03172158-openapi-v0-0-10.zip",
+        "/institucional/quem-somos",
+      ]),
+    );
+    expect(Object.keys(doc.artefatos).sort()).toEqual([
+      "/upload/arquivos/202606/03172158-openapi-v0-0-10.zip",
+      "/upload/arquivos/202608/24154448-openapi-v1-1-0.zip",
+    ]);
+  });
+
+  it("artefato novo na pagina vira drift que reprova, nomeando o arquivo", () => {
+    const pinado = { artefatos: { "/upload/arquivos/202606/03172158-openapi-v0-0-10.zip": true } };
+    const vivo = extrairInventario(
+      pagina([
+        "/upload/arquivos/202606/03172158-openapi-v0-0-10.zip",
+        "/upload/arquivos/202608/24154448-openapi-v1-1-0.zip",
+      ]),
+    );
+    const v = verdictFor(CGIBS, pinado, reachable(vivo));
+    expect(v.status).toBe("drift");
+    expect(exitCodeFor([v])).not.toBe(0);
+    expect(v.changed.join(" ")).toContain("24154448-openapi-v1-1-0.zip");
+  });
+
+  it("a data de captura do arquivo pinado nao conta como conteudo", () => {
+    const pinado = {
+      _meta: {
+        descricao: "inventario",
+        fonte: "https://www.cgibs.gov.br/split-payment",
+        capturadoEm: "2026-09-04",
+      },
+      artefatos: { "/upload/arquivos/202606/x.zip": true },
+    };
+    const vivo = { artefatos: { "/upload/arquivos/202606/x.zip": true } };
+    expect(verdictFor(CGIBS, pinado, reachable(vivo)).status).toBe("match");
+  });
+
+  it("pagina sem nenhum artefato e corpo quebrado, nao inventario vazio", async () => {
+    // O desafio anti-bot do gov.br responde 200 com HTML. Aceitar isso como
+    // sucesso apagaria o inventario pinado inteiro no proximo re-pin.
+    const fetchImpl = async () => new Response("<html>Acesso negado</html>", { status: 200 });
+    const r = await fetchLive({ ...CGIBS, live: "https://exemplo" }, fetchImpl);
+    expect(r.ok).toBe(false);
+    expect(r.kind).toBe("parse");
+    expect(verdictFor(CGIBS, { artefatos: {} }, r).status).toBe("malformed");
+  });
+
+  it("o alvo esta registrado em TARGETS e reprova o run", () => {
+    const alvo = TARGETS.find((t) => t.kind === "inventario-html");
+    expect(alvo).toBeDefined();
+    expect(alvo.severity).toBe("fail");
+    expect(alvo.vendored).toBe("vendor/cgibs-split-payment-artefatos.json");
+  });
+
+  it("o inventario pinado no repo bate com o alvo declarado", () => {
+    const alvo = TARGETS.find((t) => t.kind === "inventario-html");
+    const pinado = spec(alvo.vendored);
+    expect(Object.keys(pinado.artefatos).length).toBeGreaterThan(0);
+    expect(pinado._meta.fonte).toBe(alvo.live);
   });
 });

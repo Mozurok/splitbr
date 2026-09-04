@@ -1,0 +1,30 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Os pacotes prometem engines node >= 22 no package.json. Testar so no
+        # 24 deixaria a promessa do 22 sem nenhuma evidencia por tras dela.
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r build
+      - run: pnpm -r typecheck
+      - run: pnpm -r test
+      # Os testes do detector de drift vivem em scripts/ e nao pertencem a
+      # nenhum pacote, entao `pnpm -r test` nao os alcanca.
+      - run: pnpm run test:scripts

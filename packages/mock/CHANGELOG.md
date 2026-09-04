@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 (2026-09-04)
+
+Release de vigilância: nenhuma mudança de comportamento, de rotas ou de dados. O que muda é o que o pacote diz sobre si.
+
+- Aviso no README: o contrato oficial da Plataforma saiu para a **v1.1.0** em 24/08/2026 e este mock continua reproduzindo a v0.0.10. A v1.1.0 renomeia as 12 rotas de stream, acrescenta 3 rotas do Mecanismo de Ocorrências, torna `X-JWS-Signature` obrigatório e retira o Pix Automático do Informe de Transação Atualizada. O mock segue fiel à v0.0.10 e continua servindo para aprender o mecanismo; a migração é um major bump e está em aberto.
+- `prepublishOnly` roda build, typecheck e testes antes de publicar.
+
 ## 0.1.0 (2026-07-21)
 
 - Mock local da Plataforma Publica do Split Payment (spec oficial OAS v0.0.10, pinado por hash).

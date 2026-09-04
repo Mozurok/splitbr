@@ -9,12 +9,20 @@
 // 31/12/2026, entao sinaliza sem reprovar. Falha de leitura do arquivo
 // vendorado e "setup-error": problema nosso, nao drift, e reprova sempre.
 //
-// Cobertura: os tres alvos abaixo NAO alimentam o codegen. O spec que gera
-// @splitbr/client e @splitbr/mock e vendor/swagger/openapi-v0_0_10.json, que
-// nao tem endpoint publico (as URLs candidatas redirecionam para /login/ e o
-// acesso a plataforma e PSP-only), entao nao ha como monitora-lo aqui. A
-// integridade local dele e garantida pelo hash pinado em
-// packages/client/scripts/codegen.mjs. Gap declarado por D-4.
+// Cobertura: os tres primeiros alvos NAO alimentam o codegen. O spec que gera
+// @splitbr/client e @splitbr/mock e vendor/swagger/openapi-v0_0_10.json.
+//
+// Ate 2026-09-04 este comentario afirmava que nao havia fonte publica para ele
+// e que por isso nao dava para monitora-lo (o gap D-4). A afirmacao era falsa:
+// o CGIBS publica o OAS em https://www.cgibs.gov.br/split-payment, sem login e
+// sem mTLS, e o zip de la e byte-identico ao vendorado. O custo de acreditar
+// nisso foi medido: o v1.1.0 saiu em 24/08/2026 e passou 11 dias sem deteccao.
+// O quarto alvo abaixo fecha o buraco.
+//
+// Ele nao compara o OAS por conteudo, e sim o INVENTARIO de artefatos da
+// pagina, porque o nome de cada arquivo carrega o timestamp de upload
+// (202608/24154448-...), entao a URL de um arquivo nunca e alvo estavel. A
+// pagina e. Artefato novo publicado ali vira chave a mais no diff.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -40,7 +48,35 @@ export const TARGETS = [
     live: "https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api-split/api-docs",
     severity: "fail",
   },
+  {
+    name: "inventario de artefatos do Split Payment (CGIBS)",
+    vendored: "vendor/cgibs-split-payment-artefatos.json",
+    live: "https://www.cgibs.gov.br/split-payment",
+    severity: "fail",
+    kind: "inventario-html",
+  },
 ];
+
+// Servidor gov.br costuma recusar ou desafiar cliente sem user-agent de
+// navegador; o do Node basta para tomar 403 ou um HTML de challenge.
+export const USER_AGENT =
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
+
+// A pagina do CGIBS responde HTML. Extrair os links de /upload/arquivos/ e
+// trata-los como um documento JSON deixa a maquinaria de comparacao inteira
+// (normalize, canonical, diffSummary) valer para ela sem nenhum caso especial:
+// um artefato novo aparece no relatorio como "(so no vivo)", igual a uma chave
+// nova de schema. O host e removido para o inventario nao virar drift se o
+// CGIBS trocar de dominio ou alternar http/https.
+export function extrairInventario(html) {
+  const artefatos = {};
+  const re = /href=["']([^"']*\/upload\/arquivos\/[^"']+)["']/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    artefatos[m[1].replace(/^https?:\/\/[^/]+/, "")] = true;
+  }
+  return { artefatos };
+}
 
 function sortDeep(value) {
   if (Array.isArray(value)) return value.map(sortDeep);
@@ -57,7 +93,11 @@ function sortDeep(value) {
 // contrato e continua sendo comparado.
 export function normalize(doc) {
   if (!doc || typeof doc !== "object" || Array.isArray(doc)) return sortDeep(doc);
-  const { servers: _instanciaQueRespondeu, ...semServersNaRaiz } = doc;
+  // _meta guarda os metadados do arquivo pinado do inventario (de onde veio,
+  // quando foi capturado). Nao e conteudo do alvo: comparar a data de captura
+  // daria drift em toda execucao. O prefixo _ existe para nao colidir com uma
+  // chave real de contrato, que "fonte" ou "capturadoEm" poderiam ser.
+  const { servers: _instanciaQueRespondeu, _meta: _metadados, ...semServersNaRaiz } = doc;
   return sortDeep(semServersNaRaiz);
 }
 
@@ -189,7 +229,13 @@ export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
   for (let tentativa = 1; tentativa <= tentativas; tentativa += 1) {
     let res;
     try {
-      res = await fetchImpl(target.live, { signal: AbortSignal.timeout(30_000) });
+      res = await fetchImpl(target.live, {
+        signal: AbortSignal.timeout(30_000),
+        headers: {
+          "user-agent": USER_AGENT,
+          accept: target.kind === "inventario-html" ? "text/html" : "application/json",
+        },
+      });
     } catch (err) {
       ultimaFalha = { ok: false, kind: "fetch", error: descreveErroDeRede(err), tentativas: tentativa };
       if (tentativa < tentativas) {
@@ -210,6 +256,17 @@ export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
     }
 
     try {
+      if (target.kind === "inventario-html") {
+        const html = await res.text();
+        const doc = extrairInventario(html);
+        // Zero artefato quase sempre significa pagina de erro ou desafio
+        // anti-bot devolvido com 200, nao "o CGIBS apagou tudo". Tratar como
+        // corpo quebrado evita apagar o inventario pinado por causa disso.
+        if (Object.keys(doc.artefatos).length === 0) {
+          return { ok: false, kind: "parse", error: `resposta ${res.status} nao lista nenhum artefato (pagina de erro ou desafio anti-bot?)` };
+        }
+        return { ok: true, doc };
+      }
       return { ok: true, doc: await res.json() };
     } catch (err) {
       return { ok: false, kind: "parse", error: `resposta ${res.status} nao e JSON valido: ${err.message}` };

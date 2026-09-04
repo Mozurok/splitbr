@@ -15,6 +15,30 @@ Ordem: mais recente primeiro. Semana sem mudança não gera entrada.
 
 Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções do Comitê Gestor do IBS (CGIBS), publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
 
+## 2026-08-31: Calculadora vai para o banco V0043 e sai o Pacote de Liberação 010f
+
+- O que mudou: o endpoint público de versão da Calculadora passou a responder `versaoApp` 1.3.1 e `versaoDb` V0043, datado de 31/08/2026, com a descrição oficial "Ajustes na vigência das tabelas CLASSIF_NBS_INDOP_LC e INDICADOR_OPERACAO_IBS_CBS". A referência anterior registrada aqui era o componente 1.2.4 com o banco V0039. No mesmo dia, o Portal NF-e publicou o Pacote de Liberação 010f (NT 2025.002 v1.50 e NT 2026.007 v1.00) e moveu o 010e v1.02 para a lista de versões em desuso.
+- Impacto: quem roda a Calculadora offline está com as tabelas de vigência de NBS e de indicador de operação atrás da produção e deve reinstalar. Quem valida XML de NF-e ou NFC-e contra esquema precisa migrar do 010e v1.02 para o 010f.
+- Fonte: [endpoint de versão da Calculadora](https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao) e [Esquemas XML no Portal NF-e](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w=)
+
+## 2026-08-25: NT 2026.006 amarra a NF-e à transação de split payment
+
+- O que mudou: o Portal NF-e publicou a NT 2026.006 v1.00, que cria o grupo YC na NF-e e NFC-e e o evento 110300, para vincular o documento fiscal à transação financeira sujeita ao split payment. No mesmo dia saiu o IT 2026.001 v1.01, com a tabela de meios de pagamento usada nessa vinculação. Implantação em homologação em 05/10/2026 e em produção em 03/11/2026.
+- Impacto: é a peça que faltava entre a camada NF-e e a Plataforma Pública. Sem a vinculação não há como apurar corretamente o débito do fornecedor nem conceder o crédito ao adquirente, então quem emite nota e quem processa pagamento passam a compartilhar um contrato comum.
+- Fonte: [Notas Técnicas](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=) e [Informes Técnicos](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=hXzemuyNHW4=) no Portal NF-e
+
+## 2026-08-24: contrato da Plataforma Pública vai para a v1.1.0 e quebra o v0.0.10
+
+- O que mudou: o CGIBS publicou o OpenAPI **v1.1.0** da Plataforma Pública de Split Payment junto com o Manual de Integração v1.1.0, e moveu o v0.0.10 para "versões anteriores". A mudança quebra o contrato: as 12 rotas de stream trocaram `{idPsp}/tributos` por `{cnpjRaizPspRecDir}/transacoes`, entraram três rotas do Mecanismo de Ocorrências (`/api/v1/moc/*`), o header `X-JWS-Signature` passou a ser obrigatório nas 43 operações e os schemas foram de 57 para 78, com 33 dos 55 comuns alterados. O manual acrescenta ainda que o Informe de Transação Atualizada perdeu o Pix Automático, que `numCodBarras` ficou fixo em 44 caracteres e que `dtHrRepasse` ganhou prazo-limite de envio.
+- Impacto: quem integra a plataforma real precisa migrar. O `@splitbr/client` e o `@splitbr/mock` continuam gerados do v0.0.10 e, portanto, implementam o contrato anterior; o v1.1.0 já está vendorado no repositório, mas a migração é um major bump nos dois pacotes e ainda está em aberto.
+- Fonte: [página do Split Payment no CGIBS](https://www.cgibs.gov.br/split-payment)
+
+## 2026-08-04: NT 2025.002 sai para a v1.51
+
+- O que mudou: a NT 2025.002 chegou à versão 1.51, com alteração de regras de validação (entre elas UB13-30, UB13-40, UB18-10, UB22-20 e VC02-30) e mudança no cronograma de implantação da UB12-10. A v1.50, de 03/06/2026, saiu da lista de documentos vigentes. A aprovação veio pelo Ato Técnico Conjunto RFB/CGIBS nº 1, de 31/07/2026, um veículo novo: as notas técnicas de Reforma Tributária passaram a ser formalmente aprovadas por esse tipo de ato.
+- Impacto: quem valida NF-e contra as regras da NT precisa conferir a lista de validações alteradas antes das datas de corte de 01/09/2026 e 05/10/2026.
+- Fonte: [Notas Técnicas no Portal NF-e](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=)
+
 ## 2026-08-03: piloto da Calculadora converge para a produção; divergência do `cTribNac` acabou
 
 - O que mudou: no contrato do piloto, o campo `cTribNac` passou a aceitar só 4 dígitos (`^\d{4}$`), igual ao da produção, e a descrição do campo acompanhou. A divergência registrada aqui em 20/07/2026 deixou de existir, e na direção contrária à esperada: o piloto recuou para o comportamento da produção em vez de antecipar uma mudança dela. O contrato do piloto foi re-capturado e re-pinado no registro do splitbr.

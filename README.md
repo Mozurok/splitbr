@@ -45,11 +45,22 @@ Cada pacote tem README próprio com exemplos completos. O mock também roda via 
 
 ## Contrato oficial e drift
 
-Os artefatos oficiais (OAS v0.0.10, manuais, NTs) estão em `vendor/` com SHA-256 pinado em `vendor/MANIFEST.md`. Um workflow semanal compara os contratos hospedados da Calculadora com os vendorados por conteúdo normalizado; divergência vira issue, nunca atualização silenciosa. A Calculadora oficial não é redistribuída (a distribuição não declara licença); use `scripts/download-calculadora.sh`.
+Os artefatos oficiais (o OAS da Plataforma, manuais, NTs) estão em `vendor/` com SHA-256 pinado em `vendor/MANIFEST.md`. Um workflow semanal compara quatro alvos com os vendorados: os três contratos hospedados da família Calculadora, por conteúdo normalizado, e o inventário de artefatos da [página do Split Payment no CGIBS](https://www.cgibs.gov.br/split-payment), que é onde o contrato da Plataforma é publicado. Divergência vira issue, nunca atualização silenciosa. A Calculadora oficial não é redistribuída (a distribuição não declara licença); use `scripts/download-calculadora.sh`.
 
 A severidade é por alvo: portal e api-split reprovam o run tanto em divergência quanto em indisponibilidade; o piloto sinaliza sem reprovar, porque é infraestrutura de teste com janela até 31/12/2026 e mudar antes do portal é o comportamento esperado dele.
 
-**Limite de cobertura conhecido**: o contrato que gera `@splitbr/client` e `@splitbr/mock` é `vendor/swagger/openapi-v0_0_10.json`, e ele **não** é monitorado por esse workflow. Não existe endpoint público para compará-lo: as URLs candidatas de `api-docs` da plataforma redirecionam para login e o acesso é restrito a PSP homologado. A integridade local dele é garantida de outra forma, pelo hash pinado que `packages/client/scripts/codegen.mjs` confere antes de gerar os tipos; o que não temos é detecção automática de mudança upstream nesse arquivo. Mudanças nele dependem da [rotina semanal de acompanhamento](docs/watch-routine.md).
+### O contrato da Plataforma está em v1.1.0; os pacotes ainda geram do v0.0.10
+
+Em 24/08/2026 o CGIBS publicou o **OpenAPI v1.1.0** da Plataforma Pública, pareado com o Manual de Integração v1.1.0, e moveu o v0.0.10 para "versões anteriores". A mudança quebra o contrato:
+
+- as 12 rotas de stream trocaram `{idPsp}/tributos` por `{cnpjRaizPspRecDir}/transacoes`;
+- entraram 3 rotas do Mecanismo de Ocorrências (`/api/v1/moc/*`);
+- o header `X-JWS-Signature` virou obrigatório nas 43 operações;
+- os schemas foram de 57 para 78, com 33 dos 55 comuns alterados.
+
+O v1.1.0 está vendorado aqui (`vendor/swagger/openapi-v1_1_0.json`), mas **ainda não alimenta o codegen**: `@splitbr/client` e `@splitbr/mock` continuam gerados do v0.0.10 e, portanto, implementam o contrato anterior. Migrar é um major bump nos dois pacotes e tem task própria. Até lá, quem integra a plataforma real deve ler o v1.1.0 como fonte da verdade.
+
+**Correção de rota, registrada de propósito**: até 04/09/2026 este README afirmava que não existia fonte pública para esse contrato e que por isso ele não era monitorável. Era falso. O CGIBS publica o OAS numa página aberta, sem login e sem mTLS, e o zip de lá é byte-idêntico ao que já estava vendorado. O custo do engano foi medido: o v1.1.0 ficou 11 dias sem detecção. O detector agora observa aquela página como quarto alvo.
 
 ## Desenvolvimento
 
@@ -64,7 +75,8 @@ Monorepo pnpm: `pnpm install && pnpm -r build && pnpm -r test` (Node >= 22). Con
 
 Engineering notes:
 
-- The official contracts are vendored with a **pinned SHA-256**; a weekly CI diffs the live Calculadora contracts against the vendored copies and **opens an issue on drift** instead of updating silently. Severity is per target: the production endpoints fail the run, the pilot one reports without failing (it is test infrastructure and moving ahead is its job). The spec the packages are generated from has no public endpoint to poll, so it is covered by a pinned-hash check at codegen time rather than by this workflow; that gap is stated above rather than left implied.
+- The official contracts are vendored with a **pinned SHA-256**; a weekly CI diffs four targets against the vendored copies and **opens an issue on drift** instead of updating silently: the three live Calculadora contracts, by normalised content, plus the artifact inventory of the [CGIBS Split Payment page](https://www.cgibs.gov.br/split-payment), which is where the Platform contract itself is published. Severity is per target: the production endpoints fail the run, the pilot one reports without failing (it is test infrastructure and moving ahead is its job).
+- **The Platform contract moved to v1.1.0 on 2026-08-24; the packages still generate from v0.0.10.** The new spec renames all 12 stream routes (`{idPsp}/tributos` to `{cnpjRaizPspRecDir}/transacoes`), adds 3 Mechanism-of-Occurrences routes, makes the `X-JWS-Signature` header required on all 43 operations, and grows the schema set from 57 to 78. v1.1.0 is vendored here but does not feed codegen yet: migrating is a major bump for both packages and has its own task. Until then, treat v1.1.0 as the source of truth if you integrate the real platform. Until 2026-09-04 this README claimed that spec had no public endpoint and so could not be monitored; that was false, and the error cost 11 days of undetected drift.
 - Money math is **integer cents only** (BigInt), never floating point, truncated toward zero to match the official rounding.
 - The interactive [demo](https://mozurok.github.io/splitbr/) computes every figure with the **same published function the SDK ships**, so it doubles as a live validation of the packages.
 

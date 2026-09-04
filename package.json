@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r test && pnpm run test:scripts",
     "drift-check": "node scripts/drift-check.mjs",
     "test:scripts": "vitest run scripts/",
     "site:dev": "pnpm --filter @splitbr/client build && vitepress dev docs/site",

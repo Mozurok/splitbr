@@ -7,12 +7,13 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 
 1. CGIBS publications (Manual de Operacoes revisions, resolucoes, the 4 unpublished manuals)
    - URL: https://www.cgibs.gov.br/ (documents land under `https://www.cgibs.gov.br/upload/arquivos/<YYYYMM>/...`)
-   - Watch for: Manual de Tempos, Manual de Redes, Manual de Seguranca, Manual de Onboarding (none public as of 2026-07-20); Manual de Operacoes leaving minuta status; new resolucoes.
+   - **Split Payment page: https://www.cgibs.gov.br/split-payment** — this is where the Platform's OpenAPI and the Manual de Integracao are published, both without login. It is now the fourth `drift-check.mjs` target (pinned inventory in `vendor/cgibs-split-payment-artefatos.json`), but check it by eye too: the detector compares the artifact list, not the contents of a re-uploaded file.
+   - Watch for: Manual de Redes, Manual de Seguranca, Manual de Onboarding (none public as of 2026-09-04); Manual de Operacoes (minuta jun/2026) and Manual de Tempos (minuta 15/07/2026) leaving minuta status; new resolucoes (the series already runs to at least 17, and only 6/2026 is vendored); new **Ato Tecnico Conjunto RFB/CGIBS**, the instrument that now formally approves RTC notes.
 
 2. Portal NF-e Notas Tecnicas listing (NT/IT revisions)
    - URL: https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=
    - Schemas sibling page: https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w=
-   - Watch for: NT 2025.002 past v1.50 (03/06/2026, still current as of 2026-08-03); IT 2025.002 past v1.60 (23/06/2026, vendored); NT 2026.001 (PAA, v1.02b published 31/07/2026, NOT yet vendored); new Pacote de Liberacao past 010e v1.02 / 010d v1.03 (both 10/07/2026, vendored); new RTC events schema past the v1.30-era package (a v1.40 events package was published 27/07/2026 and is NOT yet vendored).
+   - Watch for (state as of 2026-09-04, all vendored unless said otherwise): NT 2025.002 past **v1.51** (04/08/2026); IT 2025.002 past v1.60 (23/06/2026); NT 2026.001 v1.02b (31/07/2026); NT 2026.006 v1.00 (25/08/2026, NF-e to split-payment transaction binding); IT 2026.001 v1.01 (25/08/2026); new Pacote de Liberacao past **010f v1.04** (31/08/2026) and past 010d v1.03 (10/07/2026); RTC events schema v1.40 (27/07/2026).
    - Access note: these listing pages do an ASP.NET cookie redirect and return HTTP 302 to a plain fetch. Use a browser user-agent plus a cookie jar before concluding a source is down: `curl -sL -c cj.txt -b cj.txt -A "Mozilla/5.0 ..." "<url>"`. The same warning, with the exact command, is in `watch-routine-prompt.md`; treating an empty result as "nothing published" is a recorded past failure of this routine.
 
 3. Receita Federal news (atos conjuntos, manual releases, Calculadora announcements)
@@ -22,17 +23,29 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 4. Calculadora content-version endpoint (normative DB updates delivered to local installs)
    - URL: https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao
    - Quick check: `curl -s https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao`
-   - Watch for: version bump vs the vendored component (api-regime-geral 1.2.4, DB retrieved 2026-07-10); a bump means re-capture specs and re-check the CST x cClassTrib tables.
+   - Watch for: version bump vs production, which was app **1.3.1-0e46e51f** and DB **V0043** on 2026-08-31. The vendored offline distribution is behind it (component 1.2.4, DB V0039, retrieved 2026-07-10) and re-downloading it is open work. A bump means re-capture specs and re-check the CST x cClassTrib tables.
 
 ## On finding something new
 
 1. Capture it: run `capture-references` with the URL (project bmazurok__splitbr) so REFERENCES.md stays the audit trail.
 2. If it invalidates a vendored artifact: open or extend a task to re-vendor with a new MANIFEST.md row (never overwrite rows silently).
-3. If it is one of the 4 unpublished manuals: that is a headline event; open a dedicated task (auth details, SLAs, and onboarding checklists land there).
+3. If it is one of the 3 still-unpublished manuals (Redes, Seguranca, Onboarding): that is a headline event; open a dedicated task (auth details, SLAs, and onboarding checklists land there).
 
 ## Trigger mechanism
 
-Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: 4 manuais da familia Split Payment ainda nao publicados (Tempos, Redes, Seguranca, Onboarding).
+Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: 3 manuais da familia Split Payment ainda nao publicados (Redes, Seguranca, Onboarding). O Manual de Tempos saiu como minuta em 15/07/2026 e esta vendorado.
+
+## Estado da rotina (auditado em 2026-09-04)
+
+A auditoria de 2026-09-04 respondeu, com evidência, a pergunta que estava em aberto desde agosto: **a rotina não cobria o artefato mais importante do projeto, por causa de uma premissa falsa registrada no próprio código.**
+
+- O `drift-check.mjs` afirmava, num comentário, que o OAS que gera os pacotes não tinha fonte pública e que por isso não dava para monitorá-lo (o gap D-4). O `README.md` repetia a mesma coisa. Era falso: https://www.cgibs.gov.br/split-payment serve o zip do OAS sem login e sem mTLS, e o arquivo de lá é byte-idêntico ao vendorado desde julho.
+- O custo foi medido: o **OpenAPI v1.1.0** saiu em 24/08/2026 e passou **11 dias** sem detecção, junto com o Manual de Integração v1.1.0. Nenhuma das duas publicações apareceu em issue, PR ou entrada de novidades.
+- Outros quatro artefatos publicados entre 04/08 e 31/08 também passaram batido: NT 2025.002 v1.51, NT 2026.006, IT 2026.001 e o PL 010f.
+- O que já funcionava: o detector automático pegou o drift do contrato de produção da Calculadora e abriu a issue #6 em 31/08/2026. Ela ficou 4 dias sem tratamento, o que é falha de resposta, não de detecção.
+- Correção aplicada nesta data: quarto alvo no `drift-check.mjs`, apontado para o inventário de artefatos daquela página, com o inventário pinado em `vendor/cgibs-split-payment-artefatos.json` e 6 testes cobrindo o comportamento. Artefato novo publicado ali agora reprova o run.
+
+A lição vale além deste caso: **uma limitação declarada em comentário nunca tinha sido verificada**. Ela virou verdade porque foi escrita com confiança, e sobreviveu a várias revisões porque ninguém testa um comentário. Quando um artefato afirma que algo é impossível, o barato é gastar cinco minutos tentando fazer.
 
 ## Estado da rotina (auditado em 2026-08-03)
 

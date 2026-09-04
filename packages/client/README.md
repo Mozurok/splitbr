@@ -8,6 +8,8 @@
 
 **Avisos:** esta biblioteca não é aconselhamento jurídico nem tributário. Não tem afiliação com RFB, CGIBS, Serpro ou Núclea. O comportamento deriva de especificações oficiais públicas (spec v0.0.10, pré-1.0) e pode mudar; confira sempre a fonte primária.
 
+> ⚠️ **O contrato oficial está na v1.1.0; este pacote ainda gera da v0.0.10.** Em 24/08/2026 o CGIBS publicou o OpenAPI v1.1.0 da Plataforma e moveu a v0.0.10 para "versões anteriores". A mudança quebra o contrato: as 12 rotas de stream trocaram `{idPsp}/tributos` por `{cnpjRaizPspRecDir}/transacoes`, entraram 3 rotas do Mecanismo de Ocorrências, o header `X-JWS-Signature` virou obrigatório em todas as operações e os schemas foram de 57 para 78. **Se você integra a plataforma real, leia a [v1.1.0](https://www.cgibs.gov.br/split-payment) como fonte da verdade.** A migração deste pacote é um major bump e está em aberto; acompanhe pelo [repositório](https://github.com/Mozurok/splitbr).
+
 ## O que vem dentro
 
 - **Client tipado** para os 32 endpoints da plataforma (todos os arranjos da Etapa 1: boleto, Pix Dinâmico/Automático/Estático, TED, TEF), sobre [openapi-fetch].

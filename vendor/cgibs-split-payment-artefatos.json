@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "descricao": "Inventario pinado dos artefatos linkados na pagina oficial do Split Payment no CGIBS. O nome de cada arquivo carrega o timestamp de upload, entao a URL de um arquivo nao e alvo estavel; a pagina e. Um artefato novo publicado ali aparece aqui como chave a mais no vivo. Regenerar com: node scripts/drift-check.mjs --pin-cgibs",
+    "fonte": "https://www.cgibs.gov.br/split-payment",
+    "capturadoEm": "2026-09-04"
+  },
+  "artefatos": {
+    "/upload/arquivos/202606/03153733-manual-de-integracao-plataforma-publica-de-split-payment-v1.pdf": true,
+    "/upload/arquivos/202606/03172158-openapi-v0-0-10.zip": true,
+    "/upload/arquivos/202606/30145925-minuta-split-payment-manual-de-operacoes.pdf": true,
+    "/upload/arquivos/202607/20150141-20260715-fin-split-payment-manual-de-tempos-minuta.docx": true,
+    "/upload/arquivos/202608/24154349-20260811-manual-de-integracao-plataforma-publica-split-payment-revisao-fin.pdf": true,
+    "/upload/arquivos/202608/24154448-openapi-v1-1-0.zip": true
+  }
+}

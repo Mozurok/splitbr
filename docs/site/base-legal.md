@@ -70,7 +70,7 @@ Dois fatos de contrato do Manual de Integração ajudam a situar quem entra ness
 
 ## O que ainda não foi publicado
 
-A família documental do Split Payment tem 6 manuais. Até jul/2026, o Manual de Integração já está em versão final (v1.0) e o Manual de Operações existe apenas como minuta (jun/2026). Os outros quatro ainda não saíram: os Manuais de Tempos, de Redes, de Segurança e de Onboarding. Acompanhe o [CGIBS](https://www.cgibs.gov.br/) para as próximas publicações.
+A família documental do Split Payment tem 6 manuais. Em set/2026, o Manual de Integração está na v1.1.0 (agosto/2026, que substituiu a v1.0 e trouxe o Mecanismo de Ocorrências, os headers padrão com assinatura `X-JWS-Signature` obrigatória e os requisitos de rastreabilidade). O Manual de Operações (jun/2026) e o Manual de Tempos (15/07/2026) circulam como minuta. Faltam três: os Manuais de Redes, de Segurança e de Onboarding. Acompanhe a [página do Split Payment no CGIBS](https://www.cgibs.gov.br/split-payment) para as próximas publicações.
 
 ## Para ir além
 

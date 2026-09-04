@@ -1,6 +1,6 @@
 {
   "name": "@splitbr/client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Client TypeScript tipado para a Plataforma Publica do Split Payment (IBS/CBS, LC 214/2025)",
   "license": "MIT",
   "type": "module",
@@ -22,6 +22,7 @@
     "CHANGELOG.md"
   ],
   "scripts": {
+    "prepublishOnly": "pnpm run build && pnpm run typecheck && pnpm run test",
     "build": "tsdown",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json",

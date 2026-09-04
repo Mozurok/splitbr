@@ -1,8 +1,9 @@
 # Prompt pronto: checagem manual da vigilância regulatória
 
 Complementa `docs/watch-routine.md` (a checklist e a rotina agendada, toda
-segunda) e `.github/workflows/drift.yml` (compara só 3 specs OpenAPI da
-Calculadora, por conteúdo normalizado, e não cobre o spec que gera os
+segunda) e `.github/workflows/drift.yml` (compara os 3 specs OpenAPI da
+Calculadora por conteúdo normalizado, mais o inventário de artefatos da página
+do Split Payment no CGIBS, que desde 04/09/2026 cobre o contrato que gera os
 pacotes). Este arquivo existe pra rodar a mesma checagem por conta própria,
 quando quiser, como camada extra de garantia. Não substitui a rotina
 agendada, só reduz a chance de uma mudança passar despercebida entre um
@@ -24,9 +25,16 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
    artefato em nt/, manual/, swagger/ e o db da calculadora.
 
 2. Verifique estas fontes, nesta ordem, e compare com a baseline:
-   - CGIBS: https://www.cgibs.gov.br/ — Manual de Operações saindo de minuta,
-     novas resoluções, ou qualquer um dos manuais ainda não publicados
-     (Tempos, Redes, Segurança, Onboarding).
+   - **CGIBS, página do Split Payment: https://www.cgibs.gov.br/split-payment**
+     — é AQUI que o OpenAPI da Plataforma e o Manual de Integração são
+     publicados, sem login. Confira a seção "Versão atual" contra o que está
+     vendorado. Esta é a fonte de maior consequência da lista: o contrato dela
+     é o que gera @splitbr/client e @splitbr/mock. Em 2026-08-24 ela publicou
+     o OAS v1.1.0 e ninguém viu por 11 dias.
+   - CGIBS, raiz: https://www.cgibs.gov.br/ — novas resoluções (a série já vai
+     à 17 e só a 6/2026 está vendorada), Manual de Operações ou de Tempos
+     saindo de minuta, ou qualquer um dos 3 manuais ainda não publicados
+     (Redes, Segurança, Onboarding).
    - Notas Técnicas do Portal NF-e:
      https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=
      — versão de NT 2025.002 mais nova que a da baseline.
@@ -63,6 +71,22 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
 
 ## Histórico de execuções manuais
 
+- **2026-09-04**: SEIS ACHADOS, um deles grave. O **OpenAPI da Plataforma saiu
+  do v0.0.10 para o v1.1.0** (publicado em 24/08/2026, pareado com o Manual de
+  Integração v1.1.0): 12 rotas de stream renomeadas, 3 rotas novas do MOC,
+  `X-JWS-Signature` obrigatório nas 43 operações e 33 de 55 schemas comuns
+  alterados. Ficou 11 dias sem detecção porque o detector não olhava a página
+  do CGIBS, com base numa premissa falsa ("não existe fonte pública") que
+  estava escrita no código e no README. Também novos: NT 2025.002 v1.51
+  (04/08), NT 2026.006 e IT 2026.001 (25/08), PL 010f (31/08) e a Calculadora
+  de produção em app 1.3.1 / banco V0043 (31/08, contra 1.2.4 / V0039
+  vendorado). O Manual de Tempos, que quatro documentos davam como inédito,
+  está publicado como minuta desde 15/07/2026. Contratos da Calculadora:
+  portal divergente (issue #6, aberta desde 31/08 sem tratamento) e piloto
+  divergente; os dois re-vendorados nesta data, os quatro alvos voltaram a
+  MATCH. Correção de processo: quarto alvo no `drift-check.mjs` sobre o
+  inventário da página do CGIBS. Aviso de coleta novo: o `api-docs` do piloto
+  passou a responder desafio anti-bot ao `curl`; o `fetch` do Node passa.
 - **2026-08-03**: DOIS ACHADOS. NT 2026.001 v1.02b (PAA), publicada em
   31/07/2026, e o pacote de esquemas de eventos da NT 2025.002 v1.40 (RTC),
   publicado em 27/07/2026: nenhum dos dois estava vendorado. Seguem iguais à

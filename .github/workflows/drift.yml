@@ -33,15 +33,25 @@ jobs:
           script: |
             // Titulo estavel, sem data: o cron semanal reabriria uma issue nova
             // toda segunda para a mesma divergencia nao resolvida.
-            // Dois titulos: um bloqueante (alvo de producao) e um informativo
-            // (so o piloto divergiu). O informativo existe porque D-2 manda
+            // Tres titulos: drift em alvo de producao (bloqueante),
+            // indisponibilidade (pode ser rede, nao contrato) e divergencia so
+            // do piloto (informativo). O informativo existe porque D-2 manda
             // relatar a divergencia do piloto sem reprovar o run; sem issue,
             // "relatar" viraria uma linha de log num check verde.
             const status = process.env.DRIFT_STATUS;
             const informativo = status === "informational";
+            // Titulo por NATUREZA do problema, nao um so para tudo. Chamar uma
+            // indisponibilidade de "drift detectado" ja custou duas issues
+            // abertas em falso (#4 em 2026-08-03 e #9 em 2026-09-04), as duas
+            // por soluco de rede do runner com gov.br. Quem abre a issue tem
+            // que saber, pelo titulo, se o contrato mudou ou se o CI nao
+            // conseguiu falar com o servidor.
+            const indisponivel = status === "unreachable" || status === "malformed";
             const titulo = informativo
               ? "Piloto divergiu do contrato vendorado (informativo)"
-              : "Drift detectado nos contratos oficiais";
+              : indisponivel
+                ? "Contratos oficiais inalcançáveis a partir do CI"
+                : "Drift detectado nos contratos oficiais";
             const dia = new Date().toISOString().slice(0, 10);
             const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             const existentes = await github.rest.issues.listForRepo({
@@ -57,7 +67,19 @@ jobs:
               });
               return;
             }
-            const corpo = informativo
+            const corpoIndisponivel = [
+              `O detector não conseguiu ler um contrato de produção em ${dia} (status: ${status}).`,
+              "",
+              `Run: ${run} (o log diz qual alvo e qual foi o erro)`,
+              "",
+              "**Isto pode não ser problema de contrato.** A rede dos runners do GitHub com hosts gov.br é intermitente, e o mesmo sintoma já apareceu duas vezes em falso: a #4 (2026-08-03) e a #9 (2026-09-04), em runs consecutivos que falharam em alvos diferentes a cada vez. O detector já retenta 5 vezes com espaçamento exponencial (~30s de janela) antes de desistir.",
+              "",
+              "Antes de tratar como incidente: rode `pnpm drift-check` de uma rede que alcance os hosts, ou re-rode o workflow. Se passar, isto foi soluço de rede e a issue pode ser fechada como falso positivo. Se o alvo continuar inalcançável em runs sucessivos e também localmente, aí sim o endpoint mudou ou saiu do ar.",
+            ].join("\n");
+
+            const corpo = indisponivel
+              ? corpoIndisponivel
+              : informativo
               ? [
                   `O contrato do piloto divergiu do vendorado (${dia}). O run passou de propósito: o piloto é infraestrutura de teste com janela até 31/12/2026 e mudar antes da produção é o comportamento esperado dele, então isso é aviso, não quebra.`,
                   "",

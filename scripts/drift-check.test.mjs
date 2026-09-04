@@ -6,7 +6,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   TARGETS,
+  TENTATIVAS_PADRAO,
   diffSummary,
+  esperaDaTentativa,
   extrairInventario,
   fetchLive,
   exitCodeFor,
@@ -397,5 +399,64 @@ describe("severidade de indisponibilidade separada da de drift", () => {
     const alvo = TARGETS.find((t) => t.kind === "inventario-html");
     expect(alvo.severity).toBe("fail");
     expect(alvo.severidadeIndisponivel).toBe("ignore");
+  });
+});
+
+// Duas vezes o mesmo soluco: 2026-08-03 (issue #4) e 2026-09-04 (issue #9),
+// esta ultima em dois runs seguidos que falharam em alvos DIFERENTES. Tres
+// tentativas de 2s fixos dao 6s de janela, e nao seguraram.
+describe("retry com espacamento exponencial", () => {
+  it("dobra a espera a cada tentativa", () => {
+    expect([1, 2, 3, 4].map((t) => esperaDaTentativa(t, 2000))).toEqual([2000, 4000, 8000, 16000]);
+  });
+
+  it("cinco tentativas cobrem ~30s de janela, contra 6s do esquema antigo", () => {
+    const janela = [1, 2, 3, 4].reduce((soma, t) => soma + esperaDaTentativa(t, 2000), 0);
+    expect(TENTATIVAS_PADRAO).toBe(5);
+    expect(janela).toBe(30_000);
+  });
+
+  it("espera de verdade entre as tentativas, na ordem exponencial", async () => {
+    const esperas = [];
+    const fake = async () => {
+      throw new Error("fetch failed");
+    };
+    await fetchLive({ live: "https://exemplo" }, fake, {
+      tentativas: 4,
+      esperaMs: 2000,
+      dormir: async (ms) => esperas.push(ms),
+    });
+    expect(esperas).toEqual([2000, 4000, 8000]);
+  });
+
+  it("uma resposta boa na ultima tentativa ainda vale", async () => {
+    let n = 0;
+    const fake = async () => {
+      n += 1;
+      if (n < 5) throw new Error("fetch failed");
+      return new Response(JSON.stringify({ ok: 1 }), { status: 200 });
+    };
+    const r = await fetchLive({ live: "https://exemplo" }, fake, {
+      tentativas: 5,
+      esperaMs: 0,
+      dormir: async () => {},
+    });
+    expect(r.ok).toBe(true);
+    expect(n).toBe(5);
+  });
+
+  it("4xx continua sem retry: e resposta definitiva, nao soluco", async () => {
+    let n = 0;
+    const fake = async () => {
+      n += 1;
+      return new Response("nao existe", { status: 404 });
+    };
+    const r = await fetchLive({ live: "https://exemplo" }, fake, {
+      tentativas: 5,
+      esperaMs: 0,
+      dormir: async () => {},
+    });
+    expect(r.ok).toBe(false);
+    expect(n).toBe(1);
   });
 });

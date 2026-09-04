@@ -53,13 +53,18 @@ export const TARGETS = [
     vendored: "vendor/cgibs-split-payment-artefatos.json",
     live: "https://www.cgibs.gov.br/split-payment",
     severity: "fail",
-    // O www.cgibs.gov.br nao aceita conexao do runner do GitHub: connect
-    // timeout em 443, tres tentativas, enquanto consumo.tributos.gov.br e
-    // piloto-cbs.tributos.gov.br respondem do MESMO runner (run 33901733965).
-    // E bloqueio do host, nao rede instavel. Reprovar por isso deixaria o
-    // detector vermelho toda semana por uma causa que nao vamos consertar, e
-    // detector que grita lobo acaba silenciado. Drift ali continua reprovando;
-    // so a indisponibilidade e ignorada.
+    // Indisponibilidade aqui nao reprova. A primeira versao deste comentario
+    // dizia que o www.cgibs.gov.br bloqueava o runner do GitHub, com base num
+    // unico run em que ele deu timeout e os tres alvos de tributos.gov.br
+    // responderam (33901733965). O run seguinte desmentiu: o CGIBS respondeu
+    // MATCH e os outros tres e que deram timeout (33902480218). Nao e bloqueio
+    // de host nenhum; e a rede do runner com gov.br sendo intermitente, o mesmo
+    // fenomeno que a issue #4 ja tinha classificado como falso positivo em
+    // 2026-08-03 e que motivou o retry.
+    //
+    // Este alvo e o mais exposto: e o unico cuja indisponibilidade nao diz nada
+    // sobre um contrato de producao, porque a pagina e so um indice. Drift ali
+    // continua reprovando.
     severidadeIndisponivel: "ignore",
     kind: "inventario-html",
   },
@@ -240,10 +245,23 @@ export function descreveErroDeRede(err) {
 // retry, o detector reprova o build por soluco de rede, e detector que grita
 // lobo acaba silenciado.
 //
+// Em 2026-09-04 isso se repetiu com 3 tentativas espacadas de 2s fixos: dois
+// runs seguidos falharam, em alvos DIFERENTES a cada vez. Seis segundos de
+// janela nao cobrem a intermitencia observada, entao o espacamento passou a ser
+// exponencial (2s, 4s, 8s, 16s), o que da ~30s de janela em 5 tentativas em vez
+// de 6s em 3. O timeout por tentativa tambem subiu: o erro observado e connect
+// timeout de 10s, e o default do undici nao respeita o AbortSignal na fase de
+// conexao.
+//
 // 4xx NAO e retentado de proposito: e resposta definitiva (a URL mudou ou
 // sumiu), e insistir so atrasa o sinal que queremos receber rapido.
-export const TENTATIVAS_PADRAO = 3;
+export const TENTATIVAS_PADRAO = 5;
 export const ESPERA_PADRAO_MS = 2000;
+
+// Espacamento exponencial: a n-esima espera e ESPERA_PADRAO_MS * 2^(n-1).
+export function esperaDaTentativa(tentativa, base = ESPERA_PADRAO_MS) {
+  return base * 2 ** (tentativa - 1);
+}
 
 export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
   const {
@@ -266,7 +284,7 @@ export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
     } catch (err) {
       ultimaFalha = { ok: false, kind: "fetch", error: descreveErroDeRede(err), tentativas: tentativa };
       if (tentativa < tentativas) {
-        await dormir(esperaMs);
+        await dormir(esperaDaTentativa(tentativa, esperaMs));
         continue;
       }
       return ultimaFalha;
@@ -276,7 +294,7 @@ export async function fetchLive(target, fetchImpl = fetch, opts = {}) {
       const valeRetentar = res.status >= 500;
       ultimaFalha = { ok: false, kind: "fetch", error: `HTTP ${res.status}`, tentativas: tentativa };
       if (valeRetentar && tentativa < tentativas) {
-        await dormir(esperaMs);
+        await dormir(esperaDaTentativa(tentativa, esperaMs));
         continue;
       }
       return ultimaFalha;

@@ -33,7 +33,16 @@ export function chaveTransacao(
 }
 
 /** Estado in-memory do mock; deterministico por seed (D-3), zera por processo. */
+export interface OcorrenciaMoc {
+  nsuId: number;
+  cnpjRaizPspRecDir: string;
+  retorno: Record<string, unknown>;
+}
+
 export class MemoryStore {
+  /** Ocorrencias do MOC (3.9) com a resposta simulada da RFB/CGIBS. */
+  readonly moc: OcorrenciaMoc[] = [];
+
   readonly seed: number;
   private contadorResource: number;
   readonly transacoes = new Map<string, Transacao>();

@@ -1,11 +1,8 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import {
-  createSplitClient,
-  gerarCorrelationId,
-  gerarTimestampSplit,
-  toProblem,
-} from "@splitbr/client";
+import { createSign, generateKeyPairSync } from "node:crypto";
+import { createSplitClient, toProblem } from "@splitbr/client";
 import { buildServer, type MockServer } from "../src/server.js";
+import { gerarIdInfSegr, gerarIdLote } from "../src/domain/ids.js";
 
 // R2 do TEST_STRATEGY: o @splitbr/client, SEM nenhuma modificacao, completa
 // transacao -> segregacao -> consumo de stream contra o mock via HTTP real.
@@ -23,20 +20,29 @@ afterAll(async () => {
   await app.close();
 });
 
+// Chave de teste. O e2e assina de verdade: e o unico teste que exercita o
+// caminho completo do X-JWS-Signature, do middleware do client ate a
+// conferencia de forma do mock.
+const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+
 function client() {
-  return createSplitClient({ baseUrl, tenantId: "12345678000199" });
+  return createSplitClient({
+    baseUrl,
+    kid: "e2e-01",
+    assinar: (bytes) => {
+      const s = createSign("RSA-SHA256");
+      s.update(bytes);
+      s.end();
+      return new Uint8Array(s.sign(privateKey));
+    },
+  });
 }
 
-// Os tipos gerados marcam os header params como obrigatorios mesmo com o
-// middleware os injetando (achado de DX registrado na task); valores validos
-// aqui satisfazem o tipo e o middleware sobrescreve em onRequest.
+// Os tipos gerados marcam o header param como obrigatorio mesmo com o
+// middleware o injetando (achado de DX registrado na task); um placeholder
+// satisfaz o tipo e o middleware sobrescreve em onRequest com o valor real.
 function hdr() {
-  return {
-    messageId: crypto.randomUUID(),
-    correlationId: gerarCorrelationId(),
-    tenantId: "12345678000199",
-    timestamp: gerarTimestampSplit(),
-  };
+  return { "X-JWS-Signature": "placeholder-sobrescrito-pelo-middleware" };
 }
 
 describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
@@ -52,13 +58,13 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
             index: 1,
             idDda: "DDA1",
             numCtrlOrig: "CTRL000001",
-            numCodBarras: "83660001",
+            numCodBarras: "83660001000000000000000000000000000000000000",
             vlInf: 1000.0,
             vlCbsInf: 9.0,
             vlIbsInf: 1.0,
             cnpjRaizPspRecDir: "12345678",
             cnpjRec: "12345678000199",
-            cnpjCpfPagOrig: "98765432000188",
+            cnpjPagOrig: "98765432000188",
             dtHrIni: TS,
             dtVenc: "2026-08-01",
             dtHrLimPgto: "2026-08-01T23:59:59-03:00",
@@ -79,7 +85,7 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
             idDda: "DDA1",
             numCtrlOrig: "CTRL000001",
             numPgto: 1,
-            numIdentcBaixa: 1,
+            numIdentcBaixa: "1",
             vlPago: 500.0,
             vlCbsSegr: 4.0,
             vlIbsSegr: 0.4,
@@ -112,14 +118,14 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
       params: { path: { idInfSegr }, header: hdr() },
       body: {
         infRequisicao: { cnpjRaizPspRecDir: "12345678", dtHrMsg: TS },
-        dadosLoteSeg: { idLote: "L1" },
+        dadosLoteSeg: { idLote: gerarIdLote(gerarIdInfSegr("boleto", 1), 1) },
         transacoes: [
           {
             index: 1,
             idDda: "DDA1",
             numCtrlOrig: "CTRL000001",
             numPgto: 1,
-            numIdentcBaixa: 1,
+            numIdentcBaixa: "1",
             vlPago: 500.0,
             vlCbsSegr: 4.0,
             vlIbsSegr: 0.4,
@@ -142,8 +148,8 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
         dadosFinalSeg: {
           idInfSegr,
           totalTrans: 1,
-          valorTotalCbs: 4.0,
-          valorTotalIbs: 0.4,
+          vlTotalCbs: 4.0,
+          vlTotalIbs: 0.4,
         },
       },
     });
@@ -155,20 +161,21 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         arranjo: "boleto",
-        idPsp: "PSP00042",
+        cnpjRaizPspRecDir: "PSP00042",
         chave: "CTRL000001",
         tipo: "cbs-correcao",
         procedimento: "padrao",
       }),
     });
-    const stream = await c.GET("/api/v1/out/boleto/{idPsp}/tributos/stream/start", {
-      params: { path: { idPsp: "PSP00042" }, header: hdr() },
+    const stream = await c.GET("/api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start", {
+      params: { path: { cnpjRaizPspRecDir: "PSP00042" }, header: hdr() },
     });
     expect(stream.response.status).toBe(200);
-    const tributos = (stream.data as { tributos: Array<Record<string, unknown>> }).tributos;
-    expect(tributos[0]?.["codMsg"]).toBe("RSUP101");
+    // v1.1.0: a chave do corpo do Super Inteligente virou `transacoes`.
+    const transacoes = (stream.data as { transacoes: Array<Record<string, unknown>> }).transacoes;
+    expect(transacoes[0]?.["codMsg"]).toBe("RSUP101");
     // padrao: min((500/1000)*9.00; 9.00) = 4.50
-    expect(tributos[0]?.["vlCbsCorr"]).toBe(4.5);
+    expect(transacoes[0]?.["vlCbsCorr"]).toBe(4.5);
     expect(stream.response.headers.get("proximoToken")).toMatch(/^S/);
   });
 
@@ -179,8 +186,8 @@ describe("E2E: client dirige o mock de ponta a ponta (R2)", () => {
       body: JSON.stringify({ rate429: { retryAfterSeconds: 30 } }),
     });
     const c = client();
-    const res = await c.GET("/api/v1/out/boleto/{idPsp}/tributos/stream/start", {
-      params: { path: { idPsp: "PSP00042" }, header: hdr() },
+    const res = await c.GET("/api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start", {
+      params: { path: { cnpjRaizPspRecDir: "PSP00042" }, header: hdr() },
     });
     expect(res.response.status).toBe(429);
     const problem = toProblem(res.error, res.response);

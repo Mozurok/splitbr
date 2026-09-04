@@ -4,7 +4,7 @@ import { CODIGO_ARRANJO, ID_INF_SEGR, ID_REPASSE } from "./ids.js";
 /**
  * Maquina de estados do Informe de Segregacao (Manual secao 3.5, 3 passos):
  * remessa iniciada -> lote(s) de ate 1.000 transacoes -> finalizacao com
- * cross-validacao de totalTrans/valorTotalCbs/valorTotalIbs. Lote com item
+ * cross-validacao de totalTrans/vlTotalCbs/vlTotalIbs. Lote com item
  * invalido rejeita o LOTE INTEIRO; passo fora de ordem falha sem mutar estado.
  * Somas monetarias acumulam em centavos inteiros (nunca float).
  */
@@ -157,8 +157,8 @@ export class SegregacaoFsm {
     dados: {
       idInfSegr: string;
       totalTrans: number;
-      valorTotalCbs: number;
-      valorTotalIbs: number;
+      vlTotalCbs: number;
+      vlTotalIbs: number;
     },
     hashPayload: string,
   ): ResultadoSegregacao {
@@ -168,17 +168,17 @@ export class SegregacaoFsm {
       throw new ErroSegregacao(422, "Conflito de finalizacao", `Remessa '${dados.idInfSegr}' ja finalizada com payload diferente`);
     }
     const remessa = this.exigirIniciada(dados.idInfSegr, "finalizacao");
-    const cbs = paraCentavos(dados.valorTotalCbs);
-    const ibs = paraCentavos(dados.valorTotalIbs);
+    const cbs = paraCentavos(dados.vlTotalCbs);
+    const ibs = paraCentavos(dados.vlTotalIbs);
     const divergencias: string[] = [];
     if (dados.totalTrans !== remessa.totalTrans) {
       divergencias.push(`totalTrans informado ${dados.totalTrans} != acumulado ${remessa.totalTrans}`);
     }
     if (cbs !== remessa.totalCbsCentavos) {
-      divergencias.push(`valorTotalCbs informado ${cbs} centavos != acumulado ${remessa.totalCbsCentavos}`);
+      divergencias.push(`vlTotalCbs informado ${cbs} centavos != acumulado ${remessa.totalCbsCentavos}`);
     }
     if (ibs !== remessa.totalIbsCentavos) {
-      divergencias.push(`valorTotalIbs informado ${ibs} centavos != acumulado ${remessa.totalIbsCentavos}`);
+      divergencias.push(`vlTotalIbs informado ${ibs} centavos != acumulado ${remessa.totalIbsCentavos}`);
     }
     if (divergencias.length > 0) {
       throw new ErroSegregacao(422, "Finalizacao divergente", divergencias.join("; "), { divergencias });

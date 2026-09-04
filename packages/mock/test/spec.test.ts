@@ -9,7 +9,7 @@ import { carregarSpec } from "../src/spec/load.js";
 import { paraRotaFastify } from "../src/spec/routes.js";
 
 const SPEC_EMBARCADO = fileURLToPath(
-  new URL("../data/spec/openapi-v0_0_10.json", import.meta.url),
+  new URL("../data/spec/openapi-v1_1_0.json", import.meta.url),
 );
 
 describe("trava de hash do spec (C2)", () => {
@@ -40,7 +40,7 @@ describe("trava de hash do spec (C2)", () => {
     );
     const row = manifest
       .split("\n")
-      .find((l) => l.includes("swagger/openapi-v0_0_10.json"));
+      .find((l) => l.includes("swagger/openapi-v1_1_0.json"));
     expect(row).toBeDefined();
     const pinado = row!.match(/\b([0-9a-f]{64})\b/)?.[1];
     expect(pinado).toBe(PINNED_SPEC_SHA256);
@@ -54,8 +54,8 @@ describe("trava de hash do spec (C2)", () => {
 describe("carregamento e compilacao (C3)", () => {
   const registro = carregarSpec();
 
-  it("registra 32/32 paths do contrato", () => {
-    expect(registro.totalPaths).toBe(32);
+  it("registra 35/35 paths do contrato", () => {
+    expect(registro.totalPaths).toBe(35);
   });
 
   it("toda operacao com requestBody tem validador compilado", () => {
@@ -87,7 +87,7 @@ describe("multipleOf 0.01 sem bug de float (regressao review-hard M2)", () => {
             idDda: "DDA1",
             numCtrlOrig: "C1",
             numPgto: 1,
-            numIdentcBaixa: 1,
+            numIdentcBaixa: "1",
             vlPago: valor,
             vlCbsSegr: valor,
             vlIbsSegr: valor,

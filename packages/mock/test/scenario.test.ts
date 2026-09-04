@@ -34,7 +34,7 @@ async function prepararBoletoPaga(app: ReturnType<typeof buildServer>) {
           idDda: "DDA1",
           numCtrlOrig: "CTRL000001",
           numPgto: 1,
-          numIdentcBaixa: 1,
+          numIdentcBaixa: "1",
           vlPago: 500.0,
           vlCbsSegr: 4.0,
           vlIbsSegr: 0.4,
@@ -59,7 +59,7 @@ describe("motor de cenarios RSUP (C12)", () => {
     await prepararBoletoPaga(app);
     const res = await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00001",
+      cnpjRaizPspRecDir: "PSP00001",
       chave: "CTRL000001",
       tipo: "cbs-correcao",
       procedimento: "padrao",
@@ -82,7 +82,7 @@ describe("motor de cenarios RSUP (C12)", () => {
     await prepararBoletoPaga(app);
     const res = await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00001",
+      cnpjRaizPspRecDir: "PSP00001",
       chave: "CTRL000001",
       tipo: "ibs-correcao",
       procedimento: "padrao",
@@ -99,7 +99,7 @@ describe("motor de cenarios RSUP (C12)", () => {
     await prepararBoletoPaga(app);
     const res = await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00001",
+      cnpjRaizPspRecDir: "PSP00001",
       chave: "CTRL000001",
       tipo: "cbs-em-aberto",
       procedimento: "padrao",
@@ -115,7 +115,7 @@ describe("motor de cenarios RSUP (C12)", () => {
     await prepararBoletoPaga(app);
     const res = await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00001",
+      cnpjRaizPspRecDir: "PSP00001",
       chave: "CTRL000001",
       tipo: "cbs-correcao",
       procedimento: "simplificado",
@@ -142,28 +142,31 @@ describe("motor de cenarios RSUP (C12)", () => {
     await prepararBoletoPaga(app);
     await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00009",
+      cnpjRaizPspRecDir: "PSP00009",
       chave: "CTRL000001",
       tipo: "cbs-correcao",
       procedimento: "padrao",
     });
     const res = await app.inject({
       method: "GET",
-      url: "/api/v1/out/boleto/PSP00009/tributos/stream/start",
+      url: "/api/v1/out/boleto/PSP00009/transacoes/stream/start",
       headers: headersValidos(),
     });
     expect(res.statusCode).toBe(200);
-    const tributos = res.json().tributos;
-    expect(tributos).toHaveLength(1);
-    expect(tributos[0].codMsg).toBe("RSUP101");
-    expect(tributos[0].nsuId).toBe(1);
+    // v1.1.0: a chave do corpo virou `transacoes` e o nsuId virou string.
+    const transacoes = res.json().transacoes;
+    expect(transacoes).toHaveLength(1);
+    expect(transacoes[0].codMsg).toBe("RSUP101");
+    expect(transacoes[0].nsuId).toBe("1");
+    // dtHrDisp entrou como obrigatorio no Retorno Super Inteligente:
+    expect(transacoes[0].dtHrDisp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-03:00$/);
   });
 
   it("cenario sobre transacao inexistente responde 422", async () => {
     const app = buildServer();
     const res = await disparar(app, {
       arranjo: "boleto",
-      idPsp: "PSP00001",
+      cnpjRaizPspRecDir: "PSP00001",
       chave: "NAO-EXISTE",
       tipo: "cbs-correcao",
       procedimento: "padrao",

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildServer } from "../src/server.js";
 import { corpoIniciadaBoleto, headersValidos } from "./helpers.js";
+import { gerarIdInfSegr, gerarIdLote } from "../src/domain/ids.js";
 
 // C11 do TEST_STRATEGY: taxonomia exata dos chaos flags e da auth simulada (D-4).
 
@@ -89,7 +90,7 @@ describe("chaos flags (C11)", () => {
       headers: headersValidos(),
       payload: {
         infRequisicao: { cnpjRaizPspRecDir: "12345678", dtHrMsg: "2026-07-20T10:00:00-03:00" },
-        dadosLoteSeg: { idLote: "L1" },
+        dadosLoteSeg: { idLote: gerarIdLote(gerarIdInfSegr("boleto", 1), 1) },
         transacoes: [{ index: 1 }],
       },
     });

@@ -38,7 +38,7 @@ function itemPreliminarBoleto(n: number): Record<string, unknown> {
     idDda: `DDA${n}`,
     numCtrlOrig: `CTRL${String(n).padStart(6, "0")}`,
     numPgto: n,
-    numIdentcBaixa: n,
+    numIdentcBaixa: String(n),
     vlPago: 1000.0,
     vlCbsSegr: 9.0,
     vlIbsSegr: 1.0,

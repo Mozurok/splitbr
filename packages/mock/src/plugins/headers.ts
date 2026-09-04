@@ -1,69 +1,80 @@
 import type { FastifyInstance } from "fastify";
+import { conferirFormaDoHeader } from "@splitbr/client";
 import { sendProblem } from "./problem.js";
 
 /**
- * Enforca os 4 headers obrigatorios da tabela do Manual de Integracao em toda
- * rota /api/*. Rotas utilitarias (ex.: /healthz) ficam isentas.
+ * Headers do contrato v1.1.0.
+ *
+ * O v0.0.10 exigia quatro headers (messageId, correlationId, tenantId,
+ * timestamp) e o v1.1.0 não declara nenhum deles: sumiram de
+ * `components.parameters` e não aparecem uma única vez no Manual de Integração
+ * v1.1.0. No lugar entrou o `X-JWS-Signature`, `required` nas 43 operações.
+ *
+ * O que este plugin faz, e por quê:
+ *
+ * - **Não exige mais os quatro antigos.** Exigi-los deixaria o mock mais
+ *   estrito que a plataforma real, que é o defeito oposto ao que um mock deve
+ *   ter. Ainda são aceitos, e o `correlationId` continua sendo ecoado na
+ *   resposta quando vem, porque é útil para depurar uma jornada.
+ * - **Valida a FORMA do `X-JWS-Signature` quando ele vem, sem exigir que
+ *   venha.** Verificação criptográfica de verdade obrigaria quem roda
+ *   `npx splitbr-mock` a gerar par de chaves RSA antes de ver a primeira
+ *   resposta, e o valor do mock é justamente não precisar de setup. Já aceitar
+ *   qualquer string não ensinaria nada: o erro mais provável em produção é
+ *   mandar um JWS bem-formado com `b64` errado, ou com o payload anexado em vez
+ *   de detached, e conferir a forma pega exatamente isso.
+ * - **`exigirAssinatura` fecha a porta** para quem quer o comportamento fiel ao
+ *   contrato, inclusive em CI.
  */
-const MESSAGE_ID =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-const TENANT_ID = /^[A-Za-z0-9]{14}$/;
-const TIMESTAMP = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-03:00$/;
-
-interface HeaderRule {
-  name: string;
-  check: (value: string) => boolean;
-  expected: string;
+export interface OpcoesDeHeaders {
+  /** Recusa requisição sem `X-JWS-Signature` (400). Padrão: false. */
+  exigirAssinatura?: boolean;
 }
 
-const RULES: HeaderRule[] = [
-  {
-    name: "messageId",
-    check: (v) => MESSAGE_ID.test(v),
-    expected: "UUID v4 minusculo (36 posicoes), unico por requisicao",
-  },
-  {
-    name: "correlationId",
-    check: (v) => v.length === 19,
-    expected: "string de exatamente 19 posicoes, propagada na jornada",
-  },
-  {
-    name: "tenantId",
-    check: (v) => TENANT_ID.test(v),
-    expected: "CNPJ alfanumerico do PSP (14 posicoes)",
-  },
-  {
-    name: "timestamp",
-    check: (v) => TIMESTAMP.test(v),
-    expected: "ISO 8601 com offset -03:00, sem milissegundos (25 posicoes)",
-  },
-];
+export function headersPlugin(app: FastifyInstance, opcoes: OpcoesDeHeaders = {}): void {
+  const exigir = opcoes.exigirAssinatura ?? false;
 
-export function headersPlugin(app: FastifyInstance): void {
   app.addHook("onRequest", (request, reply, done) => {
     if (!request.url.startsWith("/api/")) {
       done();
       return;
     }
-    for (const rule of RULES) {
-      const raw = request.headers[rule.name.toLowerCase()];
-      const value = Array.isArray(raw) ? raw[0] : raw;
-      if (value === undefined || value === "" || !rule.check(value)) {
+
+    const bruto = request.headers["x-jws-signature"];
+    const assinatura = Array.isArray(bruto) ? bruto[0] : bruto;
+
+    if (assinatura === undefined || assinatura === "") {
+      if (exigir) {
         sendProblem(reply, {
           status: 400,
-          title: "Header obrigatorio ausente ou invalido",
-          detail: `Header '${rule.name}' ${value === undefined || value === "" ? "ausente" : "invalido"}; esperado: ${rule.expected}`,
-          extensions: { header: rule.name },
+          title: "Assinatura ausente",
+          detail:
+            "Header 'X-JWS-Signature' ausente. O contrato v1.1.0 exige assinatura JWS Compact Detached em todas as operações (Manual de Integração v1.1.0, capítulo 8).",
+          extensions: { header: "X-JWS-Signature" },
+        });
+        done();
+        return;
+      }
+    } else {
+      const { problemas } = conferirFormaDoHeader(assinatura);
+      if (problemas.length > 0) {
+        sendProblem(reply, {
+          status: 400,
+          title: "Assinatura malformada",
+          detail: `Header 'X-JWS-Signature' não está conforme o capítulo 8 do Manual de Integração v1.1.0: ${problemas.join("; ")}.`,
+          extensions: { header: "X-JWS-Signature", problemas },
         });
         done();
         return;
       }
     }
+
+    // Herança do v0.0.10: o correlationId não é mais contrato, mas ecoá-lo
+    // quando vem continua ajudando a seguir uma jornada nos logs.
     const correlation = request.headers["correlationid"];
-    reply.header(
-      "correlationId",
-      Array.isArray(correlation) ? correlation[0] : (correlation as string),
-    );
+    if (correlation !== undefined) {
+      reply.header("correlationId", Array.isArray(correlation) ? correlation[0] : correlation);
+    }
     done();
   });
 }

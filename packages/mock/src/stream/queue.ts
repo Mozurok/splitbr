@@ -3,7 +3,7 @@ import type { Arranjo } from "../domain/matrices.js";
 
 /**
  * Pull-based event streaming do Manual (secoes 3.6/3.7): eventos por
- * (arranjo, idPsp) com NSU sequencial; leitura por cursor via token opaco com
+ * (arranjo, cnpjRaizPspRecDir) com NSU sequencial; leitura por cursor via token opaco com
  * CLAIM ATOMICO (reuso concorrente perde); long polling com resolucao
  * imediata. Cada stream mantem um LEDGER dos NSUs que entregou, o que da
  * semantica real aos 3 modos da consulta retroativa (o retroativo devolve
@@ -16,12 +16,12 @@ export interface EventoTributo {
 
 interface EstadoStream {
   arranjo: Arranjo;
-  idPsp: string;
+  cnpjRaizPspRecDir: string;
   /** Proximo NSU a ler (exclusivo do ja entregue). */
   pos: number;
   streamId: string;
   retroativo: boolean;
-  /** Limite superior inclusivo (toNsu, ledger de stream fechada ou snapshot). */
+  /** Limite superior inclusivo (nsuFinal, ledger de stream fechada ou snapshot). */
   ateNsu?: number;
   /** Retroativo por streamId: so NSUs que AQUELE stream entregou. */
   somenteNsus?: Set<number>;
@@ -31,7 +31,7 @@ interface EstadoStream {
 
 interface HistoricoStream {
   arranjo: Arranjo;
-  idPsp: string;
+  cnpjRaizPspRecDir: string;
   nsusEntregues: Set<number>;
 }
 
@@ -52,12 +52,12 @@ export class FilaEventos {
     this.sinais.setMaxListeners(0);
   }
 
-  private chave(arranjo: Arranjo, idPsp: string): string {
-    return `${arranjo}:${idPsp}`;
+  private chave(arranjo: Arranjo, cnpjRaizPspRecDir: string): string {
+    return `${arranjo}:${cnpjRaizPspRecDir}`;
   }
 
-  publicar(arranjo: Arranjo, idPsp: string, dados: Record<string, unknown>): EventoTributo {
-    const chave = this.chave(arranjo, idPsp);
+  publicar(arranjo: Arranjo, cnpjRaizPspRecDir: string, dados: Record<string, unknown>): EventoTributo {
+    const chave = this.chave(arranjo, cnpjRaizPspRecDir);
     const fila = this.filas.get(chave) ?? [];
     const evento: EventoTributo = { ...dados, nsuId: fila.length + 1 };
     fila.push(evento);
@@ -71,11 +71,11 @@ export class FilaEventos {
     return `${prefixo}${this.contadorToken.toString(36)}`;
   }
 
-  abrirStream(arranjo: Arranjo, idPsp: string): { token: string; estado: EstadoStream } {
+  abrirStream(arranjo: Arranjo, cnpjRaizPspRecDir: string): { token: string; estado: EstadoStream } {
     this.contadorStream += 1;
     const streamId = `STREAM-${this.contadorStream}`;
-    const estado: EstadoStream = { arranjo, idPsp, pos: 0, streamId, retroativo: false };
-    this.historico.set(streamId, { arranjo, idPsp, nsusEntregues: new Set() });
+    const estado: EstadoStream = { arranjo, cnpjRaizPspRecDir, pos: 0, streamId, retroativo: false };
+    this.historico.set(streamId, { arranjo, cnpjRaizPspRecDir, nsusEntregues: new Set() });
     const token = this.novoToken("S");
     this.streams.set(token, estado);
     return { token, estado };
@@ -89,7 +89,7 @@ export class FilaEventos {
    */
   abrirRetroativo(
     arranjo: Arranjo,
-    idPsp: string,
+    cnpjRaizPspRecDir: string,
     fromNsu: number,
     toNsu?: number,
     streamId?: string,
@@ -97,18 +97,18 @@ export class FilaEventos {
     let somenteNsus: Set<number> | undefined;
     if (streamId !== undefined) {
       const hist = this.historico.get(streamId);
-      if (!hist || hist.arranjo !== arranjo || hist.idPsp !== idPsp) return null;
+      if (!hist || hist.arranjo !== arranjo || hist.cnpjRaizPspRecDir !== cnpjRaizPspRecDir) return null;
       somenteNsus = hist.nsusEntregues;
     }
     const teto =
       toNsu ??
       (somenteNsus && somenteNsus.size > 0
         ? Math.max(...somenteNsus)
-        : this.maxNsuEntregue(arranjo, idPsp));
+        : this.maxNsuEntregue(arranjo, cnpjRaizPspRecDir));
     this.contadorStream += 1;
     const estado: EstadoStream = {
       arranjo,
-      idPsp,
+      cnpjRaizPspRecDir,
       pos: fromNsu - 1,
       streamId: streamId ?? `STREAM-${this.contadorStream}`,
       retroativo: true,
@@ -120,10 +120,10 @@ export class FilaEventos {
     return { token, estado };
   }
 
-  private maxNsuEntregue(arranjo: Arranjo, idPsp: string): number {
+  private maxNsuEntregue(arranjo: Arranjo, cnpjRaizPspRecDir: string): number {
     let max = 0;
     for (const h of this.historico.values()) {
-      if (h.arranjo === arranjo && h.idPsp === idPsp) {
+      if (h.arranjo === arranjo && h.cnpjRaizPspRecDir === cnpjRaizPspRecDir) {
         for (const n of h.nsusEntregues) if (n > max) max = n;
       }
     }
@@ -144,7 +144,7 @@ export class FilaEventos {
   }
 
   private disponiveis(estado: EstadoStream, max = 1000): EventoTributo[] {
-    const fila = this.filas.get(this.chave(estado.arranjo, estado.idPsp)) ?? [];
+    const fila = this.filas.get(this.chave(estado.arranjo, estado.cnpjRaizPspRecDir)) ?? [];
     const limite = estado.ateNsu ?? Number.MAX_SAFE_INTEGER;
     return fila
       .filter(
@@ -178,7 +178,7 @@ export class FilaEventos {
     try {
       let eventos = this.disponiveis(estado);
       if (eventos.length === 0 && !estado.retroativo && timeoutMs > 0) {
-        const chave = this.chave(estado.arranjo, estado.idPsp);
+        const chave = this.chave(estado.arranjo, estado.cnpjRaizPspRecDir);
         const sinais = this.sinais;
         await new Promise<void>((resolve) => {
           const aoPublicar = () => fim();

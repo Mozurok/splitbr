@@ -13,7 +13,7 @@ export type Procedimento = "padrao" | "simplificado";
 
 export interface ComandoDivergencia {
   arranjo: Arranjo;
-  idPsp: string;
+  cnpjRaizPspRecDir: string;
   /** Chave natural da transacao ja registrada no mock. */
   chave: string;
   tipo: TipoDivergencia;
@@ -88,7 +88,7 @@ export function dispararDivergencia(store: MemoryStore, cmd: ComandoDivergencia)
     if (valor !== undefined) evento[campo] = valor;
   }
 
-  return store.eventos.publicar(cmd.arranjo, cmd.idPsp, evento);
+  return store.eventos.publicar(cmd.arranjo, cmd.cnpjRaizPspRecDir, evento);
 }
 
 /** Rotas utilitarias de cenario (fora de /api, isentas dos headers). */

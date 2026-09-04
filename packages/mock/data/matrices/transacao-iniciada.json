@@ -18,7 +18,7 @@
     "cnpjRaizPspRecInd": ["O", "O", "O"],
     "cnpjRaizPspRecDir": ["M", "M", "M"],
     "cnpjRec": ["M", "M", "M"],
-    "cnpjCpfPagOrig": ["M", "O", "O"],
+    "cnpjPagOrig": ["M", "O", "O"],
     "dtHrIni": ["M", "M", "M"],
     "dtVenc": ["M", "O", "O"],
     "dtHrLimPgto": ["M", "M", "M"]

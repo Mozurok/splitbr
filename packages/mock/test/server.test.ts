@@ -1,18 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { gerarCorrelationId, gerarTimestampSplit } from "@splitbr/client";
 import { buildServer } from "../src/server.js";
+import { headersValidos } from "./helpers.js";
 
-// C1 do TEST_STRATEGY: enforcement dos 4 headers obrigatorios da tabela do
-// Manual de Integracao em /api/*, com problem+json nomeando o header.
-
-function headersValidos(): Record<string, string> {
-  return {
-    messageId: crypto.randomUUID(),
-    correlationId: gerarCorrelationId(),
-    tenantId: "12345678000199",
-    timestamp: gerarTimestampSplit(),
-  };
-}
+// C1 do TEST_STRATEGY, reescrito para o contrato v1.1.0: o enforcement deixou
+// de ser dos 4 headers do v0.0.10 (que sumiram do contrato) e passou a ser da
+// forma do X-JWS-Signature.
 
 function appComRotaDeTeste() {
   const app = buildServer();
@@ -20,44 +12,81 @@ function appComRotaDeTeste() {
   return app;
 }
 
-describe("headers obrigatorios (C1)", () => {
-  for (const ausente of ["messageId", "correlationId", "tenantId", "timestamp"]) {
-    it(`400 nomeando '${ausente}' quando ausente`, async () => {
-      const app = appComRotaDeTeste();
-      const h = headersValidos();
-      delete h[ausente];
-      const res = await app.inject({ method: "GET", url: "/api/v1/_teste", headers: h });
-      expect(res.statusCode).toBe(400);
-      expect(res.headers["content-type"]).toContain("application/problem+json");
-      const body = res.json();
-      expect(body.header).toBe(ausente);
-      expect(body.detail).toContain(ausente);
-    });
-  }
-
-  const invalidos: Array<[string, string]> = [
-    ["messageId", "nao-e-uuid"],
-    ["correlationId", "curto"],
-    ["tenantId", "123"],
-    ["timestamp", "2026-07-20T10:00:00Z"],
-    ["timestamp", "2026-07-20T10:00:00.123-03:00"],
-  ];
-  for (const [header, valor] of invalidos) {
-    it(`400 nomeando '${header}' quando invalido (${valor})`, async () => {
-      const app = appComRotaDeTeste();
-      const h = { ...headersValidos(), [header]: valor };
-      const res = await app.inject({ method: "GET", url: "/api/v1/_teste", headers: h });
-      expect(res.statusCode).toBe(400);
-      expect(res.json().header).toBe(header);
-    });
-  }
-
-  it("headers validos passam e o correlationId e ecoado na resposta", async () => {
+describe("assinatura X-JWS-Signature (C1)", () => {
+  it("requisicao assinada passa", async () => {
     const app = appComRotaDeTeste();
-    const h = headersValidos();
-    const res = await app.inject({ method: "GET", url: "/api/v1/_teste", headers: h });
+    const res = await app.inject({
+      method: "GET",
+      url: "/api/v1/_teste",
+      headers: headersValidos(),
+    });
     expect(res.statusCode).toBe(200);
-    expect(res.headers["correlationid"]).toBe(h.correlationId);
+  });
+
+  // Decisao do mantenedor: sem assinatura o mock deixa passar por padrao, para
+  // `npx splitbr-mock` funcionar sem par de chaves. A fidelidade ao contrato
+  // fica atras de `exigirAssinatura`.
+  it("sem assinatura passa por padrao", async () => {
+    const app = appComRotaDeTeste();
+    const res = await app.inject({ method: "GET", url: "/api/v1/_teste" });
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("sem assinatura da 400 quando exigirAssinatura esta ligado", async () => {
+    const app = buildServer({ exigirAssinatura: true });
+    app.get("/api/v1/_teste", async () => ({ ok: true }));
+    const res = await app.inject({ method: "GET", url: "/api/v1/_teste" });
+    expect(res.statusCode).toBe(400);
+    expect(res.headers["content-type"]).toContain("application/problem+json");
+    expect(res.json().header).toBe("X-JWS-Signature");
+  });
+
+  // O ponto de existir a conferencia de forma: estes sao os erros que passariam
+  // por um mock que so olha se o header esta presente, e que a plataforma real
+  // rejeitaria.
+  const malformados: Array<[string, string]> = [
+    ["nao e JWS", "qualquer-coisa"],
+    ["payload anexado em vez de detached", (() => {
+      const h = headersValidos()["X-JWS-Signature"] as string;
+      const [p = "", , a = ""] = h.split(".");
+      return `${p}.eyJhIjoxfQ.${a}`;
+    })()],
+    ["protected header ilegivel", "!!..AAAA"],
+  ];
+  for (const [caso, valor] of malformados) {
+    it(`400 quando a assinatura e malformada: ${caso}`, async () => {
+      const app = appComRotaDeTeste();
+      const res = await app.inject({
+        method: "GET",
+        url: "/api/v1/_teste",
+        headers: { "X-JWS-Signature": valor },
+      });
+      expect(res.statusCode).toBe(400);
+      expect(res.json().header).toBe("X-JWS-Signature");
+      expect(res.json().problemas.length).toBeGreaterThan(0);
+    });
+  }
+
+  it("os 4 headers do contrato antigo nao sao mais exigidos", async () => {
+    const app = appComRotaDeTeste();
+    // Nenhum deles presente, e mesmo assim passa: eles sairam do contrato.
+    const res = await app.inject({
+      method: "GET",
+      url: "/api/v1/_teste",
+      headers: headersValidos(),
+    });
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("correlationId continua sendo ecoado quando vem, por utilidade de debug", async () => {
+    const app = appComRotaDeTeste();
+    const res = await app.inject({
+      method: "GET",
+      url: "/api/v1/_teste",
+      headers: { ...headersValidos(), correlationId: "txn-abc123def456789" },
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["correlationid"]).toBe("txn-abc123def456789");
   });
 
   it("rota utilitaria /healthz fica isenta do enforcement", async () => {

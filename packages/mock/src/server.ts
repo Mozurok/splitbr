@@ -3,6 +3,7 @@ import { ChaosFlags, chaosPlugin } from "./chaos/flags.js";
 import { headersPlugin } from "./plugins/headers.js";
 import { problemPlugin } from "./plugins/problem.js";
 import { registrarRotasCenario } from "./scenario/engine.js";
+import { registrarRotasMoc } from "./routes/moc.js";
 import { registrarRotasPreliminar } from "./routes/informe-preliminar.js";
 import { registrarRotasSegregacao } from "./routes/segregacao.js";
 import { registrarRotasStream } from "./routes/stream.js";
@@ -23,6 +24,12 @@ export interface MockServerOptions {
    * em versoes futuras do manual -- brief, secao 11). Default: desligado.
    */
   resourceIdConsulta?: boolean;
+  /**
+   * Recusa requisicao sem `X-JWS-Signature` (400), como a plataforma real faz.
+   * Desligado por padrao para o `npx splitbr-mock` continuar utilizavel sem par
+   * de chaves; quando o header vem, a forma dele e conferida de qualquer jeito.
+   */
+  exigirAssinatura?: boolean;
 }
 
 export interface MockServer extends FastifyInstance {
@@ -54,10 +61,11 @@ export function buildServer(options: MockServerOptions = {}): MockServer {
   // Chaos antes dos headers: na plataforma real, auth (401/403) e protecoes
   // de borda (429/503) precedem a validacao de payload.
   chaosPlugin(app, chaos);
-  headersPlugin(app);
+  headersPlugin(app, { exigirAssinatura: options.exigirAssinatura ?? false });
 
   registrarRotasTransacao(app, { store, registro });
   registrarRotasPreliminar(app, { store, registro });
+  registrarRotasMoc(app, { store, registro });
   registrarRotasSegregacao(app, { store, registro });
   registrarRotasStream(app, { store, registro }, { timeoutMs: options.streamTimeoutMs ?? 25_000 });
   registrarRotasCenario(app, store);

@@ -45,11 +45,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        /**
-         * PATCH - Informe de Transação Atualizada
-         * @description Processa Informe de Transação Atualizada para arranjo(s): Pix Automático
-         */
-        patch: operations["patchapiv1pix_automatico"];
+        patch?: never;
         trace?: never;
     };
     "/api/v1/pix-dinamico": {
@@ -147,7 +143,7 @@ export interface paths {
         put?: never;
         /**
          * POST - Informe Preliminar de Pagamento
-         * @description Processa Informe Preliminar de Pagamento para arranjo(s): PIX estático
+         * @description Processa Informe Preliminar de Pagamento para arranjo(s): Pix estático
          */
         post: operations["postapiv1pix_estaticoinforme_preliminar_pagamento"];
         delete?: never;
@@ -256,7 +252,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/boleto/{idPsp}/tributos/stream/start": {
+    "/api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -265,9 +261,9 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até 6 segundos aguardando novas mensagens (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outboleto{idPsp}tributosstreamstart"];
+        get: operations["getapiv1outboleto{cnpjRaizPspRecDir}transacoesstreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -276,7 +272,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/boleto/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -285,22 +281,22 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até 6 segundos aguardando novas mensagens (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outboleto{idPsp}tributosstream{token}"];
+        get: operations["getapiv1outboleto{cnpjRaizPspRecDir}transacoesstream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Retorno Super Inteligente
          * @description Finaliza o stream do Retorno Super Inteligente.
          */
-        delete: operations["deleteapiv1outboleto{idPsp}tributosstream{token}"];
+        delete: operations["deleteapiv1outboleto{cnpjRaizPspRecDir}transacoesstream{token}"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/pix-automatico/{idPsp}/tributos/stream/start": {
+    "/api/v1/out/pix-automatico/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -309,9 +305,9 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até 6 segundos aguardando novas mensagens (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outpix_automatico{idPsp}tributosstreamstart"];
+        get: operations["getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -320,7 +316,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/pix-automatico/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/out/pix-automatico/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -329,22 +325,22 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até 6 segundos aguardando novas mensagens (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outpix_automatico{idPsp}tributosstream{token}"];
+        get: operations["getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Retorno Super Inteligente
          * @description Finaliza o stream do Retorno Super Inteligente.
          */
-        delete: operations["deleteapiv1outpix_automatico{idPsp}tributosstream{token}"];
+        delete: operations["deleteapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstream{token}"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/pix-dinamico/{idPsp}/tributos/stream/start": {
+    "/api/v1/out/pix-dinamico/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -353,9 +349,9 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Inicia o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até  (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outpix_dinamico{idPsp}tributosstreamstart"];
+        get: operations["getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -364,7 +360,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/out/pix-dinamico/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/out/pix-dinamico/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -373,22 +369,22 @@ export interface paths {
         };
         /**
          * GET - Retorno Super Inteligente
-         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada poderá permanecer aberta por até N segundos aguardando novas mensagens.
+         * @description Continua o long polling para consumo do Retorno Super Inteligente. A chamada permanece aberta por até 6 segundos aguardando novas mensagens (este tempo pode ser ajustado pela Plataforma). Não havendo mensagens dentro da janela, a PP responde 204 e devolve o token de continuação no cabeçalho 'proximoToken'; o consumidor deve prosseguir com o proximoToken retornado.
          */
-        get: operations["getapiv1outpix_dinamico{idPsp}tributosstream{token}"];
+        get: operations["getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Retorno Super Inteligente
          * @description Finaliza o stream do Retorno Super Inteligente.
          */
-        delete: operations["deleteapiv1outpix_dinamico{idPsp}tributosstream{token}"];
+        delete: operations["deleteapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstream{token}"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/boleto/{idPsp}/tributos/stream/start": {
+    "/api/v1/retroativo/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -399,7 +395,7 @@ export interface paths {
          * GET - Consulta Retroativa Super Inteligente
          * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Boleto
          */
-        get: operations["getapiv1outboleto{idPsp}tributosretroativostreamstart"];
+        get: operations["getapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -408,7 +404,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/boleto/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/retroativo/boleto/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -417,22 +413,22 @@ export interface paths {
         };
         /**
          * GET - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Boleto
+         * @description Continua a Consulta Retroativa Super Inteligente para arranjo(s): Boleto
          */
-        get: operations["getapiv1outboleto{idPsp}tributosretroativostream{token}"];
+        get: operations["getapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Boleto
+         * @description Finaliza a Consulta Retroativa Super Inteligente para arranjo(s): Boleto
          */
-        delete: operations["deleteapiv1outboleto{idPsp}tributosretroativostream{token}"];
+        delete: operations["deleteapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/pix-automatico/{idPsp}/tributos/stream/start": {
+    "/api/v1/retroativo/pix-automatico/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -443,7 +439,7 @@ export interface paths {
          * GET - Consulta Retroativa Super Inteligente
          * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Automático
          */
-        get: operations["getapiv1outpix_automatico{idPsp}tributosretroativostreamstart"];
+        get: operations["getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -452,7 +448,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/pix-automatico/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/retroativo/pix-automatico/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -461,22 +457,22 @@ export interface paths {
         };
         /**
          * GET - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Automático
+         * @description Continua a Consulta Retroativa Super Inteligente para arranjo(s): Pix Automático
          */
-        get: operations["getapiv1outpix_automatico{idPsp}tributosretroativostream{token}"];
+        get: operations["getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Automático
+         * @description Finaliza a Consulta Retroativa Super Inteligente para arranjo(s): Pix Automático
          */
-        delete: operations["deleteapiv1outpix_automatico{idPsp}tributosretroativostream{token}"];
+        delete: operations["deleteapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/pix-dinamico/{idPsp}/tributos/stream/start": {
+    "/api/v1/retroativo/pix-dinamico/{cnpjRaizPspRecDir}/transacoes/stream/start": {
         parameters: {
             query?: never;
             header?: never;
@@ -487,7 +483,7 @@ export interface paths {
          * GET - Consulta Retroativa Super Inteligente
          * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Dinâmico
          */
-        get: operations["getapiv1outpix_dinamico{idPsp}tributosretroativostreamstart"];
+        get: operations["getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostreamstart"];
         put?: never;
         post?: never;
         delete?: never;
@@ -496,7 +492,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/retroativo/pix-dinamico/{idPsp}/tributos/stream/{token}": {
+    "/api/v1/retroativo/pix-dinamico/{cnpjRaizPspRecDir}/transacoes/stream/{token}": {
         parameters: {
             query?: never;
             header?: never;
@@ -505,16 +501,16 @@ export interface paths {
         };
         /**
          * GET - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Dinâmico
+         * @description Continua a Consulta Retroativa Super Inteligente para arranjo(s): Pix Dinâmico
          */
-        get: operations["getapiv1outpix_dinamico{idPsp}tributosretroativostream{token}"];
+        get: operations["getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         put?: never;
         post?: never;
         /**
          * DELETE - Consulta Retroativa Super Inteligente
-         * @description Processa Consulta Retroativa Super Inteligente para arranjo(s): Pix Dinâmico
+         * @description Finaliza a Consulta Retroativa Super Inteligente para arranjo(s): Pix Dinâmico
          */
-        delete: operations["deleteapiv1outpix_dinamico{idPsp}tributosretroativostream{token}"];
+        delete: operations["deleteapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostream{token}"];
         options?: never;
         head?: never;
         patch?: never;
@@ -531,7 +527,7 @@ export interface paths {
         put?: never;
         /**
          * POST - Informe de Segregação
-         * @description Processa Informe de Segregação para arranjo(s): Boleto, Pix Dinâmico, Pix Automático, PIX estático, TED, TEF
+         * @description Processa Informe de Segregação para arranjo(s): Boleto, Pix Dinâmico, Pix Automático, Pix estático, TED, TEF
          */
         post: operations["postapiv1segregacao"];
         delete?: never;
@@ -551,7 +547,7 @@ export interface paths {
         put?: never;
         /**
          * POST - Informe de Segregação
-         * @description Processa Informe de Segregação para arranjo(s): Boleto, Pix Dinâmico, Pix Automático, PIX estático, TED, TEF
+         * @description Processa Informe de Segregação para arranjo(s): Boleto, Pix Dinâmico, Pix Automático, Pix estático, TED, TEF
          */
         post: operations["postapiv1segregacaofinalizacao"];
         delete?: never;
@@ -631,7 +627,7 @@ export interface paths {
         put?: never;
         /**
          * POST - Informe de Segregação
-         * @description Processa Informe de Segregação para arranjo(s): PIX estático
+         * @description Processa Informe de Segregação para arranjo(s): Pix estático
          */
         post: operations["postapiv1pix_estaticosegregacao{idInfSegr}lotes"];
         delete?: never;
@@ -680,16 +676,80 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/moc/solicitacao": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * POST - Requisição de MOC (Solicitação)
+         * @description Abre Solicitação de Estorno para um máximo de 1.000 ocorrências por requisição.
+         */
+        post: operations["postapiv1mocsolicitacao"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moc/notificacao": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * POST - Requisição de MOC (Notificação)
+         * @description Envia Notificação de transações em Análise no máximo de 1.000 ocorrências por requisicao.
+         */
+        post: operations["postapiv1mocnotificacao"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/moc/{cnpjRaizPspRecDir}/ocorrencias": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * GET - Consulta de MOC
+         * @description Consulta paginada (polling) das ocorrências do MOC com resposta para o PSP. A Plataforma responde imediatamente com as ocorrências disponíveis no momento (até 1.000 por página). O parâmetro 'nsuInicial' deve ser utilizado para continuar a paginação a partir do último NSU já recebido, a primeira consulta deve usar o valor inicial: 1. O parâmetro opcional 'limite' permite definir a quantidade máxima de ocorrências retornadas por página, respeitado o limite de 1.000 itens. O retorno HTTP 204 indica que não há mais ocorrências disponíveis no momento — seja porque todas as ocorrências já foram retornadas, seja porque não há ocorrências. Nesse caso o PSP deve aguardar 30 minutos antes de realizar uma nova consulta. A Plataforma não mantém a conexão aberta aguardando ocorrências (estratégia de polling).
+         */
+        get: operations["getapiv1moc{cnpjRaizPspRecDir}ocorrencias"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         InfoRequest: {
             infRequisicao: {
-                /** @example 12345678 */
+                /**
+                 * @description Raiz do CNPJ do PSP Recebedor Direto.
+                 * @example 12345678
+                 */
                 cnpjRaizPspRecDir: string;
                 /**
                  * Format: date-time
+                 * @description Data e hora da mensagem que está sendo transmitida entre PSP/Núclea e a Plataforma Pública.
                  * @example 2026-03-22T12:00:00-03:00
                  */
                 dtHrMsg: string;
@@ -700,6 +760,7 @@ export interface components {
             infRequisicao: {
                 /**
                  * Format: date-time
+                 * @description Data e hora da mensagem que está sendo transmitida entre PSP/Núclea e a Plataforma Pública.
                  * @example 2026-03-22T12:00:00-03:00
                  */
                 dtHrMsg: string;
@@ -708,10 +769,14 @@ export interface components {
         };
         InfoSegRequest: {
             infRequisicao: {
-                /** @example 12345678 */
+                /**
+                 * @description Raiz do CNPJ do PSP Recebedor Direto.
+                 * @example 12345678
+                 */
                 cnpjRaizPspRecDir: string;
                 /**
                  * Format: date-time
+                 * @description Data e hora da mensagem que está sendo transmitida entre PSP/Núclea e a Plataforma Pública.
                  * @example 2026-03-22T12:00:00-03:00
                  */
                 dtHrMsg: string;
@@ -721,75 +786,132 @@ export interface components {
             dadosFinalSeg: components["schemas"]["DadosFinalSegRequest"];
         };
         DadosInfoSegRequest: {
-            /** @example ABC123DEF456GHI7PXD20260423001 */
+            /**
+             * @description Identificador do Repasse Financeiro associado à transação. Formato: ISPB do PSP Recebedor Direto (8) + ISPB da instituição do repasse efetivo (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data definida para realização do Repasse Financeiro (AAAAMMDD) + 3 caracteres para o sequencial. Gerado pelo PSP Recebedor Direto. Um mesmo idRepasse é utilizado para os dois tributos do Repasse Financeiro: CBS (via TES) e IBS (via STR), sendo comum a ambos.
+             * @example ABC123DEF456GHI7PXD20260423001
+             */
             idRepasse: string;
             /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
              * @example PXD
              * @enum {string}
              */
             arrj: "PXA" | "PXD" | "PXE" | "BOL" | "TED" | "TEF";
-            /** @example ABC123DEF456GHI7PXD202604231930001 */
+            /**
+             * @description Identificador do informe de segregação, gerado pelo responsável pela comunicação. Formato: ISPB do PSP Recebedor Direto (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA/PXD/PXE/BOL/TED/TEF) + data de envio (AAAAMMDD) + hora de corte HHMM (horário de corte do arranjo, conforme o Manual de Tempos) + sequencial (3).
+             * @example ABC123DEF456GHI7PXD202604231930001
+             */
             idInfSegr: string;
         };
         DadosLoteSegRequest: {
             /**
-             * @example LOTE202603250001
-             * @example 0001
-             * @example 0002
+             * @description Identificador do lote enviado no informe de segregação. Formato: IdInfSegr + sequencial
+             * @example ZZ99YY88XX77WW66VV55UU44TT33SS22RR000001
+             * @example ZZ99YY88XX77WW66VV55UU44TT33SS22RR000002
              */
             idLote: string;
         };
         DadosFinalSegRequest: {
-            /** @example ABC123DEF456GHI7PXD202604231930001 */
+            /**
+             * @description Identificador do informe de segregação, gerado pelo responsável pela comunicação. Formato: ISPB do PSP Recebedor Direto (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA/PXD/PXE/BOL/TED/TEF) + data de envio (AAAAMMDD) + hora de corte HHMM (horário de corte do arranjo, conforme o Manual de Tempos) + sequencial (3).
+             * @example ABC123DEF456GHI7PXD202604231930001
+             */
             idInfSegr: string;
             /**
              * Format: int64
+             * @description Número total de transações enviadas no Informe de Segregação
              * @example 100
-             * @example 100000000000000000
+             * @example 99
+             * @example 0
              */
             totalTrans: number;
-            /** @example 1500.5 */
-            valorTotalCbs: number;
-            /** @example 750.25 */
-            valorTotalIbs: number;
+            /**
+             * @description Valor total de CBS enviado no Informe de Segregação
+             * @example 1500.5
+             */
+            vlTotalCbs: number;
+            /**
+             * @description Valor total de IBS enviado no Informe de Segregação
+             * @example 750.25
+             */
+            vlTotalIbs: number;
         };
         InformeDeTransacaoIniciadaBoletoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 12345678901234567891123456789012345678911234 */
+            /**
+             * @description Número correspondente ao código de barras do boleto.
+             * @example 12345678901234567891123456789012345678911234
+             */
             numCodBarras: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlCbsInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
-            cnpjCpfPagOrig: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
             /**
              * Format: date-time
+             * @description Data e hora de emissão da transação após processamento pelo PSP/Núclea.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrIni: string;
             /**
              * Format: date
+             * @description Data de vencimento da transação.
              * @example 2026-03-20
              */
             dtVenc: string;
             /**
              * Format: date-time
+             * @description Data e hora limite para realização do pagamento da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLimPgto: string;
@@ -798,38 +920,71 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeTransacaoIniciadaBoletoTransacao"][];
         };
         InformeDeTransacaoIniciadaPixAutomaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlCbsInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
-            cnpjCpfPagOrig?: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig?: string;
             /**
              * Format: date-time
+             * @description Data e hora de emissão da transação após processamento pelo PSP/Núclea.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrIni: string;
             /**
              * Format: date
+             * @description Data de vencimento da transação.
              * @example 2026-03-20
              */
             dtVenc?: string;
             /**
              * Format: date-time
+             * @description Data e hora limite para realização do pagamento da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLimPgto: string;
@@ -838,38 +993,71 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeTransacaoIniciadaPixAutomaticoTransacao"][];
         };
         InformeDeTransacaoIniciadaPixDinamicoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlCbsInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
-            cnpjCpfPagOrig?: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig?: string;
             /**
              * Format: date-time
+             * @description Data e hora de emissão da transação após processamento pelo PSP/Núclea.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrIni: string;
             /**
              * Format: date
+             * @description Data de vencimento da transação.
              * @example 2026-03-20
              */
             dtVenc?: string;
             /**
              * Format: date-time
+             * @description Data e hora limite para realização do pagamento da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLimPgto: string;
@@ -878,36 +1066,66 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeTransacaoIniciadaPixDinamicoTransacao"][];
         };
         InformeDeTransacaoAtualizadaBoletoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlCbsInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
             /**
              * Format: date-time
+             * @description Data e hora da atualização da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrAtu: string;
             /**
              * Format: date
+             * @description Data de vencimento da transação.
              * @example 2026-03-20
              */
             dtVenc: string;
             /**
              * Format: date-time
+             * @description Data e hora limite para realização do pagamento da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLimPgto: string;
@@ -915,79 +1133,72 @@ export interface components {
         InformeDeTransacaoAtualizadaBoletoRequest: components["schemas"]["InfoRequestSemCnpj"] & {
             transacoes?: components["schemas"]["InformeDeTransacaoAtualizadaBoletoTransacao"][];
         };
-        InformeDeTransacaoAtualizadaPixAutomaticoTransacao: {
-            /** @example 1 */
-            index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
-            txId: string;
-            /** @example 10.02 */
-            vlInf: number;
-            /** @example 10.02 */
-            vlCbsInf: number;
-            /** @example 10.02 */
-            vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
-            docFiscal?: string;
-            /** @example 87654321 */
-            cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
-            cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
-            cnpjRec: string;
-            /** @example 11444777000142 */
-            cnpjCpfPagOrig?: string;
-            /**
-             * Format: date-time
-             * @example 2026-03-20T10:33:46-03:00
-             */
-            dtHrAtu: string;
-            /**
-             * Format: date
-             * @example 2026-03-20
-             */
-            dtVenc?: string;
-            /**
-             * Format: date-time
-             * @example 2026-03-20T10:33:46-03:00
-             */
-            dtHrLimPgto: string;
-        };
-        InformeDeTransacaoAtualizadaPixAutomaticoRequest: components["schemas"]["InfoRequestSemCnpj"] & {
-            transacoes?: components["schemas"]["InformeDeTransacaoAtualizadaPixAutomaticoTransacao"][];
-        };
         InformeDeTransacaoAtualizadaPixDinamicoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlCbsInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS informado pelo originador no preenchimento da transação.
+             * @example 10.02
+             */
             vlIbsInf: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
-            cnpjCpfPagOrig?: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig?: string;
             /**
              * Format: date-time
+             * @description Data e hora da atualização da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrAtu: string;
             /**
              * Format: date
+             * @description Data de vencimento da transação.
              * @example 2026-03-20
              */
             dtVenc?: string;
             /**
              * Format: date-time
+             * @description Data e hora limite para realização do pagamento da transação.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLimPgto: string;
@@ -996,45 +1207,86 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeTransacaoAtualizadaPixDinamicoTransacao"][];
         };
         InformePreliminarDePagamentoBoletoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 1 */
+            /**
+             * @description Indica a sequência do pagamento no arranjo (ex.: quantidade de pagamentos do boleto).
+             * @example 1
+             */
             numPgto: number;
             /**
-             * Format: int64
-             * @example 1234567890123456800
-             * @example 9223372036854776000
+             * @description Identificador específico do evento de baixa da transação.
+             * @example 1234567890123456789
+             * @example 9999999999999999999
              */
-            numIdentcBaixa: number;
-            /** @example 10.02 */
+            numIdentcBaixa: string;
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet?: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
@@ -1043,42 +1295,81 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoBoletoTransacao"][];
         };
         InformePreliminarDePagamentoPixAutomaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
@@ -1087,42 +1378,81 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"][];
         };
         InformePreliminarDePagamentoPixDinamicoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
@@ -1131,35 +1461,70 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoPixDinamicoTransacao"][];
         };
         InformePreliminarDePagamentoPixEstaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
@@ -1168,28 +1533,59 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoPixEstaticoTransacao"][];
         };
         InformePreliminarDePagamentoTedTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação TED gerado na liquidação (NumCtrlSTR ou NumCtrlPAG).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             numCtrlTED: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
@@ -1198,33 +1594,60 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoTedTransacao"][];
         };
         InformePreliminarDePagamentoTefTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador da transação TEF gerado pelo PSP.
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             numCtrlTEF: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 87654321 */
-            cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
@@ -1233,20 +1656,34 @@ export interface components {
             transacoes?: components["schemas"]["InformePreliminarDePagamentoTefTransacao"][];
         };
         InformeDeBaixaExcetoPorPagamentoBoletoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 1 */
-            numPgto: number;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
             /**
              * Format: date-time
+             * @description Data e hora da baixa da transação sem ocorrência de pagamento.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrBaixa: string;
@@ -1255,16 +1692,29 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeBaixaExcetoPorPagamentoBoletoTransacao"][];
         };
         InformeDeBaixaExcetoPorPagamentoPixAutomaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
             /**
              * Format: date-time
+             * @description Data e hora da baixa da transação sem ocorrência de pagamento.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrBaixa: string;
@@ -1273,16 +1723,29 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeBaixaExcetoPorPagamentoPixAutomaticoTransacao"][];
         };
         InformeDeBaixaExcetoPorPagamentoPixDinamicoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
             /**
              * Format: date-time
+             * @description Data e hora da baixa da transação sem ocorrência de pagamento.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrBaixa: string;
@@ -1291,6 +1754,7 @@ export interface components {
             transacoes?: components["schemas"]["InformeDeBaixaExcetoPorPagamentoPixDinamicoTransacao"][];
         };
         /**
+         * @description Código identificador da mensagem, conforme o arranjo aplicável (ex.: RSUP101, RSUP102).
          * @example RSUP101
          * @example RSUP203
          * @enum {string}
@@ -1299,150 +1763,295 @@ export interface components {
         RetornoSuperInteligenteBoletoTransacao: {
             codMsg: components["schemas"]["CodMsgEnum"];
             /**
-             * Format: int64
-             * @description Número sequencial único do retorno
-             * @example 1234567890123456800
+             * @description Número Sequencial Único da mensagem (Super Inteligente)
+             * @example 1234567890123456789
              */
-            nsuId: number;
-            /** @example 123A512312312312FAS1 */
+            nsuId: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que a Plataforma Pública disponibilizou a mensagem do Retorno Super Inteligente para consumo.
+             * @example 2026-03-20T10:33:46-03:00
+             */
+            dtHrDisp: string;
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS corrigido pela RFB, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlCbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS corrigido pelo Comitê Gestor do IBS, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlIbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS não extinto do Documento Fiscal vinculado à transação, conforme retorno da RFB.
+             * @example 10.02
+             */
             vlCbsAberto?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS não extinto do Documento Fiscal vinculado à transação, conforme retorno do Comitê Gestor do IBS.
+             * @example 10.02
+             */
             vlIbsAberto?: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
         };
         RetornoSuperInteligenteBoletoRequest: {
-            tributos: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
+            transacoes: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
         };
         RetornoSuperInteligentePixAutomaticoTransacao: {
             codMsg: components["schemas"]["CodMsgEnum"];
             /**
-             * Format: int64
-             * @description Número sequencial único do retorno
-             * @example 1234567890123456800
+             * @description Número Sequencial Único da mensagem (Super Inteligente)
+             * @example 1234567890123456789
              */
-            nsuId: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            nsuId: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que a Plataforma Pública disponibilizou a mensagem do Retorno Super Inteligente para consumo.
+             * @example 2026-03-20T10:33:46-03:00
+             */
+            dtHrDisp: string;
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS corrigido pela RFB, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlCbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS corrigido pelo Comitê Gestor do IBS, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlIbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS não extinto do Documento Fiscal vinculado à transação, conforme retorno da RFB.
+             * @example 10.02
+             */
             vlCbsAberto?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS não extinto do Documento Fiscal vinculado à transação, conforme retorno do Comitê Gestor do IBS.
+             * @example 10.02
+             */
             vlIbsAberto?: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
         };
         RetornoSuperInteligentePixAutomaticoRequest: {
-            tributos: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
+            transacoes: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
         };
         RetornoSuperInteligentePixDinamicoTransacao: {
             codMsg: components["schemas"]["CodMsgEnum"];
             /**
-             * Format: int64
-             * @description Número sequencial único do retorno
-             * @example 1234567890123456800
+             * @description Número Sequencial Único da mensagem (Super Inteligente)
+             * @example 1234567890123456789
              */
-            nsuId: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            nsuId: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que a Plataforma Pública disponibilizou a mensagem do Retorno Super Inteligente para consumo.
+             * @example 2026-03-20T10:33:46-03:00
+             */
+            dtHrDisp: string;
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor da transação informado pelo originador ao preencher (emitir) a transação.
+             * @example 10.02
+             */
             vlInf: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS corrigido pela RFB, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlCbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS corrigido pelo Comitê Gestor do IBS, quando divergente do Documento Fiscal vinculado.
+             * @example 10.02
+             */
             vlIbsCorr?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS não extinto do Documento Fiscal vinculado à transação, conforme retorno da RFB.
+             * @example 10.02
+             */
             vlCbsAberto?: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS não extinto do Documento Fiscal vinculado à transação, conforme retorno do Comitê Gestor do IBS.
+             * @example 10.02
+             */
             vlIbsAberto?: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 12345678 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
             cnpjRaizPspRecDir: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
         };
         RetornoSuperInteligentePixDinamicoRequest: {
-            tributos: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
+            transacoes: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
         };
         InfoSegregacaoRequest: components["schemas"]["InfoSegRequest"] & {
             dadosInfoSeg: components["schemas"]["DadosInfoSegRequest"];
         };
         InformeDeSegregacaoBoletoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador único do documento de cobrança no sistema DDA.
+             * @example 123A512312312312FAS1
+             */
             idDda: string;
-            /** @example 123A512312312312FAS1 */
+            /**
+             * @description Identificador utilizado pela Núclea para controle interno da transação.
+             * @example 123A512312312312FAS1
+             */
             numCtrlOrig: string;
-            /** @example 1 */
+            /**
+             * @description Indica a sequência do pagamento no arranjo (ex.: quantidade de pagamentos do boleto).
+             * @example 1
+             */
             numPgto: number;
             /**
-             * Format: int64
-             * @example 1234567890123456800
-             * @example 9223372036854776000
+             * @description Identificador específico do evento de baixa da transação.
+             * @example 1234567890123456789
+             * @example 9999999999999999999
              */
-            numIdentcBaixa: number;
-            /** @example 10.02 */
+            numIdentcBaixa: string;
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet?: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1452,45 +2061,82 @@ export interface components {
             transacoes: components["schemas"]["InformeDeSegregacaoBoletoTransacao"][];
         };
         InformeDeSegregacaoPixAutomaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1500,45 +2146,82 @@ export interface components {
             transacoes: components["schemas"]["InformeDeSegregacaoPixAutomaticoTransacao"][];
         };
         InformeDeSegregacaoPixDinamicoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação Pix (TxID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             txId: string;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal?: string;
             /**
+             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
              * @example 1
              * @enum {string}
              */
             indPgtoIntegral: "0" | "1";
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1548,38 +2231,71 @@ export interface components {
             transacoes: components["schemas"]["InformeDeSegregacaoPixDinamicoTransacao"][];
         };
         InformeDeSegregacaoPixEstaticoTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example 1234ABDOASD11231234ABDOASD112312345 */
+            /**
+             * @description Identificador único da transação no arranjo de pagamentos Pix (E2EID).
+             * @example 1234ABDOASD11231234ABDOASD112312345
+             */
             e2eId: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
+             * @example 87654321
+             */
             cnpjRaizPspRecInd?: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1589,31 +2305,60 @@ export interface components {
             transacoes: components["schemas"]["InformeDeSegregacaoPixEstaticoTransacao"][];
         };
         InformeDeSegregacaoTedTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example TED123456789 */
+            /**
+             * @description Identificador único da transação TED gerado na liquidação (NumCtrlSTR ou NumCtrlPAG).
+             * @example TED123456789
+             */
             numCtrlTED: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 87654321 */
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 87654321
+             */
             cnpjRaizPspPag: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1623,36 +2368,61 @@ export interface components {
             transacoes: components["schemas"]["InformeDeSegregacaoTedTransacao"][];
         };
         InformeDeSegregacaoTefTransacao: {
-            /** @example 1 */
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
             index: number;
-            /** @example TEF123456789 */
+            /**
+             * @description Identificador da transação TEF gerado pelo PSP.
+             * @example TEF123456789
+             */
             numCtrlTEF: string;
-            /** @example 10.02 */
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
             vlPago: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlCbsSegr: number;
-            /** @example 10.02 */
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
             vlIbsSegr: number;
-            /** @example 1234567890123456789B123A5678901234567891123412345 */
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
             docFiscal: string;
-            /** @example 87654321 */
-            cnpjRaizPspRecInd?: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
             cnpjRec: string;
-            /** @example 11444777000142 */
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
             cnpjCpfPagEfet: string;
             /**
              * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrPgto: string;
             /**
              * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrLiq: string;
             /**
              * Format: date-time
+             * @description Data e hora-limite para o envio do Repasse Financeiro de CBS à RFB e de IBS ao Comitê Gestor. Corresponde a 12:00 (meio-dia) de D+N, conforme o Manual de Tempos (seção 6.2).
              * @example 2026-03-20T10:33:46-03:00
              */
             dtHrRepasse: string;
@@ -1661,11 +2431,1093 @@ export interface components {
             dadosLoteSeg: components["schemas"]["DadosLoteSegRequest"];
             transacoes: components["schemas"]["InformeDeSegregacaoTefTransacao"][];
         };
+        /** @description Ocorrência do MOC. O discriminador principal e arrj (arranjo): cada arranjo exige o(s) identificador(es) de transacao correspondente(s). */
+        MocOcorrencia: components["schemas"]["MocOcorrenciaBoleto"] | components["schemas"]["MocOcorrenciaPixEstatico"] | components["schemas"]["MocOcorrenciaPixDinamico"] | components["schemas"]["MocOcorrenciaPixAutomatico"] | components["schemas"]["MocOcorrenciaTed"] | components["schemas"]["MocOcorrenciaTef"];
+        /** @description Retorno de ocorrência do MOC (resposta da RFB/CGIBS), na consulta paginada. O discriminador é arrj: cada arranjo exige o(s) identificador(es) de transação correspondente(s), conforme a matriz 3.9.4.1. */
+        MocOcorrenciaRetorno: components["schemas"]["MocOcorrenciaRetornoBoleto"] | components["schemas"]["MocOcorrenciaRetornoPixAutomatico"] | components["schemas"]["MocOcorrenciaRetornoPixDinamico"] | components["schemas"]["MocOcorrenciaRetornoPixEstatico"] | components["schemas"]["MocOcorrenciaRetornoTed"] | components["schemas"]["MocOcorrenciaRetornoTef"];
+        MocOcorrenciasConsultaResponse: {
+            /** @description Página de ocorrências com resposta. Máximo de 1.000 itens por página. */
+            ocorrencias: components["schemas"]["MocOcorrenciaRetorno"][];
+        };
+        /** @description Ocorrência do arranjo Boleto (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaBoleto: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "BOL";
+            idDda: components["schemas"]["InformePreliminarDePagamentoBoletoTransacao"]["idDda"];
+            numIdentcBaixa?: components["schemas"]["InformePreliminarDePagamentoBoletoTransacao"]["numIdentcBaixa"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 12345678
+             */
+            cnpjRaizPspPag: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet?: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
+             * @example 2026-06-23T09:00:00-03:00
+             */
+            dtHrPgto: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        /** @description Ocorrência do arranjo Pix Estático (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaPixEstatico: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "PXE";
+            e2eId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 12345678
+             */
+            cnpjRaizPspPag: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
+             * @example 2026-06-23T09:00:00-03:00
+             */
+            dtHrPgto: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        /** @description Ocorrência do arranjo Pix Dinâmico (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaPixDinamico: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "PXD";
+            txId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["txId"];
+            e2eId?: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 12345678
+             */
+            cnpjRaizPspPag: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
+             * @example 2026-06-23T09:00:00-03:00
+             */
+            dtHrPgto: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        /** @description Ocorrência do arranjo Pix Automático (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaPixAutomatico: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "PXA";
+            txId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["txId"];
+            e2eId?: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 12345678
+             */
+            cnpjRaizPspPag: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
+             * @example 2026-06-23T09:00:00-03:00
+             */
+            dtHrPgto: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        /** @description Ocorrência do arranjo TED (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaTed: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "TED";
+            numCtrlTED: components["schemas"]["InformePreliminarDePagamentoTedTransacao"]["numCtrlTED"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Raiz do CNPJ do PSP Pagador.
+             * @example 12345678
+             */
+            cnpjRaizPspPag: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        /** @description Ocorrência do arranjo TEF (estrutura achatada). Campos válidos e obrigatoriedade conforme o Manual; additionalProperties=false impede campos não previstos. */
+        MocOcorrenciaTef: {
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF. (enum property replaced by openapi-typescript)
+             * @enum {string}
+             */
+            arrj: "TEF";
+            numCtrlTEF: components["schemas"]["InformePreliminarDePagamentoTefTransacao"]["numCtrlTEF"];
+            /**
+             * @description Valor efetivamente pago na transação.
+             * @example 10.02
+             */
+            vlPago: number;
+            /**
+             * @description Valor de CBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlCbsSegr: number;
+            /**
+             * @description Valor de IBS efetivamente segregado pelo PSP Recebedor Direto na transação.
+             * @example 10.02
+             */
+            vlIbsSegr: number;
+            /**
+             * @description Identificador do Documento Fiscal vinculado à transação.
+             * @example 1234567890123456789B123A5678901234567891123412345
+             */
+            docFiscal?: string;
+            /**
+             * @description Raiz do CNPJ do PSP Recebedor Direto.
+             * @example 12345678
+             */
+            cnpjRaizPspRecDir: string;
+            /**
+             * @description Identificação do Recebedor (que recebe o valor líquido da transação). Em caso de cessão de recebíveis, preencher com o Recebedor original (e não com o novo detentor de direitos).
+             * @example 11444777000142
+             */
+            cnpjRec: string;
+            /**
+             * @description Identificador do Pagador informado na emissão da transação. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjPagOrig: string;
+            /**
+             * @description Identificador do Pagador que efetivamente realizou o pagamento. CPF: 11 dígitos. CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfPagEfet: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que o pagamento foi realizado pelo Pagador.
+             * @example 2026-06-23T09:00:00-03:00
+             */
+            dtHrPgto: string;
+            /**
+             * Format: date-time
+             * @description Data e hora em que ocorreu a efetiva Liquidação Interbancária ou Intrabancária no arranjo.
+             * @example 2026-06-23T10:00:00-03:00
+             */
+            dtHrLiq: string;
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * @description Número sequencial do item na lista enviada, iniciando em 1.
+             * @example 1
+             */
+            index: number;
+            codMotOcor?: components["schemas"]["CodMotOcorEnum"];
+            /**
+             * @description Texto livre complementar ao motivo da ocorrência.
+             * @example Transação retida para análise de segurança
+             */
+            descOcor?: string;
+            /**
+             * @description Órgão responsável pelo processo administrativo associado à ocorrência (Notificação de Transação em Análise).
+             * @example RFB
+             */
+            orgRespProcAdm?: string;
+            /**
+             * @description Número do ofício, processo administrativo ou ordem judicial associado à ocorrência (Notificação de Transação em Análise).
+             * @example PROC2026000123
+             */
+            numProcAdm?: string;
+            /**
+             * @description Valor de CBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlCbsEst?: number;
+            /**
+             * @description Valor de IBS solicitado para estorno (Solicitação de Estorno).
+             * @example 10.02
+             */
+            vlIbsEst?: number;
+            /**
+             * @description Identificador (CNPJ/CPF) da parte prejudicada, que receberá de volta o valor do tributo estornado. CPF: 11 dígitos; CNPJ: 14 caracteres alfanuméricos.
+             * @example 11444777000142
+             */
+            cnpjCpfDest: string;
+        };
+        MocOcorrenciaSol: components["schemas"]["MocOcorrencia"] & {
+            /** @description Solicitacao de estorno: os tres valores abaixo sao obrigatorios (spec: allOf[1].required). */
+            codMotOcor: NonNullable<components["schemas"]["MocOcorrenciaBoleto"]["codMotOcor"]>;
+            vlCbsEst: NonNullable<components["schemas"]["MocOcorrenciaBoleto"]["vlCbsEst"]>;
+            vlIbsEst: NonNullable<components["schemas"]["MocOcorrenciaBoleto"]["vlIbsEst"]>;
+            /** @description Proibidos na solicitacao (spec: allOf[1].not.anyOf). */
+            orgRespProcAdm?: never;
+            numProcAdm?: never;
+        };
+        MocOcorrenciaNot: components["schemas"]["MocOcorrencia"] & {
+            /** @description Notificacao: os campos de estorno sao proibidos (spec: allOf[1].not.anyOf). */
+            codMotOcor?: never;
+            vlCbsEst?: never;
+            vlIbsEst?: never;
+        };
+        /** @description Requisicao MOC contendo exclusivamente ocorrencias de solicitacao. */
+        MecanismoDeOcorrenciasSolRequest: {
+            infRequisicao: {
+                /**
+                 * Format: date-time
+                 * @description Data e hora da mensagem que está sendo transmitida entre PSP/Núclea e a Plataforma Pública.
+                 * @example 2026-06-23T12:00:00-03:00
+                 */
+                dtHrMsg: string;
+            };
+            /** @description Lista de ocorrências do MOC. Máximo de 1.000 por requisição. */
+            ocorrencias: components["schemas"]["MocOcorrenciaSol"][];
+        };
+        /** @description Requisicao MOC contendo exclusivamente ocorrencias de notificacao. */
+        MecanismoDeOcorrenciasNotRequest: {
+            infRequisicao: {
+                /**
+                 * Format: date-time
+                 * @description Data e hora da mensagem que está sendo transmitida entre PSP/Núclea e a Plataforma Pública.
+                 * @example 2026-06-23T12:00:00-03:00
+                 */
+                dtHrMsg: string;
+            };
+            /** @description Lista de ocorrências do MOC. Máximo de 1.000 por requisição. */
+            ocorrencias: components["schemas"]["MocOcorrenciaNot"][];
+        };
+        /**
+         * @description Código do parecer sobre a solicitação de estorno via MOC associada à transação. 01= Aceita, 02 = Aceita Parcialmente, 03 = Não aceita
+         * @example 01
+         * @example 02
+         * @example 03
+         * @enum {string}
+         */
+        CodParecerEnum: "01" | "02" | "03";
+        /**
+         * @description Código do motivo da ocorrência (Solicitação de Estorno): 01 = Incidente de segurança; 02 = Falha operacional (Atores Financeiros).
+         * @example 01
+         * @example 02
+         * @enum {string}
+         */
+        CodMotOcorEnum: "01" | "02";
+        /**
+         * @description Órgão que respondeu à solicitação de estorno: RFB (Receita Federal do Brasil) ou CGIBS (Comitê Gestor do IBS). Presente no Retorno da Solicitação de Estorno.
+         * @example RFB
+         * @example CGIBS
+         * @enum {string}
+         */
+        OrgRespResEnum: "RFB" | "CGIBS";
+        /**
+         * @description Tributo a que se refere o parecer: CBS (Contribuição sobre Bens e Serviços) ou IBS (Imposto sobre Bens e Serviços). Presente no Retorno da Solicitação de Estorno.
+         * @example CBS
+         * @example IBS
+         * @enum {string}
+         */
+        TpTribEnum: "CBS" | "IBS";
+        /** @description Retorno de ocorrência do MOC — arranjo Boleto (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoBoleto: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example BOL
+             * @constant
+             */
+            arrj: "BOL";
+            idDda: components["schemas"]["InformePreliminarDePagamentoBoletoTransacao"]["idDda"];
+            numIdentcBaixa?: components["schemas"]["InformePreliminarDePagamentoBoletoTransacao"]["numIdentcBaixa"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "BOL";
+        });
+        /** @description Retorno de ocorrência do MOC — arranjo Pix Automático (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoPixAutomatico: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example PXA
+             * @constant
+             */
+            arrj: "PXA";
+            txId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["txId"];
+            e2eId?: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "PXA";
+        });
+        /** @description Retorno de ocorrência do MOC — arranjo Pix Dinâmico (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoPixDinamico: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example PXD
+             * @constant
+             */
+            arrj: "PXD";
+            txId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["txId"];
+            e2eId?: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "PXD";
+        });
+        /** @description Retorno de ocorrência do MOC — arranjo Pix Estático (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoPixEstatico: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example PXE
+             * @constant
+             */
+            arrj: "PXE";
+            e2eId: components["schemas"]["InformePreliminarDePagamentoPixAutomaticoTransacao"]["e2eId"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "PXE";
+        });
+        /** @description Retorno de ocorrência do MOC — arranjo TED (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoTed: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example TED
+             * @constant
+             */
+            arrj: "TED";
+            numCtrlTED: components["schemas"]["InformePreliminarDePagamentoTedTransacao"]["numCtrlTED"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "TED";
+        });
+        /** @description Retorno de ocorrência do MOC — arranjo TEF (estrutura achatada). Campos e obrigatoriedade conforme a matriz 3.9.4.1; additionalProperties=false impede campos não previstos. idAprovEst é exigido apenas quando codParecer é 01 ou 02. */
+        MocOcorrenciaRetornoTef: {
+            /**
+             * @description NSU da ocorrência retornada, utilizado na paginação dos resultados do MOC.
+             * @example 1234567890123456789
+             */
+            nsuId: string;
+            /**
+             * @description Arranjo financeiro ao qual a mensagem está associada (Pix Automático, Pix Dinâmico, Pix Estático, Boleto, TED, TEF). O campo prevê os seguintes valores: PXA, PXD, PXE, BOL, TED ou TEF.
+             * @example TEF
+             * @constant
+             */
+            arrj: "TEF";
+            numCtrlTEF: components["schemas"]["InformePreliminarDePagamentoTefTransacao"]["numCtrlTEF"];
+            /**
+             * @description Identificador único da ocorrência do MOC. Formato: prefixo do tipo (SOL ou NOT) (3) + raiz do CNPJ do PSP Recebedor Direto (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) (3) + data da solicitação (AAAAMMDD) (8) + 7 caracteres para o contador. Gerado pelo PSP Recebedor Direto.
+             * @example SOL12345678PXD202606230000001
+             */
+            idOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora de envio da ocorrência pelo responsável da abertura do MOC.
+             * @example 2026-06-23T12:00:00-03:00
+             */
+            dtHrEnvOcor: string;
+            /**
+             * Format: date-time
+             * @description Data e hora da resposta da ocorrência pela RFB/CGIBS. Presente apenas no Retorno da Solicitação de Estorno.
+             * @example 2026-06-24T15:00:00-03:00
+             */
+            dtHrRespOcor: string;
+            orgRespRes: components["schemas"]["OrgRespResEnum"];
+            codParecer: components["schemas"]["CodParecerEnum"];
+            tpTrib: components["schemas"]["TpTribEnum"];
+            /**
+             * @description Valor de CBS ou IBS aprovado para estorno, conforme tpTrib. Presente no Retorno da Solicitação de Estorno.
+             * @example 10.02
+             */
+            vlTribEst: number;
+            /**
+             * @description Descrição complementar do parecer da RFB/CGIBS. Presente no Retorno da Solicitação de Estorno.
+             * @example Ocorrência respondida pelo órgão competente
+             */
+            descParecer?: string;
+            /**
+             * @description Orientação à parte solicitante quanto ao acompanhamento da ocorrência. Presente no Retorno da Solicitação de Estorno.
+             * @example Consultar retorno da ocorrência para acompanhamento
+             */
+            orientSolic?: string;
+            /**
+             * @description Identificador de aprovação do estorno via MOC, emitido pela RFB ou CGIBS. Corresponde ao número de controle enviado na mensagem de estorno no SPB, conforme o tributo: NumCtrlTESOr para CBS e NumCtrlSTROr para IBS. Preenchimento condicional: retornado somente quando codParecer for 01 (Aceita) ou 02 (Aceita Parcialmente).
+             * @example APV20260623000100001
+             */
+            idAprovEst?: string;
+        } & (unknown & {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            arrj: "TEF";
+        });
     };
     responses: {
         /** @description PP Recebido */
         PPResponseOk: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1681,7 +3533,10 @@ export interface components {
                     /** @example 3 */
                     numErros?: number;
                     errors?: {
-                        /** @example 10 */
+                        /**
+                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
+                         * @example 10
+                         */
                         index?: number;
                         /** @example field1 */
                         field?: string;
@@ -1693,42 +3548,93 @@ export interface components {
                 };
             };
         };
-        /** @description Stream iniciado com sucesso. Nenhuma mensagem disponível dentro da janela de espera do long polling. Não representa falha da operação; o consumidor poderá realizar nova chamada com o token vigente. */
+        /** @description Stream iniciado com sucesso. Nenhuma mensagem disponível dentro da janela de espera do long polling. Não representa falha da operação. No fluxo principal do Retorno Super Inteligente, o 204 (sem corpo) retorna o token de continuação no cabeçalho 'proximoToken' e indica ausência de mensagens no momento: o consumidor deve prosseguir consultando com o proximoToken retornado (não reutilizar o token enviado na requisição). */
         PPResponseNoContentStreamStart: {
             headers: {
                 streamId: components["headers"]["StreamIdHeader"];
                 proximoToken: components["headers"]["ProximoTokenHeader"];
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content?: never;
         };
-        /** @description A consulta não retornou resultados */
+        /** @description A consulta não retornou resultados Na Consulta Retroativa, o 204 (sem corpo) com o último token no header 'proximoToken' indica fim do stream — o consumidor deve encerrar com DELETE. */
         PPResponseNoContentRetroativoStart: {
             headers: {
                 proximoToken: components["headers"]["ProximoTokenHeader"];
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content?: never;
         };
-        /** @description Fim do resultado da consulta */
+        /** @description Fim do resultado da consulta 204 (sem corpo): na Consulta Retroativa, o retorno do último token no header 'proximoToken' indica fim do stream, exigindo DELETE para encerrar. */
         PPResponseNoContentRetroativoToken: {
             headers: {
                 proximoToken: components["headers"]["ProximoTokenHeader"];
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content?: never;
         };
-        /** @description Nenhuma mensagem disponível dentro da janela de espera do long polling. Não representa falha da operação; o consumidor poderá realizar nova chamada com o token vigente. */
+        /** @description Nenhuma mensagem disponível dentro da janela de espera do long polling. Não representa falha da operação. No fluxo principal do Retorno Super Inteligente, o 204 (sem corpo) retorna o token de continuação no cabeçalho 'proximoToken' e indica ausência de mensagens no momento: o consumidor deve prosseguir consultando com o proximoToken retornado (não reutilizar o token enviado na requisição). */
         PPResponseNoContentStreamToken: {
             headers: {
                 proximoToken: components["headers"]["ProximoTokenHeader"];
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content?: never;
+        };
+        /** @description Stream encerrada. A stream foi encerrada por um DELETE ou automaticamente em função da política de sanitização de streams inativas. O PSP deverá considerar a stream definitivamente extinta e iniciar uma nova stream por meio do endpoint /start. Eventuais mensagens não processadas poderão ser recuperadas por meio da Consulta Retroativa Super Inteligente. */
+        PPResponseGoneStream: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Gone */
+                    title?: string;
+                    /** @example 410 */
+                    status?: number;
+                    /** @example Stream encerrada. */
+                    detail?: string;
+                    errors?: {
+                        /** @example token */
+                        field?: string;
+                        /** @example token pertence a uma stream encerrada */
+                        message?: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Stream encerrada. A stream foi encerrada por um DELETE ou automaticamente em função da política de sanitização de streams inativas. O PSP deverá considerar a stream definitivamente extinta e, se necessário, iniciar uma nova consulta por meio do endpoint /start. */
+        PPResponseGoneRetroativoStream: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Gone */
+                    title?: string;
+                    /** @example 410 */
+                    status?: number;
+                    /** @example Stream encerrada. */
+                    detail?: string;
+                    errors?: {
+                        /** @example token */
+                        field?: string;
+                        /** @example token pertence a uma stream encerrada */
+                        message?: string;
+                    }[];
+                };
+            };
         };
         /** @description Bad Request */
         PPResponseBadRequest: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1740,7 +3646,10 @@ export interface components {
                     /** @example Todas as transações do informe estão inválidas */
                     detail?: string;
                     errors?: {
-                        /** @example 1 */
+                        /**
+                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
+                         * @example 1
+                         */
                         index?: number;
                         /** @example field1 */
                         field?: string;
@@ -1753,6 +3662,7 @@ export interface components {
         /** @description Bad Request */
         PPResponseBadRequestSegregacao: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1775,6 +3685,7 @@ export interface components {
         /** @description Bad Request */
         PPResponseBadRequestConsultaStream: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1797,6 +3708,7 @@ export interface components {
         /** @description Unprocessable Entity */
         PPResponseUnprocessableEntityConsultaStream: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1810,37 +3722,13 @@ export interface components {
                     errors?: {
                         /**
                          * @example streamId
-                         * @example fromNsu
+                         * @example nsuInicial
                          */
                         field?: string;
                         /**
                          * @example streamId inexistente
-                         * @example fromNsu deve ser menor ou igual a toNsu
+                         * @example nsuInicial deve ser menor ou igual a nsuFinal
                          */
-                        message?: string;
-                    }[];
-                };
-            };
-        };
-        /** @description Unprocessable Entity */
-        PPResponseUnprocessableEntity: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/problem+json": {
-                    /** @example Unprocessable Entity */
-                    title?: string;
-                    /** @example 422 */
-                    status?: number;
-                    /** @example Regras de negócio violadas para o informe de segregação */
-                    detail?: string;
-                    errors?: {
-                        /** @example 1 */
-                        index?: number;
-                        /** @example idInfSegr */
-                        field?: string;
-                        /** @example Remessa não iniciada */
                         message?: string;
                     }[];
                 };
@@ -1849,6 +3737,7 @@ export interface components {
         /** @description Forbidden */
         PPResponseForbidden: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1860,6 +3749,7 @@ export interface components {
                     /** @example Todas as transações do informe estão inválidas */
                     detail?: string;
                     errors?: {
+                        /** @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição. */
                         index?: number;
                         field?: string;
                         message?: string;
@@ -1870,6 +3760,7 @@ export interface components {
         /** @description Internal Server Error */
         PPResponseError: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1881,6 +3772,7 @@ export interface components {
                     /** @example Todas as transações do informe estão inválidas */
                     detail?: string;
                     errors?: {
+                        /** @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição. */
                         index?: number;
                         field?: string;
                         message?: string;
@@ -1888,43 +3780,10 @@ export interface components {
                 };
             };
         };
-        /** @description Bad Request */
-        BadRequest: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/problem+json": {
-                    error?: string;
-                    details?: string;
-                };
-            };
-        };
-        /** @description Unauthorized */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/problem+json": {
-                    error?: string;
-                };
-            };
-        };
-        /** @description Not Found */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/problem+json": {
-                    error?: string;
-                };
-            };
-        };
         /** @description PP Recebido */
         PPResponseCreatedSegregacao: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1939,26 +3798,10 @@ export interface components {
                 "application/json": components["responses"]["PPResponseOk"]["content"]["application/json"];
             };
         };
-        /** @description PP Segregação Recebido Anteriormente */
-        PPResponseOkSegregacao: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                /**
-                 * @example {
-                 *       "title": "PP Segregação Recebido Anteriormente",
-                 *       "status": 200,
-                 *       "detail": "Informe de segregação iniciado/finalizado anteriormente",
-                 *       "resourceId": "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
-                 *     }
-                 */
-                "application/json": components["responses"]["PPResponseOk"]["content"]["application/json"];
-            };
-        };
-        /** @description PP Recebido */
+        /** @description Lote criado com sucesso (primeiro envio do idLote). */
         PPResponseCreatedLote: {
             headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
@@ -1966,7 +3809,7 @@ export interface components {
                  * @example {
                  *       "title": "PP Recebido",
                  *       "status": 201,
-                 *       "detail": "Lote recebido com sucesso",
+                 *       "detail": "Lote criado com sucesso",
                  *       "resourceId": "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
                  *     }
                  */
@@ -1990,43 +3833,203 @@ export interface components {
                 "application/json": components["responses"]["PPResponseOk"]["content"]["application/json"];
             };
         };
-        /** @description Internal Server Error */
-        InternalServerError: {
+        /** @description Consulta realizada com sucesso, porém sem ocorrências disponíveis no momento. O PSP deve aguardar 30 minutos antes de realizar nova consulta, conforme indicado no header 'Retry-After'. Não representa falha. */
+        PPResponseNoContentMocConsultaStart: {
             headers: {
+                /** @description Tempo, em segundos, que o cliente deve aguardar antes de realizar uma nova consulta. */
+                "Retry-After"?: number;
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Não há mais ocorrências disponíveis no momento. O PSP deve aguardar 30 minutos antes de realizar nova consulta, conforme indicado no header 'Retry-After'. Não representa falha. */
+        PPResponseNoContentMocConsultaToken: {
+            headers: {
+                /** @description Tempo, em segundos, que o cliente deve aguardar antes de realizar uma nova consulta. */
+                "Retry-After"?: number;
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
+        /** @description Bad Request */
+        PPResponseBadRequestMocConsulta: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                 [name: string]: unknown;
             };
             content: {
-                "application/json": {
-                    error?: string;
-                    requestId?: string;
+                "application/problem+json": {
+                    /** @example Bad Request */
+                    title?: string;
+                    /** @example 400 */
+                    status?: number;
+                    /** @example Parametros invalidos */
+                    detail?: string;
+                    errors?: {
+                        /** @example nsuInicial */
+                        field?: string;
+                        /** @example campoX: parametro obrigatorio nao informado */
+                        message?: string;
+                    }[];
                 };
+            };
+        };
+        /** @description Unprocessable Entity */
+        PPResponseUnprocessableEntityMocConsulta: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Unprocessable Entity */
+                    title?: string;
+                    /** @example 422 */
+                    status?: number;
+                    /** @example Regras de negocio violadas para a consulta de ocorrencias do MOC */
+                    detail?: string;
+                    errors?: {
+                        /** @example proximoToken */
+                        field?: string;
+                        /** @example proximoToken inexistente ou expirado */
+                        message?: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Unprocessable Entity */
+        PPResponseUnprocessableEntitySegregacaoIniciada: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Unprocessable Entity */
+                    title?: string;
+                    /** @example 422 */
+                    status?: number;
+                    /** @example Regra de negócio violada na abertura do informe de remessa de segregação. */
+                    detail?: string;
+                    errors?: {
+                        /**
+                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
+                         * @example 1
+                         */
+                        index?: number;
+                        /** @example idInfSegr */
+                        field?: string;
+                        /**
+                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
+                         * @example Já existe uma remessa de segregação iniciada para o idInfSegr informado
+                         */
+                        message?: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Unprocessable Entity */
+        PPResponseUnprocessableEntitySegregacaoLote: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Unprocessable Entity */
+                    title?: string;
+                    /** @example 422 */
+                    status?: number;
+                    /** @example Regra de negócio violada no envio do lote de transações da segregação. */
+                    detail?: string;
+                    errors?: {
+                        /**
+                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
+                         * @example 1
+                         */
+                        index?: number;
+                        /** @example idInfSegr */
+                        field?: string;
+                        /**
+                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
+                         * @example Não existe remessa de segregação iniciada para o idInfSegr informado
+                         * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
+                         * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
+                         */
+                        message?: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Unprocessable Entity */
+        PPResponseUnprocessableEntitySegregacaoFinalizacao: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                "application/problem+json": {
+                    /** @example Unprocessable Entity */
+                    title?: string;
+                    /** @example 422 */
+                    status?: number;
+                    /** @example Regra de negócio violada na finalização da remessa de segregação. */
+                    detail?: string;
+                    errors?: {
+                        /**
+                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
+                         * @example 1
+                         */
+                        index?: number;
+                        /** @example idInfSegr */
+                        field?: string;
+                        /**
+                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
+                         * @example Não existe remessa de segregação iniciada para o idInfSegr informado
+                         * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
+                         * @example O valor informado em totalTrans difere da quantidade de transações enviadas
+                         * @example O valor informado em vlTotalCbs difere da soma dos valores de CBS das transações enviadas
+                         * @example O valor informado em vlTotalIbs difere da soma dos valores de IBS das transações enviadas
+                         * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
+                         */
+                        message?: string;
+                    }[];
+                };
+            };
+        };
+        /** @description Lote atualizado com sucesso (reenvio com o mesmo idLote, substituindo o anterior). */
+        PPResponseOkLoteAtualizado: {
+            headers: {
+                "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                [name: string]: unknown;
+            };
+            content: {
+                /**
+                 * @example {
+                 *       "title": "PP Recebido",
+                 *       "status": 200,
+                 *       "detail": "Lote atualizado com sucesso",
+                 *       "resourceId": "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                 *     }
+                 */
+                "application/json": components["responses"]["PPResponseOk"]["content"]["application/json"];
             };
         };
     };
     parameters: {
-        /** @description Header: messageId (Formato UUID v4) */
-        MessageIdHeaderParam: string;
-        /** @description Header: correlationId */
-        CorrelationIdHeaderParam: string;
-        /** @description Header: tenantId */
-        TenantIdHeaderParam: string;
-        /** @description Header: timestamp */
-        TimestampHeaderParam: string;
+        /** @description Header: Assinatura JWS da requisição. */
+        XJwsSignatureHeaderParam: string;
     };
     requestBodies: never;
     headers: {
-        /** @description Header: messageId (UUID v4 format) */
-        MessageIdHeader: string;
-        /** @description Header: correlationId */
-        CorrelationIdHeader: string;
-        /** @description Header: tenantId */
-        TenantIdHeader: string;
+        /** @description Header: Assinatura JWS da resposta. */
+        XJwsSignatureResponseHeader: string;
         /** @description Token de posição da leitura */
         ProximoTokenHeader: string;
         /** @description Identificador do stream */
         StreamIdHeader: string;
-        /** @description Header: timestamp */
-        TimestampHeader: string;
     };
     pathItems: never;
 }
@@ -2036,14 +4039,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2064,14 +4061,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2092,14 +4083,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2116,46 +4101,12 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    patchapiv1pix_automatico: {
-        parameters: {
-            query?: never;
-            header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InformeDeTransacaoAtualizadaPixAutomaticoRequest"];
-            };
-        };
-        responses: {
-            201: components["responses"]["PPResponseOk"];
-            400: components["responses"]["PPResponseBadRequest"];
-            403: components["responses"]["PPResponseForbidden"];
-            500: components["responses"]["PPResponseError"];
-        };
-    };
     postapiv1pix_dinamico: {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2176,14 +4127,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2204,14 +4149,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2232,14 +4171,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2260,14 +4193,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2288,14 +4215,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2316,14 +4237,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2344,14 +4259,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2372,14 +4281,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2400,14 +4303,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2428,14 +4325,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -2452,22 +4343,16 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outboleto{idPsp}tributosstreamstart": {
+    "getapiv1outboleto{cnpjRaizPspRecDir}transacoesstreamstart": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -2478,11 +4363,12 @@ export interface operations {
                 headers: {
                     streamId: components["headers"]["StreamIdHeader"];
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
                     };
                 };
             };
@@ -2493,23 +4379,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outboleto{idPsp}tributosstream{token}": {
+    "getapiv1outboleto{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -2520,6 +4400,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -2529,34 +4410,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentStreamToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outboleto{idPsp}tributosstream{token}": {
+    "deleteapiv1outboleto{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -2569,22 +4445,16 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_automatico{idPsp}tributosstreamstart": {
+    "getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstreamstart": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -2595,11 +4465,12 @@ export interface operations {
                 headers: {
                     streamId: components["headers"]["StreamIdHeader"];
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
                     };
                 };
             };
@@ -2610,23 +4481,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_automatico{idPsp}tributosstream{token}": {
+    "getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -2637,6 +4502,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -2646,34 +4512,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentStreamToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outpix_automatico{idPsp}tributosstream{token}": {
+    "deleteapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -2686,22 +4547,16 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_dinamico{idPsp}tributosstreamstart": {
+    "getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstreamstart": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -2712,11 +4567,12 @@ export interface operations {
                 headers: {
                     streamId: components["headers"]["StreamIdHeader"];
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
                     };
                 };
             };
@@ -2727,23 +4583,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_dinamico{idPsp}tributosstream{token}": {
+    "getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -2754,6 +4604,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -2763,34 +4614,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentStreamToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outpix_dinamico{idPsp}tributosstream{token}": {
+    "deleteapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesstream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -2803,29 +4649,23 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outboleto{idPsp}tributosretroativostreamstart": {
+    "getapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostreamstart": {
         parameters: {
             query: {
-                /** @description Query parameter: fromNsu */
-                fromNsu: number;
-                /** @description Query parameter: streamId */
+                /** @description Número Sequencial Único da mensagem que se deseja iniciar a consulta retroativa de Super Inteligente. */
+                nsuInicial: string;
+                /** @description Identificador do stream que se deseja consultar. */
                 streamId?: string;
-                /** @description Query parameter: toNsu */
-                toNsu?: number;
+                /** @description Número Sequencial Único da mensagem que se deseja finalizar a consulta retroativa de Super Inteligente. */
+                nsuFinal?: string;
             };
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -2835,11 +4675,12 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligenteBoletoTransacao"][];
                     };
                 };
             };
@@ -2850,23 +4691,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outboleto{idPsp}tributosretroativostream{token}": {
+    "getapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -2877,6 +4712,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -2886,34 +4722,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentRetroativoToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneRetroativoStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outboleto{idPsp}tributosretroativostream{token}": {
+    "deleteapiv1outboleto{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -2926,29 +4757,23 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_automatico{idPsp}tributosretroativostreamstart": {
+    "getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostreamstart": {
         parameters: {
             query: {
-                /** @description Query parameter: fromNsu */
-                fromNsu: number;
-                /** @description Query parameter: streamId */
+                /** @description Número Sequencial Único da mensagem que se deseja iniciar a consulta retroativa de Super Inteligente. */
+                nsuInicial: string;
+                /** @description Identificador do stream que se deseja consultar. */
                 streamId?: string;
-                /** @description Query parameter: toNsu */
-                toNsu?: number;
+                /** @description Número Sequencial Único da mensagem que se deseja finalizar a consulta retroativa de Super Inteligente. */
+                nsuFinal?: string;
             };
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -2958,11 +4783,12 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligentePixAutomaticoTransacao"][];
                     };
                 };
             };
@@ -2973,23 +4799,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_automatico{idPsp}tributosretroativostream{token}": {
+    "getapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -3000,6 +4820,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -3009,34 +4830,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentRetroativoToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneRetroativoStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outpix_automatico{idPsp}tributosretroativostream{token}": {
+    "deleteapiv1outpix_automatico{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -3049,29 +4865,23 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_dinamico{idPsp}tributosretroativostreamstart": {
+    "getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostreamstart": {
         parameters: {
             query: {
-                /** @description Query parameter: fromNsu */
-                fromNsu: number;
-                /** @description Query parameter: streamId */
+                /** @description Número Sequencial Único da mensagem que se deseja iniciar a consulta retroativa de Super Inteligente. */
+                nsuInicial: string;
+                /** @description Identificador do stream que se deseja consultar. */
                 streamId?: string;
-                /** @description Query parameter: toNsu */
-                toNsu?: number;
+                /** @description Número Sequencial Único da mensagem que se deseja finalizar a consulta retroativa de Super Inteligente. */
+                nsuFinal?: string;
             };
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
             };
             cookie?: never;
         };
@@ -3081,11 +4891,12 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        tributos: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
+                        transacoes: components["schemas"]["RetornoSuperInteligentePixDinamicoTransacao"][];
                     };
                 };
             };
@@ -3096,23 +4907,17 @@ export interface operations {
             500: components["responses"]["PPResponseError"];
         };
     };
-    "getapiv1outpix_dinamico{idPsp}tributosretroativostream{token}": {
+    "getapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
@@ -3123,6 +4928,7 @@ export interface operations {
             200: {
                 headers: {
                     proximoToken: components["headers"]["ProximoTokenHeader"];
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
                     [name: string]: unknown;
                 };
                 content: {
@@ -3132,34 +4938,29 @@ export interface operations {
             204: components["responses"]["PPResponseNoContentRetroativoToken"];
             400: components["responses"]["PPResponseBadRequestConsultaStream"];
             403: components["responses"]["PPResponseForbidden"];
+            410: components["responses"]["PPResponseGoneRetroativoStream"];
             422: components["responses"]["PPResponseUnprocessableEntityConsultaStream"];
             500: components["responses"]["PPResponseError"];
         };
     };
-    "deleteapiv1outpix_dinamico{idPsp}tributosretroativostream{token}": {
+    "deleteapiv1outpix_dinamico{cnpjRaizPspRecDir}transacoesretroativostream{token}": {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idPsp */
-                idPsp: string;
-                /** @description Path parameter: token */
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+                /** @description Token recebido na requisição anterior. */
                 token: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Stream cancelado com sucesso */
+            /** @description Stream finalizado com sucesso */
             204: {
                 headers: {
                     [name: string]: unknown;
@@ -3176,14 +4977,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -3194,11 +4989,10 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkSegregacao"];
             201: components["responses"]["PPResponseCreatedSegregacao"];
             400: components["responses"]["PPResponseBadRequestSegregacao"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoIniciada"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3206,14 +5000,8 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path?: never;
             cookie?: never;
@@ -3224,11 +5012,10 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkSegregacao"];
             201: components["responses"]["PPResponseCreatedSegregacao"];
             400: components["responses"]["PPResponseBadRequestSegregacao"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoFinalizacao"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3236,17 +5023,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3257,11 +5038,11 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3269,17 +5050,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3290,11 +5065,11 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3302,17 +5077,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3323,11 +5092,11 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3335,17 +5104,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3356,11 +5119,11 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3368,17 +5131,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3389,11 +5146,11 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
             500: components["responses"]["PPResponseError"];
         };
     };
@@ -3401,17 +5158,11 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                /** @description Header: messageId (Formato UUID v4) */
-                messageId: components["parameters"]["MessageIdHeaderParam"];
-                /** @description Header: correlationId */
-                correlationId: components["parameters"]["CorrelationIdHeaderParam"];
-                /** @description Header: tenantId */
-                tenantId: components["parameters"]["TenantIdHeaderParam"];
-                /** @description Header: timestamp */
-                timestamp: components["parameters"]["TimestampHeaderParam"];
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
             };
             path: {
-                /** @description Path parameter: idInfSegr */
+                /** @description Identificador do informe de segregação. Formato: ISPB da instituição devedora (8) + ISPB da instituição da comunicação efetiva (8) + arranjo (PXA, PXD, PXE, BOL, TED, TEF) + data de envio do informe (AAAAMMDD) + hora de corte (HHMM) + 3 caracteres para o sequencial. Gerado pelo responsável pela comunicação. */
                 idInfSegr: string;
             };
             cookie?: never;
@@ -3422,11 +5173,92 @@ export interface operations {
             };
         };
         responses: {
-            200: components["responses"]["PPResponseOkLote"];
+            200: components["responses"]["PPResponseOkLoteAtualizado"];
             201: components["responses"]["PPResponseCreatedLote"];
             400: components["responses"]["PPResponseBadRequest"];
             403: components["responses"]["PPResponseForbidden"];
-            422: components["responses"]["PPResponseUnprocessableEntity"];
+            422: components["responses"]["PPResponseUnprocessableEntitySegregacaoLote"];
+            500: components["responses"]["PPResponseError"];
+        };
+    };
+    postapiv1mocsolicitacao: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MecanismoDeOcorrenciasSolRequest"];
+            };
+        };
+        responses: {
+            201: components["responses"]["PPResponseOk"];
+            400: components["responses"]["PPResponseBadRequest"];
+            403: components["responses"]["PPResponseForbidden"];
+            500: components["responses"]["PPResponseError"];
+        };
+    };
+    postapiv1mocnotificacao: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MecanismoDeOcorrenciasNotRequest"];
+            };
+        };
+        responses: {
+            201: components["responses"]["PPResponseOk"];
+            400: components["responses"]["PPResponseBadRequest"];
+            403: components["responses"]["PPResponseForbidden"];
+            500: components["responses"]["PPResponseError"];
+        };
+    };
+    "getapiv1moc{cnpjRaizPspRecDir}ocorrencias": {
+        parameters: {
+            query: {
+                /** @description NSU inicial utilizado para a paginação dos resultados de ocorrências do MOC. */
+                nsuInicial: string;
+                /** @description Quantidade máxima de ocorrências retornadas por página. Padrão e máximo: 1.000. */
+                limite?: number;
+            };
+            header: {
+                /** @description Header: Assinatura JWS da requisição. */
+                "X-JWS-Signature": components["parameters"]["XJwsSignatureHeaderParam"];
+            };
+            path: {
+                /** @description Raiz do CNPJ do PSP Recebedor Direto: 8 caracteres alfanuméricos. */
+                cnpjRaizPspRecDir: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Consulta realizada com sucesso. Ocorrências disponíveis no momento da consulta. */
+            200: {
+                headers: {
+                    "X-JWS-Signature": components["headers"]["XJwsSignatureResponseHeader"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MocOcorrenciasConsultaResponse"];
+                };
+            };
+            204: components["responses"]["PPResponseNoContentMocConsultaStart"];
+            400: components["responses"]["PPResponseBadRequestMocConsulta"];
+            403: components["responses"]["PPResponseForbidden"];
+            422: components["responses"]["PPResponseUnprocessableEntityMocConsulta"];
             500: components["responses"]["PPResponseError"];
         };
     };

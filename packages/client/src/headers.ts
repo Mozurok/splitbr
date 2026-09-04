@@ -1,18 +1,14 @@
 import type { Middleware } from "openapi-fetch";
-
-export interface SplitHeadersOptions {
-  /** CNPJ (alfanumerico, 14 posicoes) do PSP; vira o header tenantId. */
-  tenantId: string;
-  /** correlationId fixo (19 posicoes) a propagar; ausente = gerado por requisicao. */
-  correlationId?: string;
-}
-
-const TENANT_ID = /^[A-Za-z0-9]{14}$/;
+import { assinarRequisicao, type OpcoesDeAssinatura } from "./assinatura.js";
 
 /**
- * Timestamp exigido pela plataforma: ISO 8601 em horario de Brasilia com
- * offset literal -03:00, 25 posicoes, sem milissegundos (tabela de headers do
- * Manual de Integracao; exemplo: 2025-12-22T14:30:45-03:00).
+ * Timestamp no formato que a plataforma usa: ISO 8601 em horário de Brasília
+ * com offset literal -03:00, 25 posições, sem milissegundos.
+ *
+ * No contrato v0.0.10 isto preenchia o header `timestamp`, que não existe mais.
+ * Continua exportado porque o formato segue valendo para `infRequisicao.dtHrMsg`,
+ * que é campo de corpo em toda requisição do v1.1.0 (exemplo do spec:
+ * `2026-03-22T12:00:00-03:00`).
  */
 export function gerarTimestampSplit(date: Date = new Date()): string {
   const shifted = new Date(date.getTime() - 3 * 3_600_000);
@@ -23,34 +19,46 @@ export function gerarTimestampSplit(date: Date = new Date()): string {
   );
 }
 
-/** String unica de 19 posicoes no espirito do exemplo do manual (txn-...). */
-export function gerarCorrelationId(): string {
-  const alnum = crypto.randomUUID().replaceAll("-", "");
-  return `txn-${Date.now().toString(36)}${alnum}`.slice(0, 19);
-}
-
 /**
- * Middleware openapi-fetch que injeta os 4 headers obrigatorios da plataforma:
- * messageId (UUID v4, unico por requisicao), correlationId (19 posicoes,
- * propagado verbatim quando fornecido), tenantId (CNPJ alfanumerico) e
- * timestamp (-03:00).
+ * Middleware que assina cada requisição e injeta o `X-JWS-Signature`.
+ *
+ * Ele reescreve o corpo com os bytes canonicalizados, e isso é essencial, não
+ * um detalhe de implementação: a assinatura cobre o payload cru (`b64: false`),
+ * então enviar o objeto re-serializado pelo `fetch` produziria bytes diferentes
+ * dos assinados. Assinar e enviar precisam sair da mesma serialização.
+ *
+ * Requisição sem corpo (os GET de consulta e os DELETE de stream) assina o
+ * payload vazio: o header é `required` nas 43 operações do contrato, inclusive
+ * nessas.
  */
-export function splitHeadersMiddleware(opts: SplitHeadersOptions): Middleware {
-  if (!TENANT_ID.test(opts.tenantId)) {
-    throw new RangeError(
-      "tenantId deve ter exatamente 14 posicoes alfanumericas (CNPJ, incluindo o formato alfanumerico da IN RFB 2.229/2024)",
-    );
-  }
-  if (opts.correlationId !== undefined && opts.correlationId.length !== 19) {
-    throw new RangeError("correlationId deve ter exatamente 19 posicoes");
-  }
+export function assinaturaMiddleware(opcoes: OpcoesDeAssinatura): Middleware {
   return {
-    onRequest({ request }) {
-      request.headers.set("messageId", crypto.randomUUID());
-      request.headers.set("correlationId", opts.correlationId ?? gerarCorrelationId());
-      request.headers.set("tenantId", opts.tenantId);
-      request.headers.set("timestamp", gerarTimestampSplit());
-      return request;
+    async onRequest({ request }) {
+      const bruto = await request.clone().text();
+      const temCorpo = bruto.length > 0;
+
+      const { header, corpoCanonicoTexto } = await assinarRequisicao(
+        temCorpo ? (JSON.parse(bruto) as unknown) : "",
+        opcoes,
+      );
+
+      const headers = new Headers(request.headers);
+      headers.set("X-JWS-Signature", header);
+      if (temCorpo) headers.set("content-type", "application/json");
+
+      // `body` sai do objeto quando nao ha corpo: com exactOptionalPropertyTypes,
+      // passar `undefined` explicito nao e o mesmo que omitir a chave.
+      const init: RequestInit = {
+        method: request.method,
+        headers,
+        signal: request.signal,
+        credentials: request.credentials,
+        redirect: request.redirect,
+        referrer: request.referrer,
+      };
+      if (temCorpo) init.body = corpoCanonicoTexto;
+
+      return new Request(request.url, init);
     },
   };
 }

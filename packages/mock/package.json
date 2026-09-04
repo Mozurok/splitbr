@@ -1,6 +1,6 @@
 {
   "name": "@splitbr/mock",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Mock local da Plataforma Publica do Split Payment (IBS/CBS, LC 214/2025) para desenvolvimento e testes de PSPs",
   "license": "MIT",
   "type": "module",

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0 (2026-09-04)
+
+**Quebra compatibilidade.** Serve o contrato oficial **OpenAPI v1.1.0**, publicado pelo CGIBS em 24/08/2026. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).
+
+- Spec embarcado e trava de hash agora são do v1.1.0: 35 rotas.
+- **Mecanismo de Ocorrências (3.9)**: três rotas novas (`POST /api/v1/moc/solicitacao`, `POST /api/v1/moc/notificacao`, `GET /api/v1/moc/{cnpjRaizPspRecDir}/ocorrencias`), com resposta simulada determinística da RFB/CGIBS, para o ciclo fechar sem a plataforma real.
+- **Assinatura `X-JWS-Signature`**: o mock confere a forma do protected header quando ele vem, e não exige que venha, para `npx splitbr-mock` seguir utilizável sem par de chaves. `buildServer({ exigirAssinatura: true })` liga o comportamento fiel ao contrato.
+- **Os quatro headers antigos deixaram de ser exigidos.** Continuam aceitos, e o `correlationId` continua ecoado na resposta.
+- As 12 rotas de stream mudaram de caminho: `{idPsp}/tributos` virou `{cnpjRaizPspRecDir}/transacoes`. A chave do corpo de resposta acompanhou (`tributos` para `transacoes`), e a consulta retroativa troca `fromNsu`/`toNsu` por `nsuInicial`/`nsuFinal`.
+- `dtHrDisp` passa a ser emitido no Retorno Super Inteligente; `nsuId` sai como string.
+- Matrizes M/O/N-E atualizadas para os campos renomeados. O MOC não ganhou matriz de propósito: o próprio spec já codifica a regra por arranjo com `oneOf`, `required` e `additionalProperties: false`, e duplicar isso criaria duas fontes da verdade.
+
 ## 0.1.1 (2026-09-04)
 
 Release de vigilância: nenhuma mudança de comportamento, de rotas ou de dados. O que muda é o que o pacote diz sobre si.

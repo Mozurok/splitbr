@@ -7,8 +7,8 @@
     "dtHrMsg": ["M", "M", "M", "M", "M", "M"],
     "idInfSegr": ["M", "M", "M", "M", "M", "M"],
     "totalTrans": ["M", "M", "M", "M", "M", "M"],
-    "valorTotalCbs": ["M", "M", "M", "M", "M", "M"],
-    "valorTotalIbs": ["M", "M", "M", "M", "M", "M"]
+    "vlTotalCbs": ["M", "M", "M", "M", "M", "M"],
+    "vlTotalIbs": ["M", "M", "M", "M", "M", "M"]
   },
   "transacoes": {}
 }

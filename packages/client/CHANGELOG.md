@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.2.0 (2026-09-04)
+
+**Quebra compatibilidade.** Migra para o contrato oficial **OpenAPI v1.1.0**, publicado pelo CGIBS em 24/08/2026. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).
+
+- Tipos gerados do v1.1.0: 35 rotas, 78 schemas.
+- **Os quatro headers obrigatórios saíram.** `messageId`, `correlationId`, `tenantId` e `timestamp` não existem no contrato novo. `splitHeadersMiddleware` e `gerarCorrelationId` foram removidos; `gerarTimestampSplit` continua, porque o formato segue valendo para `infRequisicao.dtHrMsg`.
+- **Assinatura `X-JWS-Signature`**, obrigatória nas 43 operações: canonicalização JCS (RFC 8785), protected header com os sete atributos do capítulo 8 do manual e JWS Compact Detached (RFC 7515). A operação RS256 é um callback seu, então a chave privada nunca entra no pacote.
+- O corpo enviado passa a ser o corpo canonicalizado que foi assinado, byte a byte. O `b64: false` do contrato torna isso condição de a assinatura validar.
+- `createSplitClient` troca `tenantId` por `kid` e `assinar`.
+- Novos exports: `canonicalizarJcs`, `canonicalizarJcsBytes`, `assinarRequisicao`, `montarProtectedHeader`, `montarEntradaDeAssinatura`, `conferirFormaDoHeader`, `base64url`.
+- `PATCH /api/v1/pix-automatico` deixou de existir (o Informe de Transação Atualizada perdeu o Pix Automático).
+- Campos: `cnpjCpfPagOrig` virou `cnpjPagOrig` e passou a aceitar **só CNPJ**; `valorTotalCbs`/`valorTotalIbs` viraram `vlTotalCbs`/`vlTotalIbs`; `numIdentcBaixa` e `nsuId` viraram string; `numCodBarras` exige 44 dígitos; `idLote` passou a ser `idInfSegr` mais sequencial (40 posições).
+- O codegen ganhou um pós-processamento para os tipos do MOC: o `allOf` com `not` do spec faz o openapi-typescript emitir tipos inconstruíveis, e a reescrita fica no gerador para sumir sozinha quando o upstream corrigir.
+
 ## 0.1.1 (2026-09-04)
 
 Release de vigilância: nenhuma mudança de comportamento ou de API. O que muda é o que o pacote diz sobre si.

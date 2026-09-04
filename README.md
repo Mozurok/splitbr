@@ -51,16 +51,18 @@ O alvo do CGIBS tem uma limitação que vale declarar: `www.cgibs.gov.br` não a
 
 A severidade é por alvo: portal e api-split reprovam o run tanto em divergência quanto em indisponibilidade; o piloto sinaliza sem reprovar, porque é infraestrutura de teste com janela até 31/12/2026 e mudar antes do portal é o comportamento esperado dele.
 
-### O contrato da Plataforma está em v1.1.0; os pacotes ainda geram do v0.0.10
+### O contrato da Plataforma está na v1.1.0, e os pacotes acompanham
 
-Em 24/08/2026 o CGIBS publicou o **OpenAPI v1.1.0** da Plataforma Pública, pareado com o Manual de Integração v1.1.0, e moveu o v0.0.10 para "versões anteriores". A mudança quebra o contrato:
+Em 24/08/2026 o CGIBS publicou o **OpenAPI v1.1.0** da Plataforma Pública, pareado com o Manual de Integração v1.1.0, e moveu a v0.0.10 para "versões anteriores". Desde a **0.2.0**, `@splitbr/client` e `@splitbr/mock` são gerados desse contrato.
 
+A mudança quebra compatibilidade com a linha 0.1.x:
+
+- os quatro headers obrigatórios (`messageId`, `correlationId`, `tenantId`, `timestamp`) **deixaram de existir**, e entrou a assinatura `X-JWS-Signature` em todas as 43 operações;
 - as 12 rotas de stream trocaram `{idPsp}/tributos` por `{cnpjRaizPspRecDir}/transacoes`;
 - entraram 3 rotas do Mecanismo de Ocorrências (`/api/v1/moc/*`);
-- o header `X-JWS-Signature` virou obrigatório nas 43 operações;
 - os schemas foram de 57 para 78, com 33 dos 55 comuns alterados.
 
-O v1.1.0 está vendorado aqui (`vendor/swagger/openapi-v1_1_0.json`), mas **ainda não alimenta o codegen**: `@splitbr/client` e `@splitbr/mock` continuam gerados do v0.0.10 e, portanto, implementam o contrato anterior. Migrar é um major bump nos dois pacotes e tem task própria. Até lá, quem integra a plataforma real deve ler o v1.1.0 como fonte da verdade.
+O [guia de migração](https://mozurok.github.io/splitbr/migracao) cobre campo a campo. Sobre a assinatura, a escolha de desenho: **o client canonicaliza, monta o JWS e chama um callback seu para a operação RS256.** A chave privada nunca entra no pacote, e o corpo enviado é byte a byte o que foi assinado, que é o que faz a assinatura validar do outro lado.
 
 **Correção de rota, registrada de propósito**: até 04/09/2026 este README afirmava que não existia fonte pública para esse contrato e que por isso ele não era monitorável. Era falso. O CGIBS publica o OAS numa página aberta, sem login e sem mTLS, e o zip de lá é byte-idêntico ao que já estava vendorado. O custo do engano foi medido: o v1.1.0 ficou 11 dias sem detecção. O detector agora observa aquela página como quarto alvo.
 
@@ -78,7 +80,7 @@ Monorepo pnpm: `pnpm install && pnpm -r build && pnpm -r test` (Node >= 22). Con
 Engineering notes:
 
 - The official contracts are vendored with a **pinned SHA-256**; a weekly CI diffs four targets against the vendored copies and **opens an issue on drift** instead of updating silently: the three live Calculadora contracts, by normalised content, plus the artifact inventory of the [CGIBS Split Payment page](https://www.cgibs.gov.br/split-payment), which is where the Platform contract itself is published. Severity is per target: the production endpoints fail the run, the pilot one reports without failing (it is test infrastructure and moving ahead is its job). The CGIBS target carries a stated limitation: `www.cgibs.gov.br` refuses connections from the GitHub Actions runner, so in CI it reports unreachable without failing the run, and it only really compares when run from a network that can reach the host. Drift there still fails when reachable.
-- **The Platform contract moved to v1.1.0 on 2026-08-24; the packages still generate from v0.0.10.** The new spec renames all 12 stream routes (`{idPsp}/tributos` to `{cnpjRaizPspRecDir}/transacoes`), adds 3 Mechanism-of-Occurrences routes, makes the `X-JWS-Signature` header required on all 43 operations, and grows the schema set from 57 to 78. v1.1.0 is vendored here but does not feed codegen yet: migrating is a major bump for both packages and has its own task. Until then, treat v1.1.0 as the source of truth if you integrate the real platform. Until 2026-09-04 this README claimed that spec had no public endpoint and so could not be monitored; that was false, and the error cost 11 days of undetected drift.
+- **The Platform contract moved to v1.1.0 on 2026-08-24, and the packages followed in 0.2.0.** The new spec renames all 12 stream routes (`{idPsp}/tributos` to `{cnpjRaizPspRecDir}/transacoes`), adds 3 Mechanism-of-Occurrences routes, replaces the four mandatory headers with a required `X-JWS-Signature` on all 43 operations, and grows the schema set from 57 to 78. See the [migration guide](https://mozurok.github.io/splitbr/migracao). On signing: the client canonicalises (JCS, RFC 8785), builds the detached JWS, and calls a callback you provide for the RS256 operation, so the private key never enters the package and the bytes sent are exactly the bytes signed. Until 2026-09-04 this README claimed that spec had no public endpoint and so could not be monitored; that was false, and the error cost 11 days of undetected drift.
 - Money math is **integer cents only** (BigInt), never floating point, truncated toward zero to match the official rounding.
 - The interactive [demo](https://mozurok.github.io/splitbr/) computes every figure with the **same published function the SDK ships**, so it doubles as a live validation of the packages.
 

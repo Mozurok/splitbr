@@ -143,8 +143,8 @@ export function registrarRotasSegregacao(app: FastifyInstance, ctx: ContextoRota
         {
           idInfSegr,
           totalTrans: Number(dados["totalTrans"]),
-          valorTotalCbs: Number(dados["valorTotalCbs"]),
-          valorTotalIbs: Number(dados["valorTotalIbs"]),
+          vlTotalCbs: Number(dados["vlTotalCbs"]),
+          vlTotalIbs: Number(dados["vlTotalIbs"]),
         },
         hashPayload(body),
       );

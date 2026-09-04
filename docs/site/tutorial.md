@@ -108,10 +108,6 @@ Na vida real, quando um boleto é registrado, o banco avisa a plataforma: "exist
 ```bash
 curl -X POST http://127.0.0.1:8377/api/v1/boleto \
   -H 'content-type: application/json' \
-  -H 'messageId: 1a2b3c4d-0000-4000-8000-000000000001' \
-  -H 'correlationId: TUTORIAL-0000000001' \
-  -H 'tenantId: 12345678000199' \
-  -H 'timestamp: 2026-07-20T10:00:00-03:00' \
   -d '{
     "infRequisicao": { "dtHrMsg": "2026-07-20T10:00:00-03:00" },
     "transacoes": [
@@ -119,13 +115,13 @@ curl -X POST http://127.0.0.1:8377/api/v1/boleto \
         "index": 1,
         "idDda": "DDA1",
         "numCtrlOrig": "CTRL000001",
-        "numCodBarras": "83660001",
+        "numCodBarras": "83660001000000000000000000000000000000000001",
         "vlInf": 1000.00,
         "vlCbsInf": 9.00,
         "vlIbsInf": 1.00,
         "cnpjRaizPspRecDir": "12345678",
         "cnpjRec": "12345678000199",
-        "cnpjCpfPagOrig": "98765432000188",
+        "cnpjPagOrig": "98765432000188",
         "dtHrIni": "2026-07-20T10:00:00-03:00",
         "dtVenc": "2026-08-01",
         "dtHrLimPgto": "2026-08-01T23:59:59-03:00"
@@ -140,9 +136,11 @@ Resposta esperada:
 {"title":"Sucesso","status":201,"detail":"Solicitacao processada com sucesso","numValidos":1,"numErros":0,"errors":[],"resourceId":"RES0000000001001"}
 ```
 
-**O que acabou de acontecer:** a plataforma aceitou a transação (`status: 201`, 1 item válido, 0 erros) e devolveu um protocolo, o `resourceId`. As quatro linhas `-H` são os headers obrigatórios do contrato oficial: `messageId` (identificador único desta mensagem), `correlationId` (código que amarra a jornada toda), `tenantId` (o CNPJ de quem chama) e `timestamp` (a hora do envio).
+**O que acabou de acontecer:** a plataforma aceitou a transação (`status: 201`, 1 item válido, 0 erros) e devolveu um protocolo, o `resourceId`.
 
-**Se deu errado:** se veio um erro `400` como `Header 'messageId' ausente ou invalido`, algum pedaço do comando se perdeu ao colar. Cole o bloco inteiro de uma vez, do `curl` até a última aspa, e tente de novo.
+**Sobre a assinatura:** o contrato oficial v1.1.0 exige o header `X-JWS-Signature` em toda requisição, uma assinatura RS256 sobre o corpo canonicalizado. Um `curl` copiável não dá conta disso, e por isso o mock **não exige** a assinatura por padrão: assim você vê o mecanismo funcionar antes de montar chave. Quando o header vem, ele confere a forma; para o comportamento fiel ao contrato, suba o mock com `exigirAssinatura`. No código de verdade, o `@splitbr/client` monta a assinatura para você.
+
+**Se deu errado:** se veio um erro `400` do tipo `Corpo em desacordo com o contrato oficial`, algum pedaço do comando se perdeu ao colar. Cole o bloco inteiro de uma vez, do `curl` até a última aspa, e tente de novo.
 
 ## Passo 7: Pague a transação
 
@@ -151,10 +149,6 @@ O boleto existe; agora alguém paga. O banco então manda o informe preliminar d
 ```bash
 curl -X POST http://127.0.0.1:8377/api/v1/boleto/informe-preliminar-pagamento \
   -H 'content-type: application/json' \
-  -H 'messageId: 1a2b3c4d-0000-4000-8000-000000000002' \
-  -H 'correlationId: TUTORIAL-0000000001' \
-  -H 'tenantId: 12345678000199' \
-  -H 'timestamp: 2026-07-20T10:05:00-03:00' \
   -d '{
     "infRequisicao": { "dtHrMsg": "2026-07-20T10:05:00-03:00" },
     "transacoes": [
@@ -219,10 +213,6 @@ O aviso do passo 8 está na fila. Na vida real, o PSP puxa esses avisos de tempo
 
 ```bash
 curl -i http://127.0.0.1:8377/api/v1/out/boleto/PSP00001/tributos/stream/start \
-  -H 'messageId: 1a2b3c4d-0000-4000-8000-000000000003' \
-  -H 'correlationId: TUTORIAL-0000000001' \
-  -H 'tenantId: 12345678000199' \
-  -H 'timestamp: 2026-07-20T10:10:00-03:00'
 ```
 
 Resposta esperada (a linha `Date` vai mostrar a hora do seu computador):

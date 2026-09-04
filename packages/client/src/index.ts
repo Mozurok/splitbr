@@ -1,13 +1,23 @@
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 export { calcularSegregacao } from "./domain/segregacao.js";
 export type { SegregacaoInput } from "./domain/segregacao.js";
 export type { CategoriaValor, PapelPsp, Tributo } from "./domain/types.js";
+export { assinaturaMiddleware, gerarTimestampSplit } from "./headers.js";
 export {
-  gerarCorrelationId,
-  gerarTimestampSplit,
-  splitHeadersMiddleware,
-} from "./headers.js";
-export type { SplitHeadersOptions } from "./headers.js";
+  ErroDeAssinatura,
+  assinarRequisicao,
+  base64url,
+  conferirFormaDoHeader,
+  montarEntradaDeAssinatura,
+  montarProtectedHeader,
+} from "./assinatura.js";
+export type {
+  AssinadorRs256,
+  OpcoesDeAssinatura,
+  ProtectedHeader,
+  ResultadoDaAssinatura,
+} from "./assinatura.js";
+export { ErroDeCanonicalizacao, canonicalizarJcs, canonicalizarJcsBytes } from "./jcs.js";
 export { toProblem } from "./problem.js";
 export type { ProblemDetail } from "./problem.js";
 export { createSplitClient } from "./client.js";

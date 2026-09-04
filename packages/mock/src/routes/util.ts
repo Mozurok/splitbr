@@ -51,8 +51,12 @@ export function validarEntrada(
   request: FastifyRequest,
   reply: FastifyReply,
   op: OperacaoCompilada | undefined,
-  matriz: Matriz,
-  arranjo: Arranjo,
+  // Matriz e arranjo sao opcionais porque nem toda rota tem matriz M/O/N-E: as
+  // do MOC (3.9) ja tem a regra por arranjo codificada no proprio spec, via
+  // oneOf com discriminator, required por arranjo e additionalProperties:false.
+  // Criar matriz para elas duplicaria a fonte da verdade que o Ajv ja aplica.
+  matriz?: Matriz,
+  arranjo?: Arranjo,
 ): { body: Record<string, unknown>; errosItem: ErroMatriz[] } | null {
   const body = (request.body ?? {}) as Record<string, unknown>;
 
@@ -66,6 +70,8 @@ export function validarEntrada(
     });
     return null;
   }
+
+  if (matriz === undefined || arranjo === undefined) return { body, errosItem: [] };
 
   const erros = validarContraMatriz(matriz, arranjo, body);
   const errosTopo = erros.filter((e) => e.indice === undefined);

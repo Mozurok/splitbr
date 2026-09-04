@@ -1,13 +1,13 @@
 import { createHash } from "node:crypto";
 
 /**
- * Hash pinado do contrato oficial (OAS v0.0.10), identico ao pinado em
+ * Hash pinado do contrato oficial (OAS v1.1.0), identico ao pinado em
  * vendor/MANIFEST.md. O mock recusa boot quando a copia embarcada divergir
  * (D-2; mesmo padrao do codegen do @splitbr/client). Um teste de repositorio
  * garante que a copia em data/spec/ e o vendor nao driftam entre si.
  */
 export const PINNED_SPEC_SHA256 =
-  "c5f60c849b22149d90ac2e3df6fcbe3ff9b0fb1f0c8b6463622fabb415629e2b";
+  "1a14b04e7e910b31c14913908ae6a8ce050d5b27afc2cee844a44959ee1621e7";
 
 export class SpecGateError extends Error {
   constructor(actual: string) {

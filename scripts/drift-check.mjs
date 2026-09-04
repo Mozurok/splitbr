@@ -10,7 +10,8 @@
 // vendorado e "setup-error": problema nosso, nao drift, e reprova sempre.
 //
 // Cobertura: os tres primeiros alvos NAO alimentam o codegen. O spec que gera
-// @splitbr/client e @splitbr/mock e vendor/swagger/openapi-v0_0_10.json.
+// @splitbr/client e @splitbr/mock e vendor/swagger/openapi-v1_1_0.json (desde a
+// versao 0.2.0 dos pacotes; ate a 0.1.1 era o openapi-v0_0_10.json).
 //
 // Ate 2026-09-04 este comentario afirmava que nao havia fonte publica para ele
 // e que por isso nao dava para monitora-lo (o gap D-4). A afirmacao era falsa:

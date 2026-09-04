@@ -1,76 +1,100 @@
+// O contrato v1.1.0 apagou os quatro headers do v0.0.10 (messageId,
+// correlationId, tenantId, timestamp) e pôs no lugar um só, o
+// X-JWS-Signature, obrigatório nas 43 operações. Este arquivo testava a
+// injeção dos quatro; agora testa a assinatura.
+//
+// O ponto mais delicado do middleware é a reescrita do corpo. A assinatura
+// cobre o payload cru (b64=false), então o corpo que vai na rede tem que ser
+// byte a byte o mesmo que foi assinado. Deixar o `fetch` re-serializar o objeto
+// original produziria uma assinatura válida sobre bytes que ninguém enviou.
 import { describe, expect, it } from "vitest";
-import {
-  gerarCorrelationId,
-  gerarTimestampSplit,
-  splitHeadersMiddleware,
-} from "../src/headers.js";
+import { assinaturaMiddleware, gerarTimestampSplit } from "../src/headers.js";
+import { conferirFormaDoHeader, montarEntradaDeAssinatura } from "../src/assinatura.js";
 
-// Oraculo: manual vendorado (tabela de headers): messageId UUID v4 (36),
-// correlationId 19/19, tenantId alfanumerico 14/14, timestamp 25/25 no formato
-// 2025-12-22T14:30:45-03:00.
-
-const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const TIMESTAMP_SPLIT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}-03:00$/;
+const assinanteEspelho = (bytes: Uint8Array) => bytes;
 
-async function runMiddleware(mw: ReturnType<typeof splitHeadersMiddleware>) {
-  const request = new Request("https://example.invalid/api/v1/boleto", { method: "POST" });
-  const result = await mw.onRequest?.({ request, schemaPath: "/api/v1/boleto" } as never);
-  return (result instanceof Request ? result : request).headers;
+async function rodar(corpo?: unknown, metodo = "POST") {
+  const mw = assinaturaMiddleware({ kid: "chave-01", assinar: assinanteEspelho });
+  const init: RequestInit = { method: metodo };
+  if (corpo !== undefined) {
+    init.body = JSON.stringify(corpo);
+    init.headers = { "content-type": "application/json" };
+  }
+  const request = new Request("https://example.invalid/api/v1/boleto", init);
+  const saida = await mw.onRequest?.({ request, schemaPath: "/api/v1/boleto" } as never);
+  return saida instanceof Request ? saida : request;
 }
 
-describe("splitHeadersMiddleware (C7: messageId)", () => {
-  it("gera UUID v4 unico por requisicao", async () => {
-    const mw = splitHeadersMiddleware({ tenantId: "12345678000199" });
-    const h1 = await runMiddleware(mw);
-    const h2 = await runMiddleware(mw);
-    expect(h1.get("messageId")).toMatch(UUID_V4);
-    expect(h2.get("messageId")).toMatch(UUID_V4);
-    expect(h1.get("messageId")).not.toBe(h2.get("messageId"));
+describe("assinaturaMiddleware", () => {
+  it("injeta X-JWS-Signature em formato válido", async () => {
+    const req = await rodar({ a: 1 });
+    const header = req.headers.get("X-JWS-Signature");
+    expect(header).toBeTruthy();
+    expect(conferirFormaDoHeader(header as string).problemas).toEqual([]);
+  });
+
+  it("reescreve o corpo com os bytes canonicalizados", async () => {
+    // Entra com as chaves fora de ordem; tem que sair ordenado.
+    const req = await rodar({ vlPago: 10.02, arrj: "BOL" });
+    expect(await req.text()).toBe('{"arrj":"BOL","vlPago":10.02}');
+  });
+
+  it("o corpo enviado é exatamente o que foi assinado", async () => {
+    let assinado: Uint8Array | undefined;
+    const mw = assinaturaMiddleware({
+      kid: "chave-01",
+      assinar: (bytes) => {
+        assinado = bytes;
+        return bytes;
+      },
+    });
+    const request = new Request("https://example.invalid/api/v1/boleto", {
+      method: "POST",
+      body: JSON.stringify({ b: 2, a: 1 }),
+      headers: { "content-type": "application/json" },
+    });
+    const saida = (await mw.onRequest?.({ request, schemaPath: "/x" } as never)) as Request;
+
+    const enviado = new TextEncoder().encode(await saida.text());
+    const [protectedB64 = ""] = (saida.headers.get("X-JWS-Signature") as string).split(".");
+    expect(assinado).toEqual(montarEntradaDeAssinatura(protectedB64, enviado));
+  });
+
+  it("assina também requisição sem corpo, porque o header é obrigatório nelas", async () => {
+    const req = await rodar(undefined, "GET");
+    const header = req.headers.get("X-JWS-Signature");
+    expect(conferirFormaDoHeader(header as string).problemas).toEqual([]);
+    expect(await req.text()).toBe("");
+  });
+
+  it("cada requisição ganha jti próprio", async () => {
+    const a = await rodar({ a: 1 });
+    const b = await rodar({ a: 1 });
+    expect(a.headers.get("X-JWS-Signature")).not.toBe(b.headers.get("X-JWS-Signature"));
+  });
+
+  it("não injeta nenhum dos quatro headers do contrato antigo", async () => {
+    const req = await rodar({ a: 1 });
+    for (const extinto of ["messageId", "correlationId", "tenantId", "timestamp"]) {
+      expect(req.headers.get(extinto)).toBeNull();
+    }
+  });
+
+  it("preserva método e URL", async () => {
+    const req = await rodar({ a: 1 });
+    expect(req.method).toBe("POST");
+    expect(req.url).toBe("https://example.invalid/api/v1/boleto");
   });
 });
 
-describe("splitHeadersMiddleware (C8: correlationId)", () => {
-  it("propaga verbatim quando fornecido (19 posicoes)", async () => {
-    const fixo = "txn-20251222-abc123";
-    expect(fixo).toHaveLength(19);
-    const mw = splitHeadersMiddleware({ tenantId: "12345678000199", correlationId: fixo });
-    expect((await runMiddleware(mw)).get("correlationId")).toBe(fixo);
-  });
-  it("gera 19 posicoes quando ausente", async () => {
-    const mw = splitHeadersMiddleware({ tenantId: "12345678000199" });
-    expect((await runMiddleware(mw)).get("correlationId")).toHaveLength(19);
-  });
-  it("gerarCorrelationId() sempre tem 19 posicoes", () => {
-    for (let i = 0; i < 50; i++) expect(gerarCorrelationId()).toHaveLength(19);
-  });
-  it("rejeita correlationId fornecido com tamanho errado", () => {
-    expect(() =>
-      splitHeadersMiddleware({ tenantId: "12345678000199", correlationId: "curto" }),
-    ).toThrow(/19/);
-  });
-});
-
-describe("splitHeadersMiddleware (C9: timestamp)", () => {
-  it("formato ISO 8601 com offset -03:00, 25 posicoes, sem milissegundos", async () => {
-    const mw = splitHeadersMiddleware({ tenantId: "12345678000199" });
-    const ts = (await runMiddleware(mw)).get("timestamp")!;
-    expect(ts).toMatch(TIMESTAMP_SPLIT);
-    expect(ts).toHaveLength(25);
-  });
-  it("gerarTimestampSplit converte o instante para o relogio de Brasilia", () => {
-    // 2025-12-22T17:30:45Z == 14:30:45 em -03:00 (exemplo do manual)
-    expect(gerarTimestampSplit(new Date("2025-12-22T17:30:45Z"))).toBe("2025-12-22T14:30:45-03:00");
-  });
-});
-
-describe("splitHeadersMiddleware (C10: tenantId)", () => {
-  it("passa o CNPJ adiante, tolerando CNPJ alfanumerico", async () => {
-    const alfanum = "AB345678000199"; // IN RFB 2.229/2024
-    const mw = splitHeadersMiddleware({ tenantId: alfanum });
-    expect((await runMiddleware(mw)).get("tenantId")).toBe(alfanum);
-  });
-  it("rejeita tenantId fora de 14 posicoes alfanumericas", () => {
-    expect(() => splitHeadersMiddleware({ tenantId: "123" })).toThrow(/14/);
-    expect(() => splitHeadersMiddleware({ tenantId: "12345678-00019" })).toThrow(/alfanum/i);
+describe("gerarTimestampSplit", () => {
+  // Sobrevive ao v1.1.0 por outro motivo: deixou de ser header e continua
+  // sendo o formato de infRequisicao.dtHrMsg, campo de corpo obrigatório.
+  it("formato ISO 8601 com offset -03:00, 25 posições, sem milissegundos", () => {
+    const t = gerarTimestampSplit(new Date("2026-03-22T15:00:00Z"));
+    expect(t).toMatch(TIMESTAMP_SPLIT);
+    expect(t).toHaveLength(25);
+    expect(t).toBe("2026-03-22T12:00:00-03:00");
   });
 });

@@ -22,7 +22,7 @@ async function poll(app: ReturnType<typeof buildServer>, url: string) {
 describe("stream out (Super Inteligente, 3.6)", () => {
   it("janela vazia: 204 com proximoToken e streamId nos headers", async () => {
     const app = servidor();
-    const res = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const res = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     expect(res.statusCode).toBe(204);
     expect(res.headers["proximotoken"]).toMatch(/^S/);
     expect(res.headers["streamid"]).toMatch(/^STREAM-/);
@@ -32,21 +32,21 @@ describe("stream out (Super Inteligente, 3.6)", () => {
     const app = servidor();
     app.store.eventos.publicar("boleto", "PSP00001", evento(1));
     app.store.eventos.publicar("boleto", "PSP00001", evento(2));
-    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     expect(r1.statusCode).toBe(200);
     const corpo1 = r1.json();
-    expect(corpo1.tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([1, 2]);
+    expect(corpo1.transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["1", "2"]);
     const token1 = r1.headers["proximotoken"] as string;
 
     app.store.eventos.publicar("boleto", "PSP00001", evento(3));
-    const r2 = await poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token1}`);
+    const r2 = await poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token1}`);
     expect(r2.statusCode).toBe(200);
-    expect(r2.json().tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([3]);
+    expect(r2.json().transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["3"]);
   });
 
   it("evento publicado DURANTE a janela resolve antes do timeout", async () => {
     const app = buildServer({ streamTimeoutMs: 2000 });
-    const pendente = poll(app, "/api/v1/out/pix-dinamico/PSP00002/tributos/stream/start");
+    const pendente = poll(app, "/api/v1/out/pix-dinamico/PSP00002/transacoes/stream/start");
     const inicio = Date.now();
     setTimeout(() => {
       app.store.eventos.publicar("pix-dinamico", "PSP00002", { codMsg: "RSUP201", txId: "t1", vlInf: 5.0 });
@@ -59,31 +59,31 @@ describe("stream out (Super Inteligente, 3.6)", () => {
   it("token antigo e invalidado apos o consumo (rotacao)", async () => {
     const app = servidor();
     app.store.eventos.publicar("boleto", "PSP00001", evento(1));
-    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     const token1 = r1.headers["proximotoken"] as string;
-    await poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token1}`);
-    const reuso = await poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token1}`);
+    await poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token1}`);
+    const reuso = await poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token1}`);
     expect(reuso.statusCode).toBe(422);
   });
 
   it("DELETE encerra o stream; poll seguinte responde 422", async () => {
     const app = servidor();
-    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     const token = r1.headers["proximotoken"] as string;
     const del = await app.inject({
       method: "DELETE",
-      url: `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`,
+      url: `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`,
       headers: headersValidos(),
     });
     expect(del.statusCode).toBe(204);
-    const depois = await poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`);
+    const depois = await poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`);
     expect(depois.statusCode).toBe(422);
   });
 
-  it("streams por arranjo/idPsp sao independentes", async () => {
+  it("streams por arranjo/cnpjRaizPspRecDir sao independentes", async () => {
     const app = servidor();
     app.store.eventos.publicar("boleto", "PSPA0001", evento(1));
-    const outro = await poll(app, "/api/v1/out/boleto/PSPB0002/tributos/stream/start");
+    const outro = await poll(app, "/api/v1/out/boleto/PSPB0002/transacoes/stream/start");
     expect(outro.statusCode).toBe(204);
   });
 });
@@ -92,19 +92,19 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
   async function entregarTudo(app: ReturnType<typeof buildServer>, qtde: number) {
     // publica e CONSOME via out-stream para alimentar o ledger de entregas
     for (let i = 1; i <= qtde; i++) app.store.eventos.publicar("boleto", "PSP00001", evento(i));
-    const r = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     return { streamId: r.headers["streamid"] as string, res: r };
   }
 
-  it("modo 2 (fromNsu+toNsu+streamId): so o que AQUELE stream entregou", async () => {
+  it("modo 2 (nsuInicial+nsuFinal+streamId): so o que AQUELE stream entregou", async () => {
     const app = servidor();
     const { streamId } = await entregarTudo(app, 3);
     const res = await poll(
       app,
-      `/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1&toNsu=2&streamId=${streamId}`,
+      `/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1&nsuFinal=2&streamId=${streamId}`,
     );
     expect(res.statusCode).toBe(200);
-    expect(res.json().tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([1, 2]);
+    expect(res.json().transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["1", "2"]);
   });
 
   it("modo 3 (stream encerrada): limitado ao entregue, nunca tail vivo", async () => {
@@ -113,24 +113,24 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
     const token = res.headers["proximotoken"] as string;
     await app.inject({
       method: "DELETE",
-      url: `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`,
+      url: `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`,
       headers: headersValidos(),
     });
     // eventos publicados DEPOIS do encerramento nao entram na consulta
     app.store.eventos.publicar("boleto", "PSP00001", evento(3));
     const retro = await poll(
       app,
-      `/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1&streamId=${streamId}`,
+      `/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1&streamId=${streamId}`,
     );
     expect(retro.statusCode).toBe(200);
-    expect(retro.json().tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([1, 2]);
+    expect(retro.json().transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["1", "2"]);
   });
 
   it("streamId desconhecido: 422", async () => {
     const app = servidor();
     const res = await poll(
       app,
-      "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1&streamId=STREAM-999",
+      "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1&streamId=STREAM-999",
     );
     expect(res.statusCode).toBe(422);
   });
@@ -142,17 +142,17 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
     app.store.eventos.publicar("boleto", "PSP00001", evento(3));
     const res = await poll(
       app,
-      "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1",
+      "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1",
     );
     expect(res.statusCode).toBe(200);
-    expect(res.json().tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([1, 2]);
+    expect(res.json().transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["1", "2"]);
   });
 
-  it("toNsu nao numerico: 400", async () => {
+  it("nsuFinal nao numerico: 400", async () => {
     const app = servidor();
     const res = await poll(
       app,
-      "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1&toNsu=abc",
+      "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1&nsuFinal=abc",
     );
     expect(res.statusCode).toBe(400);
   });
@@ -160,12 +160,12 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
   it("reuso concorrente do mesmo token: exatamente um poll vence (claim atomico)", async () => {
     const app = servidor();
     app.store.eventos.publicar("boleto", "PSP00001", evento(1));
-    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     const token = r1.headers["proximotoken"] as string;
     app.store.eventos.publicar("boleto", "PSP00001", evento(2));
     const [a, b] = await Promise.all([
-      poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`),
-      poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`),
+      poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`),
+      poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`),
     ]);
     const codes = [a.statusCode, b.statusCode].sort();
     expect(codes).toEqual([200, 422]);
@@ -175,15 +175,15 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
     const app = buildServer({ streamTimeoutMs: 400 });
     const r1 = await app.inject({
       method: "GET",
-      url: "/api/v1/out/boleto/PSP00001/tributos/stream/start",
+      url: "/api/v1/out/boleto/PSP00001/transacoes/stream/start",
       headers: headersValidos(),
     });
     const token = r1.headers["proximotoken"] as string;
-    const emVoo = poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`);
+    const emVoo = poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`);
     await new Promise((r) => setTimeout(r, 50));
     const del = await app.inject({
       method: "DELETE",
-      url: `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`,
+      url: `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`,
       headers: headersValidos(),
     });
     expect(del.statusCode).toBe(204);
@@ -194,47 +194,47 @@ describe("modos retroativo com ledger de entregas (3.7, review-hard M3)", () => 
   it("streamId so vai no header do start do out-stream (spec)", async () => {
     const app = servidor();
     app.store.eventos.publicar("boleto", "PSP00001", evento(1));
-    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/tributos/stream/start");
+    const r1 = await poll(app, "/api/v1/out/boleto/PSP00001/transacoes/stream/start");
     expect(r1.headers["streamid"]).toBeDefined();
     const token = r1.headers["proximotoken"] as string;
     app.store.eventos.publicar("boleto", "PSP00001", evento(2));
-    const r2 = await poll(app, `/api/v1/out/boleto/PSP00001/tributos/stream/${token}`);
+    const r2 = await poll(app, `/api/v1/out/boleto/PSP00001/transacoes/stream/${token}`);
     expect(r2.headers["streamid"]).toBeUndefined();
-    const retro = await poll(app, "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=1");
+    const retro = await poll(app, "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=1");
     expect(retro.headers["streamid"]).toBeUndefined();
   });
 });
 
 describe("consulta retroativa (3.7)", () => {
-  it("intervalo fromNsu/toNsu entrega o recorte e depois 204 com token final", async () => {
+  it("intervalo nsuInicial/nsuFinal entrega o recorte e depois 204 com token final", async () => {
     const app = servidor();
     for (let i = 1; i <= 4; i++) app.store.eventos.publicar("boleto", "PSP00001", evento(i));
     const r1 = await poll(
       app,
-      "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start?fromNsu=2&toNsu=3",
+      "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start?nsuInicial=2&nsuFinal=3",
     );
     expect(r1.statusCode).toBe(200);
-    expect(r1.json().tributos.map((t: { nsuId: number }) => t.nsuId)).toEqual([2, 3]);
+    expect(r1.json().transacoes.map((t: { nsuId: string }) => t.nsuId)).toEqual(["2", "3"]);
     const token = r1.headers["proximotoken"] as string;
     expect(token).toMatch(/^R/);
 
-    const r2 = await poll(app, `/api/v1/retroativo/boleto/PSP00001/tributos/stream/${token}`);
+    const r2 = await poll(app, `/api/v1/retroativo/boleto/PSP00001/transacoes/stream/${token}`);
     expect(r2.statusCode).toBe(204);
     const tokenFinal = r2.headers["proximotoken"] as string;
 
     const del = await app.inject({
       method: "DELETE",
-      url: `/api/v1/retroativo/boleto/PSP00001/tributos/stream/${tokenFinal}`,
+      url: `/api/v1/retroativo/boleto/PSP00001/transacoes/stream/${tokenFinal}`,
       headers: headersValidos(),
     });
     expect(del.statusCode).toBe(204);
   });
 
-  it("fromNsu ausente responde 400 (parametro obrigatorio do contrato)", async () => {
+  it("nsuInicial ausente responde 400 (parametro obrigatorio do contrato)", async () => {
     const app = servidor();
-    const res = await poll(app, "/api/v1/retroativo/boleto/PSP00001/tributos/stream/start");
+    const res = await poll(app, "/api/v1/retroativo/boleto/PSP00001/transacoes/stream/start");
     expect(res.statusCode).toBe(400);
-    expect(res.json().detail).toContain("fromNsu");
+    expect(res.json().detail).toContain("nsuInicial");
   });
 
   it("retroativo nao espera a janela: 204 imediato sem eventos no recorte", async () => {
@@ -242,7 +242,7 @@ describe("consulta retroativa (3.7)", () => {
     const inicio = Date.now();
     const res = await poll(
       app,
-      "/api/v1/retroativo/pix-dinamico/PSP00001/tributos/stream/start?fromNsu=1",
+      "/api/v1/retroativo/pix-dinamico/PSP00001/transacoes/stream/start?nsuInicial=1",
     );
     expect(res.statusCode).toBe(204);
     expect(Date.now() - inicio).toBeLessThan(1000);

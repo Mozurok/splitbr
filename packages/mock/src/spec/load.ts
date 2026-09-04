@@ -19,9 +19,9 @@ export interface RegistroSpec {
 // Em dev este modulo vive em src/spec/ (data/ a dois niveis); no pacote
 // buildado o bundle vive em dist/ (data/ a um nivel). Resolve o primeiro
 // candidato existente em vez de fixar a profundidade.
-const SPEC_EMBARCADO = ["../../data/spec/openapi-v0_0_10.json", "../data/spec/openapi-v0_0_10.json"]
+const SPEC_EMBARCADO = ["../../data/spec/openapi-v1_1_0.json", "../data/spec/openapi-v1_1_0.json"]
   .map((rel) => fileURLToPath(new URL(rel, import.meta.url)))
-  .find((p) => existsSync(p)) ?? "data/spec/openapi-v0_0_10.json";
+  .find((p) => existsSync(p)) ?? "data/spec/openapi-v1_1_0.json";
 
 /**
  * Carrega o contrato oficial atras da trava de hash (D-2) e compila um

@@ -64,6 +64,7 @@ export default defineConfig({
         items: [
           { text: "@splitbr/client", link: "/referencia/client" },
           { text: "@splitbr/mock", link: "/referencia/mock" },
+          { text: "Guia de migração", link: "/migracao" },
         ],
       },
       {

@@ -4,11 +4,11 @@
 
 Mock local da **Plataforma Pública do Split Payment** (IBS/CBS, LC 214/2025) para qualquer dev entender e testar o comportamento da plataforma. Você não precisa ser um PSP homologado (banco ou instituição de pagamento autorizada) para usar isto: o mock roda local, sem licença nenhuma.
 
-A plataforma real é restrita a PSPs homologados. Este mock reproduz o contrato oficial na sua máquina: os sete fluxos documentados, os quatro headers obrigatórios, a taxonomia de erros RFC 7807, a segregação em 3 passos e o streaming do Super Inteligente, mais um motor de caos e cenários que a plataforma real nunca vai te dar em homologação.
+A plataforma real é restrita a PSPs homologados. Este mock reproduz o contrato oficial na sua máquina: os sete fluxos documentados, o Mecanismo de Ocorrências, a assinatura `X-JWS-Signature`, a taxonomia de erros RFC 7807, a segregação em 3 passos e o streaming do Super Inteligente, mais um motor de caos e cenários que a plataforma real nunca vai te dar em homologação.
 
-> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é o contrato oficial (OAS v0.0.10), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
+> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é o contrato oficial (OAS v1.1.0), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
 
-> ⚠️ **O contrato oficial está na v1.1.0; este mock ainda reproduz a v0.0.10.** Em 24/08/2026 o CGIBS publicou o OpenAPI v1.1.0 da Plataforma e moveu a v0.0.10 para "versões anteriores": 12 rotas de stream renomeadas (`{idPsp}/tributos` virou `{cnpjRaizPspRecDir}/transacoes`), 3 rotas novas do Mecanismo de Ocorrências, `X-JWS-Signature` obrigatório em todas as operações e o Pix Automático retirado do Informe de Transação Atualizada. O que o mock simula continua fiel à v0.0.10, e serve para aprender o mecanismo; para integrar a plataforma real, leia a [v1.1.0](https://www.cgibs.gov.br/split-payment). A migração é um major bump e está em aberto.
+> **Migrando da 0.1.x?** Esta versão serve o contrato oficial **v1.1.0**. As rotas de stream mudaram de caminho, os quatro headers antigos deixaram de ser exigidos e entrou o Mecanismo de Ocorrências. O [guia de migração](https://mozurok.github.io/splitbr/migracao) tem o passo a passo.
 
 ## Instalação e uso
 
@@ -42,7 +42,9 @@ const { data } = await client.POST("/api/v1/boleto", {
 // data.resourceId, data.numValidos, data.numErros
 ```
 
-Os quatro headers obrigatórios (messageId, correlationId, tenantId, timestamp) são injetados pelo client e validados pelo mock exatamente como na tabela do Manual de Integração.
+A assinatura `X-JWS-Signature` é injetada pelo client e conferida pelo mock. Por padrão ele **valida a forma sem exigir a presença**: se o header vier, cobra os sete atributos do protected header com os valores fixos do capítulo 8; se não vier, deixa passar, para o `npx splitbr-mock` funcionar sem par de chaves. Para o comportamento fiel ao contrato, suba com `buildServer({ exigirAssinatura: true })`.
+
+Os quatro headers do contrato anterior (messageId, correlationId, tenantId, timestamp) não existem mais no v1.1.0. O mock continua aceitando e ecoando o `correlationId` na resposta, por utilidade de depuração, mas nenhum deles é obrigatório.
 
 ## O que o mock cobre
 
@@ -79,7 +81,7 @@ Cenários de divergência: `cbs-correcao`, `ibs-correcao`, `cbs-em-aberto`, `ibs
 
 ## Limitações conhecidas
 
-- A semântica por dígito dos códigos RSUP (1 = CBS correção, 2 = IBS correção, 3 = CBS em aberto, 4 = IBS em aberto) é interpretação deste mock; o spec v0.0.10 publica só o enum. Será ajustada quando o Manual de Operações detalhar código a código.
+- A semântica por dígito dos códigos RSUP (1 = CBS correção, 2 = IBS correção, 3 = CBS em aberto, 4 = IBS em aberto) é interpretação deste mock; o spec v1.1.0 publica só o enum. Será ajustada quando o Manual de Operações detalhar código a código.
 - Limites de rate (429) e a janela do long polling não são fixados pelas fontes oficiais; aqui são configuráveis.
 - Os percentuais do Split Payment Simplificado não têm valores oficiais publicados (jul/2026); o default é placeholder rotulado, não uma tabela real.
 - Autenticação é simulada (token fake + variantes de erro por flag). Não há mTLS real.

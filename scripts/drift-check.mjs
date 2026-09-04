@@ -53,6 +53,14 @@ export const TARGETS = [
     vendored: "vendor/cgibs-split-payment-artefatos.json",
     live: "https://www.cgibs.gov.br/split-payment",
     severity: "fail",
+    // O www.cgibs.gov.br nao aceita conexao do runner do GitHub: connect
+    // timeout em 443, tres tentativas, enquanto consumo.tributos.gov.br e
+    // piloto-cbs.tributos.gov.br respondem do MESMO runner (run 33901733965).
+    // E bloqueio do host, nao rede instavel. Reprovar por isso deixaria o
+    // detector vermelho toda semana por uma causa que nao vamos consertar, e
+    // detector que grita lobo acaba silenciado. Drift ali continua reprovando;
+    // so a indisponibilidade e ignorada.
+    severidadeIndisponivel: "ignore",
     kind: "inventario-html",
   },
 ];
@@ -130,6 +138,10 @@ export function diffSummary(vendored, live, limit = 12) {
 
 export function verdictFor(target, vendoredDoc, liveResult) {
   const base = { name: target.name, severity: target.severity, changed: [] };
+  // Um alvo pode reprovar em drift e nao reprovar em indisponibilidade: sao
+  // sinais diferentes. "o contrato mudou" e achado; "nao consegui falar com o
+  // host" pode ser so a topologia de rede de quem esta rodando.
+  const seIndisponivel = target.severidadeIndisponivel ?? target.severity;
   if (vendoredDoc === null || vendoredDoc === undefined) {
     return { ...base, status: "setup-error", detail: "arquivo vendorado ausente ou ilegível" };
   }
@@ -137,7 +149,12 @@ export function verdictFor(target, vendoredDoc, liveResult) {
     const status = liveResult?.kind === "parse" ? "malformed" : "unreachable";
     const tentativas = liveResult?.tentativas;
     const sufixo = tentativas && tentativas > 1 ? ` (apos ${tentativas} tentativas)` : "";
-    return { ...base, status, detail: `${liveResult?.error ?? "sem resposta"}${sufixo}` };
+    return {
+      ...base,
+      severity: seIndisponivel,
+      status,
+      detail: `${liveResult?.error ?? "sem resposta"}${sufixo}`,
+    };
   }
   if (canonical(vendoredDoc) === canonical(liveResult.doc)) return { ...base, status: "match" };
   return { ...base, status: "drift", changed: diffSummary(vendoredDoc, liveResult.doc) };
@@ -147,6 +164,11 @@ export function verdictFor(target, vendoredDoc, liveResult) {
 // contrato, ou quando o corpo veio quebrado. A severidade decide se isso
 // reprova o run; nao decide se alguem fica sabendo (D-2, D-3).
 const DIVERGENTE = new Set(["drift", "unreachable", "malformed"]);
+
+// "ignore" e severidade de terceira via: aparece no relatorio, nao reprova o
+// run e nao abre issue. Existe para uma indisponibilidade de causa conhecida e
+// externa, que nao e sinal nenhum sobre o contrato.
+const IGNORADO = (v) => v.severity === "ignore";
 
 // setup-error e problema nosso e reprova em qualquer alvo.
 export function exitCodeFor(verdicts) {
@@ -161,7 +183,7 @@ export function exitCodeFor(verdicts) {
 // (vendor/MANIFEST.md), entao engolir a divergencia dele mata o valor dele.
 export function overallStatus(verdicts) {
   if (verdicts.some((v) => v.status === "setup-error")) return "setup-error";
-  const divergentes = verdicts.filter((v) => DIVERGENTE.has(v.status));
+  const divergentes = verdicts.filter((v) => DIVERGENTE.has(v.status) && !IGNORADO(v));
   const reprovando = divergentes.filter((v) => v.severity === "fail");
   if (reprovando.some((v) => v.status === "drift")) return "drift";
   if (reprovando.some((v) => v.status === "malformed")) return "malformed";
@@ -176,7 +198,12 @@ export function report(verdicts, log = console.log) {
     } else if (v.status === "setup-error") {
       log(`SETUP-ERROR   ${v.name}: ${v.detail}`);
     } else if (v.status === "unreachable" || v.status === "malformed") {
-      const aviso = v.severity === "fail" ? "" : " (alvo informativo, não reprova)";
+      const aviso =
+        v.severity === "ignore"
+          ? " (indisponibilidade esperada neste ambiente, não reprova; drift ali continua reprovando)"
+          : v.severity === "fail"
+            ? ""
+            : " (alvo informativo, não reprova)";
       const rotulo = v.status === "malformed" ? "MALFORMED  " : "UNREACHABLE";
       log(`${rotulo}   ${v.name}: ${v.detail}${aviso}`);
     } else {

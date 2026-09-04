@@ -344,3 +344,58 @@ describe("inventario de artefatos do CGIBS (quarto alvo)", () => {
     expect(pinado._meta.fonte).toBe(alvo.live);
   });
 });
+
+// Terceira via de severidade: o host do CGIBS nao aceita conexao do runner do
+// GitHub, e reprovar por isso deixaria o detector vermelho toda semana por uma
+// causa externa que nao vamos consertar.
+describe("severidade de indisponibilidade separada da de drift", () => {
+  const CGIBS = {
+    name: "cgibs (teste)",
+    severity: "fail",
+    severidadeIndisponivel: "ignore",
+    kind: "inventario-html",
+  };
+  const pinado = { artefatos: { "/upload/arquivos/202606/x.zip": true } };
+
+  it("indisponibilidade no alvo ignorado nao reprova o run", () => {
+    const v = verdictFor(CGIBS, pinado, { ok: false, error: "Connect Timeout Error", tentativas: 3 });
+    expect(v.status).toBe("unreachable");
+    expect(v.severity).toBe("ignore");
+    expect(exitCodeFor([v])).toBe(0);
+  });
+
+  it("indisponibilidade ignorada tambem nao abre issue", () => {
+    const v = verdictFor(CGIBS, pinado, { ok: false, error: "Connect Timeout Error" });
+    expect(overallStatus([v])).toBe("ok");
+  });
+
+  it("mas drift no mesmo alvo continua reprovando", () => {
+    const vivo = { artefatos: { "/upload/arquivos/202608/novo.zip": true } };
+    const v = verdictFor(CGIBS, pinado, { ok: true, doc: vivo });
+    expect(v.status).toBe("drift");
+    expect(v.severity).toBe("fail");
+    expect(exitCodeFor([v])).not.toBe(0);
+    expect(overallStatus([v])).toBe("drift");
+  });
+
+  it("o relatorio diz por que nao reprovou, em vez de sumir com o alvo", () => {
+    const linhas = [];
+    report([verdictFor(CGIBS, pinado, { ok: false, error: "Connect Timeout Error" })], (l) => linhas.push(l));
+    const texto = linhas.join("\n");
+    expect(texto).toContain("UNREACHABLE");
+    expect(texto).toContain("drift ali continua reprovando");
+  });
+
+  it("um alvo sem severidadeIndisponivel mantem o comportamento antigo", () => {
+    const PORTAL = { name: "portal (teste)", severity: "fail" };
+    const v = verdictFor(PORTAL, { a: 1 }, { ok: false, error: "fetch failed" });
+    expect(v.severity).toBe("fail");
+    expect(exitCodeFor([v])).not.toBe(0);
+  });
+
+  it("o alvo real do CGIBS declara a severidade separada", () => {
+    const alvo = TARGETS.find((t) => t.kind === "inventario-html");
+    expect(alvo.severity).toBe("fail");
+    expect(alvo.severidadeIndisponivel).toBe("ignore");
+  });
+});

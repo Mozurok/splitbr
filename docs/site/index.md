@@ -56,7 +56,7 @@ O splitbr fecha esse buraco com dois pacotes testados e um princípio: o contrat
 | Pacote | O que faz |
 |---|---|
 | [@splitbr/mock](/referencia/mock) | A plataforma inteira rodando local, sem precisar de licença nenhuma: 7 fluxos, matrizes de campos como dados, segregação em 3 passos, long polling do Super Inteligente, motor de caos e divergências RSUP. |
-| [@splitbr/client](/referencia/client) | SDK TypeScript tipado da plataforma, para PSPs homologados (o pedaço de nicho do toolkit): tipos gerados do OpenAPI oficial, os 4 headers obrigatórios injetados, erros RFC 7807 tipados e a fórmula de segregação como função pura. |
+| [@splitbr/client](/referencia/client) | SDK TypeScript tipado da plataforma, para PSPs homologados (o pedaço de nicho do toolkit): tipos gerados do OpenAPI oficial, assinatura `X-JWS-Signature` aplicada por middleware, erros RFC 7807 tipados e a fórmula de segregação como função pura. |
 
 Os dois estão publicados no npm: [@splitbr/client](https://www.npmjs.com/package/@splitbr/client) e [@splitbr/mock](https://www.npmjs.com/package/@splitbr/mock).
 

@@ -69,7 +69,8 @@ export const casos: readonly EntradaCaso[] = [cicloFeliz, correcaoFisco, parcial
 /**
  * Payloads reais do caso 1 para o modo tecnico (endpoint + resposta exatos do
  * mock publicado). Cases 2 e 3 ganham os seus em Slices 3/4. Provenance: tutorial
- * re-captura 2026-07-21.
+ * re-captura 2026-10-22, contra o mock 0.3.0 (contrato v1.1.1). A captura de
+ * 2026-07-21 ficou com a rota e a chave do v0.0.10 ate esta data.
  */
 export const payloadsCicloFeliz = {
   emitir: {
@@ -91,15 +92,15 @@ export const payloadsCicloFeliz = {
     },
   },
   retorno: {
-    endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
+    endpoint: "GET /api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start",
     resposta: {
-      tributos: [
+      transacoes: [
         {
           codMsg: "RSUP101",
           vlCbsCorr: 9,
           numCtrlOrig: "CTRL000001",
           vlInf: 1000,
-          nsuId: 1,
+          nsuId: "1",
         },
       ],
     },

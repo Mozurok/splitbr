@@ -138,7 +138,7 @@ Resposta esperada:
 
 **O que acabou de acontecer:** a plataforma aceitou a transação (`status: 201`, 1 item válido, 0 erros) e devolveu um protocolo, o `resourceId`.
 
-**Sobre a assinatura:** o contrato oficial v1.1.0 exige o header `X-JWS-Signature` em toda requisição, uma assinatura RS256 sobre o corpo canonicalizado. Um `curl` copiável não dá conta disso, e por isso o mock **não exige** a assinatura por padrão: assim você vê o mecanismo funcionar antes de montar chave. Quando o header vem, ele confere a forma; para o comportamento fiel ao contrato, suba o mock com `exigirAssinatura`. No código de verdade, o `@splitbr/client` monta a assinatura para você.
+**Sobre a assinatura:** o contrato oficial v1.1.1 exige o header `X-JWS-Signature` em toda requisição, uma assinatura RS256 sobre o corpo canonicalizado. Um `curl` copiável não dá conta disso, e por isso o mock **não exige** a assinatura por padrão: assim você vê o mecanismo funcionar antes de montar chave. Quando o header vem, ele confere a forma; para o comportamento fiel ao contrato, suba o mock com `exigirAssinatura`. No código de verdade, o `@splitbr/client` monta a assinatura para você.
 
 **Se deu errado:** se veio um erro `400` do tipo `Corpo em desacordo com o contrato oficial`, algum pedaço do comando se perdeu ao colar. Cole o bloco inteiro de uma vez, do `curl` até a última aspa, e tente de novo.
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 (2026-10-22)
+
+**Quebra compatibilidade.** Serve o contrato oficial **OpenAPI v1.1.1**, publicado pelo CGIBS em 24/09/2026. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).
+
+- Spec embarcado e trava de hash agora são do v1.1.1.
+- Matrizes pelo Manual de Integração v1.1.1: `indPgtoIntegral` passa a ser rejeitado em Pix Dinâmico e Pix Automático, `cnpjRaizPspRecInd` passa a ser rejeitado no Boleto.
+- Toda resposta de erro em `/api/` traz `resourceId` (capítulo 9 do manual). As rotas utilitárias não consomem o contador.
+- **Correção: códigos RSUP.** Os finais 2 e 3 estavam trocados desde a primeira versão. Pelo capítulo 6 do manual: x01 CBS corrigido, x02 CBS em aberto, x03 IBS corrigido, x04 IBS em aberto. Quem testava `ibs-correcao` esperando `RSUP102` passa a receber `RSUP103`.
+- **Correção: Baixa de Boleto.** A 0.2.0 exigia `numPgto`, campo que o contrato removeu na v1.1.0, e rejeitava uma baixa válida.
+- **Correção: `cnpjRaizPspRecInd` no TEF** era aceito, mas o manual o marca como N/E.
+- README: o exemplo de uso não passa mais o `tenantId` que o client removeu na 0.2.0, e a consulta retroativa aparece com `nsuInicial`/`nsuFinal`.
+
 ## 0.2.0 (2026-09-04)
 
 **Quebra compatibilidade.** Serve o contrato oficial **OpenAPI v1.1.0**, publicado pelo CGIBS em 24/08/2026. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).

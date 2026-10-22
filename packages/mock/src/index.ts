@@ -1,4 +1,4 @@
-export const VERSION = "0.1.0";
+export const VERSION = "0.3.0";
 export { buildServer } from "./server.js";
 export type { MockServer, MockServerOptions } from "./server.js";
 export { sendProblem } from "./plugins/problem.js";

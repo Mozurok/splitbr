@@ -14,9 +14,9 @@ Mock local da **Plataforma Pública do Split Payment** (IBS/CBS, LC 214/2025) pa
 
 A plataforma real é restrita a PSPs homologados. Este mock reproduz o contrato oficial na sua máquina: os sete fluxos documentados, o Mecanismo de Ocorrências, a assinatura `X-JWS-Signature`, a taxonomia de erros RFC 7807, a segregação em 3 passos e o streaming do Super Inteligente, mais um motor de caos e cenários que a plataforma real nunca vai te dar em homologação.
 
-> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é o contrato oficial (OAS v1.1.0), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
+> **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é o contrato oficial (OAS v1.1.1), embarcado com hash pinado. Quando o contrato mudar, o mock recusa subir com uma cópia adulterada.
 
-> **Migrando da 0.1.x?** Esta versão serve o contrato oficial **v1.1.0**. As rotas de stream mudaram de caminho, os quatro headers antigos deixaram de ser exigidos e entrou o Mecanismo de Ocorrências. O [guia de migração](https://mozurok.github.io/splitbr/migracao) tem o passo a passo.
+> **Migrando da 0.2.x?** Esta versão serve o contrato oficial **v1.1.1**. `indPgtoIntegral` passou a ser rejeitado nos arranjos Pix, `cnpjRaizPspRecInd` passou a ser rejeitado no Boleto, as respostas de erro ganharam `resourceId`, e os códigos RSUP de "CBS em aberto" e "IBS corrigido" foram corrigidos (estavam trocados). Vindo da 0.1.x, veja também as mudanças da 0.2.0. O [guia de migração](https://mozurok.github.io/splitbr/migracao) cobre os dois saltos.
 
 ## Instalação e uso
 
@@ -38,7 +38,8 @@ import { createSplitClient } from "@splitbr/client";
 
 const client = createSplitClient({
   baseUrl: "http://127.0.0.1:8377",
-  tenantId: "12345678000199", // CNPJ alfanumérico do PSP (14 posições)
+  kid: "minha-chave-01",     // identificador da sua chave de assinatura
+  assinar: assinarComRS256,  // (bytes) => assinatura crua; a chave é sua
 });
 
 const { data } = await client.POST("/api/v1/boleto", {
@@ -52,19 +53,19 @@ const { data } = await client.POST("/api/v1/boleto", {
 
 A assinatura `X-JWS-Signature` é injetada pelo client e conferida pelo mock. Por padrão ele **valida a forma sem exigir a presença**: se o header vier, cobra os sete atributos do protected header com os valores fixos do capítulo 8; se não vier, deixa passar, para o `npx splitbr-mock` funcionar sem par de chaves. Para o comportamento fiel ao contrato, suba com `buildServer({ exigirAssinatura: true })`.
 
-Os quatro headers do contrato anterior (messageId, correlationId, tenantId, timestamp) não existem mais no v1.1.0. O mock continua aceitando e ecoando o `correlationId` na resposta, por utilidade de depuração, mas nenhum deles é obrigatório.
+Os quatro headers do contrato anterior (messageId, correlationId, tenantId, timestamp) não existem mais desde o v1.1.0. O mock continua aceitando e ecoando o `correlationId` na resposta, por utilidade de depuração, mas nenhum deles é obrigatório.
 
 ## O que o mock cobre
 
 | Fluxo | Endpoints | Arranjos |
 |---|---|---|
 | Transação Iniciada | `POST /api/v1/{arranjo}` | boleto, pix-automatico, pix-dinamico |
-| Transação Atualizada | `PATCH /api/v1/{arranjo}` | boleto, pix-automatico, pix-dinamico |
+| Transação Atualizada | `PATCH /api/v1/{arranjo}` | boleto, pix-dinamico |
 | Baixa (exceto pagamento) | `POST .../baixa-exceto-pagamento` | boleto, pix-automatico, pix-dinamico |
 | Informe Preliminar de Pagamento | `POST .../informe-preliminar-pagamento` | os 6 arranjos |
 | Segregação (3 passos) | `POST /api/v1/segregacao` → `POST .../lotes` → `POST /api/v1/segregacao/finalizacao` | os 6 arranjos |
 | Retorno Super Inteligente | `GET /api/v1/out/.../stream/start` e `/{token}`, `DELETE /{token}` | boleto, pix-automatico, pix-dinamico |
-| Consulta Retroativa | `GET /api/v1/retroativo/.../stream/start?fromNsu=...` | boleto, pix-automatico, pix-dinamico |
+| Consulta Retroativa | `GET /api/v1/retroativo/.../stream/start?nsuInicial=...&nsuFinal=...` | boleto, pix-automatico, pix-dinamico |
 
 Comportamentos fiéis ao manual: matrizes M/O/N-E por arranjo aplicadas a partir de dados (`data/matrices/`), rejeição integral de lote com reenvio corrigido, cross-validação da finalização em centavos inteiros (1 centavo de divergência falha), long polling com rotação de token, 204 na janela vazia e teardown via DELETE.
 
@@ -80,7 +81,7 @@ curl -X DELETE localhost:8377/_chaos
 
 # injetar uma divergência de CBS (evento RSUP101 no stream do PSP)
 curl -X POST localhost:8377/_scenario/divergencia -H 'content-type: application/json' \
-  -d '{"arranjo": "boleto", "idPsp": "PSP00001", "chave": "CTRL000001", "tipo": "cbs-correcao", "procedimento": "padrao"}'
+  -d '{"arranjo": "boleto", "cnpjRaizPspRecDir": "PSP00001", "chave": "CTRL000001", "tipo": "cbs-correcao", "procedimento": "padrao"}'
 ```
 
 Flags de caos: `rate429`, as três variantes de 503 do manual (`circuito503` com circuit breaker, `indisponivel503` transitório, `manutencao503` janela programada), `erro500`, `timeout504`, `auth401` (variantes `cert-expirado`, `cert-invalido`, `token-invalido`), `forbidden403`. Cada uma responde com o status e os headers exatos da taxonomia do manual (`Retry-After`, `X-Circuit-Breaker`, `X-Retry-Allowed`, `X-Error-Type`).
@@ -89,7 +90,7 @@ Cenários de divergência: `cbs-correcao`, `ibs-correcao`, `cbs-em-aberto`, `ibs
 
 ## Limitações conhecidas
 
-- A semântica por dígito dos códigos RSUP (1 = CBS correção, 2 = IBS correção, 3 = CBS em aberto, 4 = IBS em aberto) é interpretação deste mock; o spec v1.1.0 publica só o enum. Será ajustada quando o Manual de Operações detalhar código a código.
+- O Manual de Segurança v1.0.0 lista um oitavo claim no JWS, `hashPayload`, que o Manual de Integração e o OpenAPI não pedem e que nenhum documento define. O mock confere os sete atributos do OpenAPI e não cobra o `hashPayload`.
 - Limites de rate (429) e a janela do long polling não são fixados pelas fontes oficiais; aqui são configuráveis.
 - Os percentuais do Split Payment Simplificado não têm valores oficiais publicados (jul/2026); o default é placeholder rotulado, não uma tabela real.
 - Autenticação é simulada (token fake + variantes de erro por flag). Não há mTLS real.

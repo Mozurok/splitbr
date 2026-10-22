@@ -14,14 +14,14 @@ Esta página é gerada do README do pacote a cada build.
 
 > Client TypeScript tipado para a Plataforma Pública do Split Payment (IBS/CBS, os dois tributos novos da Reforma Tributária, LC 214/2025), gerado a partir do OpenAPI oficial com hash pinado.
 
-**Avisos:** esta biblioteca não é aconselhamento jurídico nem tributário. Não tem afiliação com RFB, CGIBS, Serpro ou Núclea. O comportamento deriva de especificações oficiais públicas (spec v1.1.0) e pode mudar; confira sempre a fonte primária.
+**Avisos:** esta biblioteca não é aconselhamento jurídico nem tributário. Não tem afiliação com RFB, CGIBS, Serpro ou Núclea. O comportamento deriva de especificações oficiais públicas (spec v1.1.1) e pode mudar; confira sempre a fonte primária.
 
-> **Migrando da 0.1.x?** Esta versão acompanha o contrato oficial **v1.1.0**, publicado em 24/08/2026, e quebra compatibilidade com a anterior: os quatro headers obrigatórios sumiram, entrou a assinatura `X-JWS-Signature`, e as rotas de stream foram renomeadas. O [guia de migração](https://mozurok.github.io/splitbr/migracao) tem o passo a passo.
+> **Migrando da 0.2.x?** Esta versão acompanha o contrato oficial **v1.1.1**, publicado em 24/09/2026, e quebra compatibilidade nos tipos: `indPgtoIntegral` saiu dos arranjos Pix, `cnpjRaizPspRecInd` saiu do Boleto, e as respostas de erro trocaram `errors` por `resourceId`. Vindo da 0.1.x, a mudança maior é a da 0.2.0 (assinatura `X-JWS-Signature` e rotas de stream renomeadas). O [guia de migração](https://mozurok.github.io/splitbr/migracao) cobre os dois saltos.
 
 ## O que vem dentro
 
 - **Client tipado** para os 35 endpoints da plataforma (todos os arranjos da Etapa 1: boleto, Pix Dinâmico/Automático/Estático, TED, TEF, mais o Mecanismo de Ocorrências), sobre [openapi-fetch].
-- **Assinatura `X-JWS-Signature` automática** em toda requisição: canonicalização JCS (RFC 8785), protected header com os sete atributos obrigatórios e JWS Compact Detached (RFC 7515), como manda o capítulo 8 do Manual de Integração v1.1.0. **A chave privada não entra no pacote**: você fornece um callback que faz a operação RS256, e ele pode ser um HSM ou um KMS.
+- **Assinatura `X-JWS-Signature` automática** em toda requisição: canonicalização JCS (RFC 8785), protected header com os sete atributos obrigatórios e JWS Compact Detached (RFC 7515), como manda o capítulo 8 do Manual de Integração v1.1.1. **A chave privada não entra no pacote**: você fornece um callback que faz a operação RS256, e ele pode ser um HSM ou um KMS. O Manual de Segurança v1.0.0 cita um oitavo claim, `hashPayload`, que o Manual de Integração e o OpenAPI não pedem e que nenhum documento define; o client segue o contrato do OpenAPI até isso ser reconciliado.
 - **O corpo enviado é o corpo assinado.** O `b64: false` do contrato faz a assinatura cobrir o payload cru, então o client serializa uma vez só e manda exatamente aqueles bytes. É o erro mais caro dessa integração, e ele fica resolvido por construção.
 - **Erros RFC 7807 tipados**: corpos `application/problem+json` viram `ProblemDetail`, com `Retry-After` (segundos), `X-Circuit-Breaker`, `X-Retry-Allowed` e `X-Error-Type` expostos como campos.
 - **Fórmula de segregação** como função pura standalone: `R = min((Vp/Vt) × C; C; A)` por tributo, aritmética inteira em centavos (BigInt), truncamento sempre PARA BAIXO em 2 casas, sem ponto flutuante no caminho de cálculo.
@@ -55,7 +55,7 @@ const segregadoCbs = calcularSegregacao({
 
 ## Regeneração de tipos
 
-Os tipos são gerados de `vendor/swagger/openapi-v1_1_0.json` (hash pinado em `vendor/MANIFEST.md`); o script de codegen recusa rodar se o spec em disco divergir do hash. Nada aqui busca a API viva em tempo de build.
+Os tipos são gerados de `vendor/swagger/openapi-v1_1_1.json` (hash pinado em `vendor/MANIFEST.md`); o script de codegen recusa rodar se o spec em disco divergir do hash. Nada aqui busca a API viva em tempo de build.
 
 ## Licença
 

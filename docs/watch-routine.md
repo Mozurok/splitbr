@@ -5,15 +5,16 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 
 ## Sources to check (in order)
 
-1. CGIBS publications (Manual de Operacoes revisions, resolucoes, the 4 unpublished manuals)
+1. CGIBS publications (manual revisions, resolucoes, Atos Tecnicos Conjuntos, the Plano de Implantacao)
    - URL: https://www.cgibs.gov.br/ (documents land under `https://www.cgibs.gov.br/upload/arquivos/<YYYYMM>/...`)
    - **Split Payment page: https://www.cgibs.gov.br/split-payment** — this is where the Platform's OpenAPI and the Manual de Integracao are published, both without login. It is now the fourth `drift-check.mjs` target (pinned inventory in `vendor/cgibs-split-payment-artefatos.json`), but check it by eye too: the detector compares the artifact list, not the contents of a re-uploaded file.
-   - Watch for: Manual de Redes, Manual de Seguranca, Manual de Onboarding (none public as of 2026-09-04); Manual de Operacoes (minuta jun/2026) and Manual de Tempos (minuta 15/07/2026) leaving minuta status; new resolucoes (the series already runs to at least 17, and only 6/2026 is vendored); new **Ato Tecnico Conjunto RFB/CGIBS**, the instrument that now formally approves RTC notes.
+   - Watch for (state as of 2026-10-22, all vendored): OAS past **v1.1.1**; Manual de Integracao past v1.1.1; Operacoes and Tempos past v1.0.1; Seguranca past v1.0.0; Redes past v1.0.1; Habilitacao de Participantes past v1.0.0; the **Plano de Implantacao**, the only document of the family still unpublished (listed in chapter 1 of every manual); new resolucoes (the series already runs to at least 17, and only 6/2026 is vendored); new **Ato Tecnico Conjunto RFB/CGIBS** at https://www.cgibs.gov.br/atos-tecnicos-conjuntos (n. 8 is the latest; n. 4 and n. 5 approved the Split Payment manuals).
+   - Run `pnpm drift-check` from the maintainer machine as part of this step. It is the only place the CGIBS target actually compares (see the 2026-09-04 note below), and it caught the v1.1.1 package on its first run on 2026-10-22, 28 days late.
 
 2. Portal NF-e Notas Tecnicas listing (NT/IT revisions)
    - URL: https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=
    - Schemas sibling page: https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=BMPFMBoln3w=
-   - Watch for (state as of 2026-09-04, all vendored unless said otherwise): NT 2025.002 past **v1.51** (04/08/2026); IT 2025.002 past v1.60 (23/06/2026); NT 2026.001 v1.02b (31/07/2026); NT 2026.006 v1.00 (25/08/2026, NF-e to split-payment transaction binding); IT 2026.001 v1.01 (25/08/2026); new Pacote de Liberacao past **010f v1.04** (31/08/2026) and past 010d v1.03 (10/07/2026); RTC events schema v1.40 (27/07/2026).
+   - Watch for (state as of 2026-10-22, all vendored unless said otherwise): NT 2025.002 past **v1.52** (01/10/2026); IT 2025.002 past **v1.70** (01/10/2026); NT 2026.001 v1.02b (31/07/2026); NT 2026.006 v1.00 (25/08/2026, NF-e to split-payment transaction binding); IT 2026.001 v1.01 (25/08/2026); new Pacote de Liberacao past **010f v1.04** (31/08/2026) and past 010d v1.03 (10/07/2026); RTC events schema v1.40 (27/07/2026).
    - Access note: these listing pages do an ASP.NET cookie redirect and return HTTP 302 to a plain fetch. Use a browser user-agent plus a cookie jar before concluding a source is down: `curl -sL -c cj.txt -b cj.txt -A "Mozilla/5.0 ..." "<url>"`. The same warning, with the exact command, is in `watch-routine-prompt.md`; treating an empty result as "nothing published" is a recorded past failure of this routine.
 
 3. Receita Federal news (atos conjuntos, manual releases, Calculadora announcements)
@@ -23,17 +24,29 @@ Purpose: catch new or revised official Split Payment / RTC artifacts before they
 4. Calculadora content-version endpoint (normative DB updates delivered to local installs)
    - URL: https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao
    - Quick check: `curl -s https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao`
-   - Watch for: version bump vs production, which was app **1.3.1-0e46e51f** and DB **V0043** on 2026-08-31. The vendored offline distribution is behind it (component 1.2.4, DB V0039, retrieved 2026-07-10) and re-downloading it is open work. A bump means re-capture specs and re-check the CST x cClassTrib tables.
+   - Watch for: version bump vs production, which was app **1.5.4-082a5001** and DB **V0059** (dated 2026-09-30) on 2026-10-22; the piloto was already on app 1.6.0. The vendored offline distribution is behind it (component 1.2.4, DB V0039, retrieved 2026-07-10) and re-downloading it is open work. A bump means re-capture specs and re-check the CST x cClassTrib tables.
 
 ## On finding something new
 
 1. Capture it: run `capture-references` with the URL (project bmazurok__splitbr) so REFERENCES.md stays the audit trail.
 2. If it invalidates a vendored artifact: open or extend a task to re-vendor with a new MANIFEST.md row (never overwrite rows silently).
-3. If it is one of the 3 still-unpublished manuals (Redes, Seguranca, Onboarding): that is a headline event; open a dedicated task (auth details, SLAs, and onboarding checklists land there).
+3. If it is the Plano de Implantacao (the last unpublished document of the family; Redes, Seguranca and Onboarding, renamed Habilitacao de Participantes, came out on 2026-09-24): that is a headline event; open a dedicated task (dates, milestones and form deadlines land there).
 
 ## Trigger mechanism
 
-Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: 3 manuais da familia Split Payment ainda nao publicados (Redes, Seguranca, Onboarding). O Manual de Tempos saiu como minuta em 15/07/2026 e esta vendorado.
+Decided (D-3, 2026-07-20; repointed at launch, 2026-07-21): the maintainer runs this checklist as a scheduled cloud routine, every Monday 09:00 America/Sao_Paulo, reporting only diffs vs the vendored baseline. The live baseline is the PUBLIC repo itself: the routine clones https://github.com/Mozurok/splitbr (shallow) and reads `vendor/MANIFEST.md` as the source of truth for vendored versions, so the baseline never drifts from what is actually pinned. Anyone can reproduce it manually with this file, or wire their own scheduler: the checklist above is the whole contract. Standing fact outside the MANIFEST: o Plano de Implantacao e o unico documento da familia Split Payment ainda nao publicado. Os outros seis estao vendorados desde 2026-10-22.
+
+## Estado da rotina (auditado em 2026-10-22)
+
+O quarto alvo do detector, criado em 04/09 para fechar o buraco do v1.1.0, não fechou. O CGIBS publicou o OpenAPI v1.1.1 e seis manuais em **24/09/2026**, e isso ficou **28 dias** sem registro no repositório.
+
+- O detector funcionou onde roda de verdade: o `pnpm drift-check` da máquina do mantenedor acusou os 9 artefatos novos na primeira execução, em 22/10. No CI, como previsto na nota de 04/09, o alvo do CGIBS reporta indisponibilidade e não reprova.
+- A cobertura real desse alvo é a checagem manual de segunda, e nenhuma execução dela ficou registrada entre 04/09 e 22/10. Pelo repositório não dá para saber se ela rodou sem registrar ou não rodou; dá para saber que ninguém agiu.
+- Quem viu primeiro foi um contribuidor externo, num comentário na issue #13 em 08/10, com o diff correto do contrato. O comentário ficou 14 dias sem resposta.
+- A issue #13 (drift da Calculadora) foi aberta em 14/09 e recebeu mais 4 avisos semanais sem tratamento. É a mesma falha de 04/09 (issue #6, 18 dias): a detecção automática faz a parte dela, a resposta humana não vem.
+- Um texto de procedimento estava errado de novo: o `_meta` do inventário do CGIBS mandava regenerar com `node scripts/drift-check.mjs --pin-cgibs`, uma flag que nunca existiu. Corrigido na mesma data.
+
+O que muda na prática: rodar `pnpm drift-check` local passou a ser parte do passo 1 da checklist, e não um extra. E toda execução da checagem manual, com ou sem achado, entra no histórico do `watch-routine-prompt.md`; a ausência de entrada passa a ser, ela mesma, o sinal de que a rotina parou.
 
 ## Estado da rotina (auditado em 2026-09-04)
 

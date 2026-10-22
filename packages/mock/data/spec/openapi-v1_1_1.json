@@ -7,7 +7,7 @@
       "name": "SERPRO",
       "url": "https://www.serpro.gov.br"
     },
-    "version": "1.1.0"
+    "version": "1.1.1"
   },
   "servers": [
     {
@@ -3254,16 +3254,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
-          },
           "cnpjRaizPspRecDir": {
             "type": "string",
             "minLength": 8,
@@ -3744,16 +3734,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
-          },
           "cnpjRaizPspRecDir": {
             "type": "string",
             "minLength": 8,
@@ -4070,16 +4050,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
-          },
           "cnpjRaizPspRecDir": {
             "type": "string",
             "minLength": 8,
@@ -4245,17 +4215,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "indPgtoIntegral": {
-            "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "examples": [
-              "1"
-            ],
-            "description": "Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral."
-          },
           "cnpjRaizPspRecInd": {
             "type": "string",
             "minLength": 8,
@@ -4332,7 +4291,6 @@
           "vlPago",
           "vlCbsSegr",
           "vlIbsSegr",
-          "indPgtoIntegral",
           "cnpjRaizPspRecDir",
           "cnpjRaizPspPag",
           "cnpjRec",
@@ -4429,17 +4387,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "indPgtoIntegral": {
-            "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "examples": [
-              "1"
-            ],
-            "description": "Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral."
-          },
           "cnpjRaizPspRecInd": {
             "type": "string",
             "minLength": 8,
@@ -4516,7 +4463,6 @@
           "vlPago",
           "vlCbsSegr",
           "vlIbsSegr",
-          "indPgtoIntegral",
           "cnpjRaizPspRecDir",
           "cnpjRaizPspPag",
           "cnpjRec",
@@ -5022,16 +4968,6 @@
             ],
             "description": "Identificador utilizado pela Núclea para controle interno da transação."
           },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
-          },
           "cnpjRaizPspRecDir": {
             "type": "string",
             "minLength": 8,
@@ -5354,16 +5290,6 @@
               "1234567890123456789B123A5678901234567891123412345"
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
-          },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
           },
           "cnpjRaizPspRecDir": {
             "type": "string",
@@ -5813,16 +5739,6 @@
             ],
             "description": "Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral."
           },
-          "cnpjRaizPspRecInd": {
-            "type": "string",
-            "minLength": 8,
-            "maxLength": 8,
-            "pattern": "^[A-Za-z0-9]{8}$",
-            "examples": [
-              "87654321"
-            ],
-            "description": "Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta."
-          },
           "cnpjRaizPspPag": {
             "type": "string",
             "minLength": 8,
@@ -5993,17 +5909,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "indPgtoIntegral": {
-            "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "examples": [
-              "1"
-            ],
-            "description": "Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral."
-          },
           "cnpjRaizPspRecInd": {
             "type": "string",
             "minLength": 8,
@@ -6079,7 +5984,6 @@
           "vlPago",
           "vlCbsSegr",
           "vlIbsSegr",
-          "indPgtoIntegral",
           "cnpjRaizPspPag",
           "cnpjRec",
           "cnpjCpfPagEfet",
@@ -6183,17 +6087,6 @@
             ],
             "description": "Identificador do Documento Fiscal vinculado à transação."
           },
-          "indPgtoIntegral": {
-            "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "examples": [
-              "1"
-            ],
-            "description": "Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral."
-          },
           "cnpjRaizPspRecInd": {
             "type": "string",
             "minLength": 8,
@@ -6269,7 +6162,6 @@
           "vlPago",
           "vlCbsSegr",
           "vlIbsSegr",
-          "indPgtoIntegral",
           "cnpjRaizPspPag",
           "cnpjRec",
           "cnpjCpfPagEfet",
@@ -9405,25 +9297,11 @@
                     "Stream encerrada."
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "token"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "examples": [
-                          "token pertence a uma stream encerrada"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9460,25 +9338,11 @@
                     "Stream encerrada."
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "token"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "examples": [
-                          "token pertence a uma stream encerrada"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9541,6 +9405,12 @@
                       }
                     }
                   }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9596,6 +9466,12 @@
                       }
                     }
                   }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9651,6 +9527,12 @@
                       }
                     }
                   }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9684,30 +9566,16 @@
                 "detail": {
                   "type": "string",
                   "examples": [
-                    "Regras de negocio violadas para consulta de stream"
+                    "Regras de negocio violadas para consulta de stream",
+                    "streamId inexistente",
+                    "nsuInicial deve ser menor ou igual a nsuFinal"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "streamId",
-                          "nsuInicial"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "examples": [
-                          "streamId inexistente",
-                          "nsuInicial deve ser menor ou igual a nsuFinal"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9728,7 +9596,8 @@
               "example": {
                 "title": "Forbidden",
                 "status": 403,
-                "detail": "Acesso negado"
+                "detail": "Acesso negado",
+                "resourceId": "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
               },
               "properties": {
                 "title": {
@@ -9749,23 +9618,11 @@
                     "Todas as transações do informe estão inválidas"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "index": {
-                        "type": "integer",
-                        "description": "Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição."
-                      },
-                      "field": {
-                        "type": "string"
-                      },
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9786,7 +9643,8 @@
               "example": {
                 "title": "Internal Server Error",
                 "status": 500,
-                "detail": "Erro interno inesperado"
+                "detail": "Erro interno inesperado",
+                "resourceId": "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
               },
               "properties": {
                 "title": {
@@ -9807,23 +9665,11 @@
                     "Todas as transações do informe estão inválidas"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "index": {
-                        "type": "integer",
-                        "description": "Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição."
-                      },
-                      "field": {
-                        "type": "string"
-                      },
-                      "message": {
-                        "type": "string"
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -9967,6 +9813,12 @@
                       }
                     }
                   }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -10000,28 +9852,15 @@
                 "detail": {
                   "type": "string",
                   "examples": [
-                    "Regras de negocio violadas para a consulta de ocorrencias do MOC"
+                    "Regras de negocio violadas para a consulta de ocorrencias do MOC",
+                    "proximoToken inexistente ou expirado"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "proximoToken"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "examples": [
-                          "proximoToken inexistente ou expirado"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -10055,36 +9894,15 @@
                 "detail": {
                   "type": "string",
                   "examples": [
-                    "Regra de negócio violada na abertura do informe de remessa de segregação."
+                    "Regra de negócio violada na abertura do informe de remessa de segregação.",
+                    "Já existe uma remessa de segregação iniciada para o idInfSegr informado"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "index": {
-                        "type": "integer",
-                        "examples": [
-                          1
-                        ],
-                        "description": "Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição."
-                      },
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "idInfSegr"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "description": "Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.",
-                        "examples": [
-                          "Já existe uma remessa de segregação iniciada para o idInfSegr informado"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -10118,38 +9936,17 @@
                 "detail": {
                   "type": "string",
                   "examples": [
-                    "Regra de negócio violada no envio do lote de transações da segregação."
+                    "Regra de negócio violada no envio do lote de transações da segregação.",
+                    "Não existe remessa de segregação iniciada para o idInfSegr informado",
+                    "Já existe uma remessa de segregação finalizada para o idInfSegr informado",
+                    "O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "index": {
-                        "type": "integer",
-                        "examples": [
-                          1
-                        ],
-                        "description": "Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição."
-                      },
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "idInfSegr"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "description": "Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.",
-                        "examples": [
-                          "Não existe remessa de segregação iniciada para o idInfSegr informado",
-                          "Já existe uma remessa de segregação finalizada para o idInfSegr informado",
-                          "O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }
@@ -10183,41 +9980,20 @@
                 "detail": {
                   "type": "string",
                   "examples": [
-                    "Regra de negócio violada na finalização da remessa de segregação."
+                    "Regra de negócio violada na finalização da remessa de segregação.",
+                    "Não existe remessa de segregação iniciada para o idInfSegr informado",
+                    "Já existe uma remessa de segregação finalizada para o idInfSegr informado",
+                    "O valor informado em totalTrans difere da quantidade de transações enviadas",
+                    "O valor informado em vlTotalCbs difere da soma dos valores de CBS das transações enviadas",
+                    "O valor informado em vlTotalIbs difere da soma dos valores de IBS das transações enviadas",
+                    "O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado"
                   ]
                 },
-                "errors": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "index": {
-                        "type": "integer",
-                        "examples": [
-                          1
-                        ],
-                        "description": "Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição."
-                      },
-                      "field": {
-                        "type": "string",
-                        "examples": [
-                          "idInfSegr"
-                        ]
-                      },
-                      "message": {
-                        "type": "string",
-                        "description": "Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.",
-                        "examples": [
-                          "Não existe remessa de segregação iniciada para o idInfSegr informado",
-                          "Já existe uma remessa de segregação finalizada para o idInfSegr informado",
-                          "O valor informado em totalTrans difere da quantidade de transações enviadas",
-                          "O valor informado em vlTotalCbs difere da soma dos valores de CBS das transações enviadas",
-                          "O valor informado em vlTotalIbs difere da soma dos valores de IBS das transações enviadas",
-                          "O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado"
-                        ]
-                      }
-                    }
-                  }
+                "resourceId": {
+                  "type": "string",
+                  "examples": [
+                    "UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur"
+                  ]
                 }
               }
             }

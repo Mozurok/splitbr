@@ -185,3 +185,63 @@ describe("integridade das matrizes transcritas", () => {
     });
   }
 });
+
+// As tabelas do Manual de Integracao v1.1.1 que mudaram, travadas por regra.
+// Sem additionalProperties:false no spec, o Ajv aceita campo a mais, entao a
+// matriz e a unica barreira do mock contra um campo N/E. Uma regra errada aqui
+// nao quebra nenhum outro teste: foi assim que a Baixa de Boleto passou a 0.2.0
+// inteira exigindo um numPgto que o contrato ja tinha removido.
+describe("matrizes acompanham o Manual de Integracao v1.1.1", () => {
+  const coluna = (informe: string, campo: string): Record<string, string> => {
+    const m = carregarMatriz(informe);
+    const regras = m.transacoes[campo];
+    if (!regras) throw new Error(`campo '${campo}' fora da matriz '${informe}'`);
+    return Object.fromEntries(m.arranjos.map((a, i) => [a, regras[i]!]));
+  };
+
+  it("indPgtoIntegral so existe no Boleto (Pix Dinamico e Automatico viraram N/E)", () => {
+    for (const informe of ["informe-preliminar", "segregacao-lote"]) {
+      expect(coluna(informe, "indPgtoIntegral")).toEqual({
+        boleto: "M",
+        "pix-automatico": "NE",
+        "pix-dinamico": "NE",
+        "pix-estatico": "NE",
+        ted: "NE",
+        tef: "NE",
+      });
+    }
+  });
+
+  it("cnpjRaizPspRecInd e N/E no Boleto em todo informe que o carrega", () => {
+    for (const informe of [
+      "transacao-iniciada",
+      "transacao-atualizada",
+      "baixa",
+      "informe-preliminar",
+      "segregacao-lote",
+      "super-inteligente",
+    ]) {
+      expect(coluna(informe, "cnpjRaizPspRecInd")["boleto"], informe).toBe("NE");
+    }
+    // TED e TEF ja eram N/E desde a v1.1.0; a matriz tinha TEF como O.
+    for (const informe of ["informe-preliminar", "segregacao-lote"]) {
+      expect(coluna(informe, "cnpjRaizPspRecInd")["tef"], informe).toBe("NE");
+    }
+  });
+
+  it("numPgto nao existe na Baixa (linha removida na v1.1.0)", () => {
+    expect(Object.values(coluna("baixa", "numPgto"))).toEqual(["NE", "NE", "NE"]);
+  });
+
+  it("preliminar de Pix Dinamico com indPgtoIntegral e rejeitado por item", () => {
+    const erros = validarContraMatriz(carregarMatriz("informe-preliminar"), "pix-dinamico", {
+      dtHrMsg: "2026-10-22T10:00:00-03:00",
+      transacoes: [{ index: 1, indPgtoIntegral: "1" }],
+    });
+    expect(erros).toContainEqual({
+      campo: "indPgtoIntegral",
+      indice: 0,
+      motivo: "nao-existe-para-arranjo",
+    });
+  });
+});

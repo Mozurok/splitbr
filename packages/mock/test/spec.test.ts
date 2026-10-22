@@ -9,7 +9,7 @@ import { carregarSpec } from "../src/spec/load.js";
 import { paraRotaFastify } from "../src/spec/routes.js";
 
 const SPEC_EMBARCADO = fileURLToPath(
-  new URL("../data/spec/openapi-v1_1_0.json", import.meta.url),
+  new URL("../data/spec/openapi-v1_1_1.json", import.meta.url),
 );
 
 describe("trava de hash do spec (C2)", () => {
@@ -40,7 +40,7 @@ describe("trava de hash do spec (C2)", () => {
     );
     const row = manifest
       .split("\n")
-      .find((l) => l.includes("swagger/openapi-v1_1_0.json"));
+      .find((l) => l.includes("swagger/openapi-v1_1_1.json"));
     expect(row).toBeDefined();
     const pinado = row!.match(/\b([0-9a-f]{64})\b/)?.[1];
     expect(pinado).toBe(PINNED_SPEC_SHA256);

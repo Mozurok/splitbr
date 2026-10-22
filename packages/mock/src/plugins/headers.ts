@@ -49,7 +49,7 @@ export function headersPlugin(app: FastifyInstance, opcoes: OpcoesDeHeaders = {}
           status: 400,
           title: "Assinatura ausente",
           detail:
-            "Header 'X-JWS-Signature' ausente. O contrato v1.1.0 exige assinatura JWS Compact Detached em todas as operações (Manual de Integração v1.1.0, capítulo 8).",
+            "Header 'X-JWS-Signature' ausente. O contrato v1.1.1 exige assinatura JWS Compact Detached em todas as operações (Manual de Integração v1.1.1, capítulo 8).",
           extensions: { header: "X-JWS-Signature" },
         });
         done();
@@ -61,7 +61,7 @@ export function headersPlugin(app: FastifyInstance, opcoes: OpcoesDeHeaders = {}
         sendProblem(reply, {
           status: 400,
           title: "Assinatura malformada",
-          detail: `Header 'X-JWS-Signature' não está conforme o capítulo 8 do Manual de Integração v1.1.0: ${problemas.join("; ")}.`,
+          detail: `Header 'X-JWS-Signature' não está conforme o capítulo 8 do Manual de Integração v1.1.1: ${problemas.join("; ")}.`,
           extensions: { header: "X-JWS-Signature", problemas },
         });
         done();

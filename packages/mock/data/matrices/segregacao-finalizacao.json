@@ -1,6 +1,6 @@
 {
   "informe": "segregacao-finalizacao",
-  "fonte": "Manual de Integracao v1.0, secao 3.5.3 (passo 3; sem legenda M/O/NE, todos os campos presentes na tabela)",
+  "fonte": "Manual de Integracao v1.1.1, secao 3.6.3 (passo 3; sem legenda M/O/NE, todos os campos presentes na tabela)",
   "arranjos": ["boleto", "pix-automatico", "pix-dinamico", "pix-estatico", "ted", "tef"],
   "topo": {
     "cnpjRaizPspRecDir": ["M", "M", "M", "M", "M", "M"],

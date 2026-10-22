@@ -1,6 +1,6 @@
 {
   "informe": "baixa",
-  "fonte": "Manual de Integracao v1.0, secao 3.3.1",
+  "fonte": "Manual de Integracao v1.1.1, secao 3.4.1",
   "arranjos": ["boleto", "pix-automatico", "pix-dinamico"],
   "topo": {
     "dtHrMsg": ["M", "M", "M"]
@@ -9,9 +9,9 @@
     "index": ["M", "M", "M"],
     "idDda": ["M", "NE", "NE"],
     "numCtrlOrig": ["M", "NE", "NE"],
-    "numPgto": ["M", "NE", "NE"],
+    "numPgto": ["NE", "NE", "NE"],
     "txId": ["NE", "M", "M"],
-    "cnpjRaizPspRecInd": ["O", "O", "O"],
+    "cnpjRaizPspRecInd": ["NE", "O", "O"],
     "cnpjRaizPspRecDir": ["M", "M", "M"],
     "dtHrBaixa": ["M", "M", "M"]
   }

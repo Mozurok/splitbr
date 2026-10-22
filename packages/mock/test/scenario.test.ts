@@ -88,7 +88,7 @@ describe("motor de cenarios RSUP (C12)", () => {
       procedimento: "padrao",
     });
     const evento = res.json().publicado;
-    expect(evento.codMsg).toBe("RSUP102");
+    expect(evento.codMsg).toBe("RSUP103");
     expect(evento.txId).toBeUndefined();
     expect(evento.idDda).toBe("DDA1");
     expect(evento.numCtrlOrig).toBe("CTRL000001");
@@ -105,7 +105,7 @@ describe("motor de cenarios RSUP (C12)", () => {
       procedimento: "padrao",
     });
     const evento = res.json().publicado;
-    expect(evento.codMsg).toBe("RSUP103");
+    expect(evento.codMsg).toBe("RSUP102");
     // devido 4.50 - segregado 4.00 = 0.50 em aberto
     expect(evento.vlCbsAberto).toBe(0.5);
   });
@@ -132,8 +132,8 @@ describe("motor de cenarios RSUP (C12)", () => {
   });
 
   it("pix-dinamico e pix-automatico usam as faixas RSUP corretas", async () => {
-    expect(codigoRsup("pix-dinamico", "ibs-correcao")).toBe("RSUP202");
-    expect(codigoRsup("pix-automatico", "cbs-em-aberto")).toBe("RSUP603");
+    expect(codigoRsup("pix-dinamico", "ibs-correcao")).toBe("RSUP203");
+    expect(codigoRsup("pix-automatico", "cbs-em-aberto")).toBe("RSUP602");
     expect(() => codigoRsup("ted", "cbs-correcao")).toThrow(/nao possui codigos RSUP/);
   });
 
@@ -172,5 +172,23 @@ describe("motor de cenarios RSUP (C12)", () => {
       procedimento: "padrao",
     });
     expect(res.statusCode).toBe(422);
+  });
+});
+
+// Capitulo 6 do Manual de Integracao (v1.0 a v1.1.1, sem mudanca): a tabela
+// inteira, para o mapeamento nao voltar a depender de interpretacao.
+describe("codigos RSUP seguem a tabela oficial", () => {
+  it("os 12 codigos batem com o capitulo 6", () => {
+    const oficial: Array<[Parameters<typeof codigoRsup>[0], string]> = [
+      ["boleto", "RSUP10"],
+      ["pix-dinamico", "RSUP20"],
+      ["pix-automatico", "RSUP60"],
+    ];
+    for (const [arranjo, prefixo] of oficial) {
+      expect(codigoRsup(arranjo, "cbs-correcao")).toBe(`${prefixo}1`);
+      expect(codigoRsup(arranjo, "cbs-em-aberto")).toBe(`${prefixo}2`);
+      expect(codigoRsup(arranjo, "ibs-correcao")).toBe(`${prefixo}3`);
+      expect(codigoRsup(arranjo, "ibs-em-aberto")).toBe(`${prefixo}4`);
+    }
   });
 });

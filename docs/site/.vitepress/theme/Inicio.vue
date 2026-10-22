@@ -374,17 +374,24 @@ const mural = [
   width: clamp(124px, 13vw, 168px);
   aspect-ratio: 1;
   margin: 0;
+  transform: rotate(12deg);
+  /* Sombra rosa deslocada, como erro de registro de impressao. Fica no pai:
+     o clip-path do filho cortaria a sombra junto. */
+  filter: drop-shadow(5px 5px 0 var(--lb-rosa));
+}
+.selo span {
   display: grid;
   place-items: center;
-  background: var(--lb-azul);
-  color: #fff;
+  width: 100%;
+  height: 100%;
+  background: #000000;
+  color: var(--lb-amarelo);
   text-align: center;
   font-stretch: 70%;
   font-weight: 900;
   text-transform: uppercase;
   font-size: clamp(1rem, 1.5vw, 1.3rem);
   line-height: 0.92;
-  transform: rotate(12deg);
   /* Selo serrilhado, como as etiquetas de preco coladas por cima. */
   clip-path: polygon(50% 0%, 59% 9%, 71% 4%, 75% 16%, 88% 15%, 87% 28%, 98% 34%, 92% 45%, 100% 55%, 90% 63%, 94% 75%, 81% 78%, 79% 91%, 66% 89%, 58% 100%, 50% 92%, 42% 100%, 34% 89%, 21% 91%, 19% 78%, 6% 75%, 10% 63%, 0% 55%, 8% 45%, 2% 34%, 13% 28%, 12% 15%, 25% 16%, 29% 4%, 41% 9%);
 }
@@ -446,11 +453,20 @@ const mural = [
     grid-row: 3;
     margin-top: -10px;
   }
+  /* No celular o selo vai para o canto do cartaz branco, no fluxo da grade,
+     para nao sumir sobre o cartaz preto do npx. */
   .selo {
+    position: relative;
+    grid-column: 9 / -1;
+    grid-row: 2;
+    justify-self: end;
+    align-self: start;
     top: auto;
-    right: 1%;
-    bottom: -28px;
+    right: auto;
+    margin: -44px -6px 0 0;
     width: 104px;
+  }
+  .selo span {
     font-size: 0.9rem;
   }
   .muro-rodape {
@@ -506,10 +522,13 @@ const mural = [
   opacity: 0.8;
   line-height: 1.5;
 }
+/* Marca-texto: preto sobre amarelo nos dois temas. O palco do rasgo inverte
+   com o tema, entao uma cor de texto fixa (o amarelo de antes) sumia no claro. */
 .legenda-nota code {
-  background: none;
-  padding: 0;
-  color: var(--lb-amarelo);
+  background: var(--lb-amarelo);
+  color: #000000;
+  padding: 1px 5px;
+  border-radius: 0;
 }
 .boleto {
   display: flex;

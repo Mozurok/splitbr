@@ -154,6 +154,13 @@
   outline-color: var(--lb-amarelo);
 }
 
+/* Home: no escuro o cartaz preto do npx some no muro preto e ganha o mesmo
+   registro rosa do selo. Fica aqui e nao no <style scoped> do Inicio.vue: o
+   :global(.dark) do Vue compilava so ".dark" e aplicava a sombra na pagina. */
+.dark .cartaz-cmd {
+  box-shadow: 5px 5px 0 var(--lb-rosa);
+}
+
 .VPFooter .message a {
   color: var(--vp-c-brand-1);
   text-decoration: underline;

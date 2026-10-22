@@ -52,11 +52,11 @@ const brl = (centavos: number) => "R$ " + (centavos / 100).toLocaleString("pt-BR
             <span class="rotulo">Vendedor</span>
             <span class="valor">{{ brl(split.sobrouParaEmpresaCentavos) }}</span>
           </div>
-          <div class="no fisco">
+          <div class="no fisco cbs">
             <span class="rotulo">CBS → Receita Federal</span>
             <span class="valor">{{ brl(split.cbsCentavos) }}</span>
           </div>
-          <div class="no fisco">
+          <div class="no fisco ibs">
             <span class="rotulo">IBS → Comitê Gestor</span>
             <span class="valor">{{ brl(split.ibsCentavos) }}</span>
           </div>
@@ -81,29 +81,26 @@ const brl = (centavos: number) => "R$ " + (centavos / 100).toLocaleString("pt-BR
 }
 .painel {
   border: 1px solid var(--vp-c-divider);
-  border-radius: 14px;
+  border-radius: 0;
+  border-width: 2px;
   padding: 20px;
   background: var(--vp-c-bg-soft);
-  box-shadow: var(--site-shadow-card, 0 6px 20px -8px rgba(28, 25, 23, 0.14));
 }
 .painel.comsplit {
-  border-color: var(--vp-c-brand-2);
-  background: var(--vp-c-brand-soft);
+  border-color: var(--lb-tinta);
+  background: var(--vp-c-bg-elv);
 }
 .titulo {
-  font-weight: 700;
-  font-size: 0.85rem;
+  font-stretch: 62%;
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 1.6rem;
+  line-height: 0.9;
   color: var(--vp-c-text-2);
   margin: 0 0 14px;
 }
 .comsplit .titulo {
-  font-weight: 800;
-  background: linear-gradient(120deg, var(--vp-c-brand-1), #f43f5e);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--lb-tinta);
 }
 .cadeia {
   display: flex;
@@ -129,19 +126,28 @@ const brl = (centavos: number) => "R$ " + (centavos / 100).toLocaleString("pt-BR
   font-variant-numeric: tabular-nums;
 }
 .no.destaque {
-  border-color: var(--vp-c-brand-2);
-}
-.no.destaque .valor {
-  color: var(--vp-c-brand-1);
+  border-color: var(--lb-tinta);
 }
 .no.fisco {
   border-style: dashed;
+}
+.no.cbs {
+  box-shadow: inset 3px 0 0 var(--lb-azul);
+}
+.no.cbs .valor {
+  color: var(--lb-azul);
+}
+.no.ibs {
+  box-shadow: inset 3px 0 0 var(--lb-rosa);
+}
+.no.ibs .valor {
+  color: var(--lb-rosa);
 }
 .no.fraco {
   opacity: 0.75;
 }
 .seta {
-  color: var(--vp-c-brand-2);
+  color: var(--vp-c-text-3);
   font-weight: 700;
 }
 .ramos {
@@ -155,6 +161,6 @@ const brl = (centavos: number) => "R$ " + (centavos / 100).toLocaleString("pt-BR
   color: var(--vp-c-text-2);
 }
 .nota code {
-  color: var(--vp-c-brand-1);
+  color: var(--lb-tinta);
 }
 </style>

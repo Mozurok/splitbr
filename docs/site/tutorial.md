@@ -16,7 +16,7 @@ Você vai precisar de: um computador (macOS, Windows ou Linux), internet e 10 mi
 O cronograma do split payment ainda está sendo fechado: o piloto está previsto para o segundo semestre de 2026 e as datas de 2027 seguem em discussão. Não trate nenhuma data como definitiva; confira o [CGIBS](https://www.cgibs.gov.br/) e as [notícias da Receita Federal](https://www.gov.br/receitafederal/pt-br/assuntos/noticias). O splitbr é um projeto independente e não oficial, sem afiliação com a RFB, o Comitê Gestor do IBS, o Serpro ou a Núclea, e nada aqui é aconselhamento jurídico ou tributário. A base legal completa está em [Base legal](/base-legal).
 :::
 
-> Só quer ver o mecanismo sem instalar nada? A [demo interativa](/) roda no navegador.
+> Só quer ver o mecanismo sem instalar nada? A [demo interativa](/#simulador) roda no navegador.
 
 ## Passo 1: Abra o terminal
 

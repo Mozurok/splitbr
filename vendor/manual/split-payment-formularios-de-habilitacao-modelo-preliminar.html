@@ -1,0 +1,2396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formulários de Habilitação | Split Payment</title>
+<style>
+:root{
+  --roxo:#7500C0; --roxo-escuro:#5A0093; --lilas:#E7DAF4; --lilas-claro:#F7F3FB;
+  --campo:#DDEBFF; --campo-borda:#8FB8E8; --tinta:#2B2B2B; --tinta-fraca:#6B6B6B;
+  --erro:#B3261E; --erro-fundo:#FDECEA; --ok:#1E7A46; --linha:#D9D2E3; --apagado:#9A93A6;
+  --alerta:#8A5B00; --alerta-fundo:#FFF6E5;
+  --fonte:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --mono:"Cascadia Mono",Consolas,"SF Mono","Roboto Mono",monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--fonte);color:var(--tinta);background:#EFEBF4;font-size:15px;line-height:1.5}
+.folha{max-width:1240px;margin:0 auto;background:#fff;box-shadow:0 0 0 1px var(--linha);padding-bottom:70px}
+header.topo{background:var(--roxo);color:#fff;padding:18px 30px}
+header.topo h1{margin:0;font-size:20px;font-weight:600}
+header.topo p{margin:5px 0 0;font-size:13px;opacity:.9;max-width:92ch}
+/* ---------- barra de abas ---------- */
+nav.abas{display:flex;flex-wrap:wrap;gap:2px;background:var(--roxo-escuro);padding:0 12px}
+nav.abas button{border:none;border-radius:0;background:transparent;color:#E4D5F2;font:inherit;font-size:13px;
+  font-weight:600;padding:9px 12px 8px;cursor:pointer;border-bottom:3px solid transparent;text-align:left;
+  display:flex;flex-direction:column;gap:1px;min-width:96px}
+nav.abas button:hover{background:rgba(255,255,255,.09);color:#fff;filter:none}
+nav.abas button.ativa{background:#fff;color:var(--roxo-escuro);border-bottom-color:var(--roxo)}
+nav.abas button .n{font-size:15px;letter-spacing:.4px}
+nav.abas button .e{font-size:10.5px;font-weight:600;letter-spacing:.3px;opacity:.95}
+nav.abas button.ativa .e{opacity:1}
+nav.abas button .e.pend{color:#FF9E96}
+nav.abas button.ativa .e.pend{color:var(--erro)}
+nav.abas button .e.ok{color:#9BE3B8}
+nav.abas button.ativa .e.ok{color:var(--ok)}
+nav.abas button.na{opacity:.45}
+/* ---------- corpo ---------- */
+.corpo{display:grid;grid-template-columns:1fr 262px;align-items:start}
+main{padding:24px 30px;min-width:0}
+aside{position:sticky;top:0;padding:24px 22px 24px 0}
+.painel{border:1px solid var(--linha);border-radius:6px;overflow:hidden;background:var(--lilas-claro)}
+.painel h2{margin:0;background:var(--lilas);color:var(--roxo-escuro);font-size:11.5px;font-weight:700;
+  letter-spacing:.9px;text-transform:uppercase;padding:9px 13px}
+.painel ol{list-style:none;margin:0;padding:5px 0}
+.painel li{display:flex;justify-content:space-between;gap:8px;padding:5px 13px;font-size:12.5px;cursor:pointer}
+.painel li:hover{background:#fff}
+.painel li .n{color:var(--tinta-fraca);white-space:nowrap}
+.painel li.pend .n{color:var(--erro);font-weight:600}
+.painel li.ok .n{color:var(--ok)}
+.painel li.fora .n{color:var(--apagado)}
+.painel .rodape{border-top:1px solid var(--linha);padding:11px 13px;font-size:12.5px}
+.painel .rodape strong{display:block;font-size:21px;line-height:1.1;color:var(--roxo-escuro)}
+h2.titAba{margin:0 0 4px;font-size:19px;color:var(--roxo-escuro)}
+p.subAba{margin:0 0 18px;font-size:13.5px;color:var(--tinta-fraca);max-width:88ch}
+/* ---------- seções e campos ---------- */
+section.grupo.oculto{display:none}
+section.grupo{margin:0 0 20px;border:1px solid var(--linha);border-radius:6px;overflow:hidden}
+section.grupo>h3{margin:0;background:var(--lilas);color:var(--roxo-escuro);font-size:14px;font-weight:700;
+  padding:9px 15px;border-bottom:1px solid var(--linha);display:flex;justify-content:space-between;align-items:center}
+section.grupo>h3 .marca{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;background:#fff;color:var(--tinta-fraca);border:1px solid var(--linha)}
+section.grupo>h3 .marca.ok{color:var(--ok);border-color:#BFE0CB}
+section.grupo>h3 .marca.pend{color:var(--erro);border-color:#F0C4C0}
+.bloco{border-bottom:1px solid #EDE9F2}
+.bloco:last-child{border-bottom:none}
+.bloco.oculto{display:none}
+.bloco>h4{margin:0;padding:7px 15px;font-size:11.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;
+  color:var(--roxo-escuro);background:var(--lilas-claro);border-bottom:1px solid #EDE9F2}
+.campo{padding:12px 15px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:5px 24px;
+  align-items:start;border-bottom:1px solid #F3F0F7}
+.campo:last-child{border-bottom:none}
+.campo.oculto{display:none}
+.campo .rot{font-size:13.5px;font-weight:600;margin:0;grid-column:1}
+.campo .rot .ast{color:var(--erro);margin-left:2px}
+.campo .chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 6px;border-radius:3px;margin-left:7px;vertical-align:1px}
+.chip.obr{background:var(--lilas);color:var(--roxo-escuro)}
+.chip.opc{background:#EEE;color:var(--tinta-fraca)}
+.chip.inf{background:#E8F1E9;color:var(--ok)}
+.chip.aut{background:#EFE7F7;color:var(--roxo-escuro)}
+.campo .regra{grid-column:1;font-size:12px;color:var(--tinta-fraca);margin:0;max-width:60ch}
+.campo .entrada{grid-column:2;grid-row:1 / span 2}
+input,select,textarea{width:100%;font:inherit;font-size:14px;padding:7px 9px;border:1px solid var(--campo-borda);
+  border-radius:4px;background:var(--campo);color:var(--tinta)}
+textarea{min-height:70px;resize:vertical;line-height:1.45}
+input.mono{font-family:var(--mono);letter-spacing:.4px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--roxo);outline-offset:1px;background:#fff}
+input[readonly]{background:#F0EEF3;border-color:var(--linha);color:var(--tinta-fraca)}
+input.err,select.err,textarea.err{border-color:var(--erro);background:var(--erro-fundo)}
+.msg{font-size:12px;color:var(--erro);margin:5px 0 0;display:none}
+.msg.ver{display:block}
+.nota{margin:0;padding:10px 15px;font-size:12.5px;color:var(--tinta-fraca);background:#FBFAFC;
+  border-bottom:1px solid #EDE9F2}
+.gerais{border:1px solid var(--linha);border-left:3px solid var(--roxo);border-radius:4px;
+  background:var(--lilas-claro);padding:13px 15px;font-size:13px;color:var(--tinta-fraca);margin:0 0 20px}
+/* ---------- coerência ---------- */
+.coer{border-radius:5px;padding:13px 15px;margin:0 0 18px;font-size:13.5px;display:none}
+.coer.ver{display:block}
+.coer h4{margin:0 0 7px;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase}
+.coer ul{margin:0;padding-left:18px}
+.coer li{margin:3px 0;cursor:pointer}
+.coer li:hover{text-decoration:underline}
+.coer.impede{background:var(--erro-fundo);border:1px solid #F0C4C0;color:var(--erro)}
+.coer.alerta{background:var(--alerta-fundo);border:1px solid #F0DDB4;color:var(--alerta)}
+/* ---------- aba não aplicável ---------- */
+.na-aviso{border:1px solid var(--linha);border-radius:6px;background:var(--lilas-claro);padding:22px 24px}
+.na-aviso h3{margin:0 0 8px;font-size:16px;color:var(--roxo-escuro)}
+.na-aviso p{margin:0 0 12px;font-size:14px;color:var(--tinta-fraca);max-width:80ch}
+.na-aviso button{font-size:13.5px;padding:8px 14px}
+.emobra{border:1px dashed var(--linha);border-radius:6px;background:#FBFAFC;padding:22px 24px;
+  font-size:14px;color:var(--tinta-fraca)}
+.emobra strong{color:var(--roxo-escuro);display:block;margin-bottom:5px;font-size:15px}
+/* ---------- ações ---------- */
+.acoes{display:flex;flex-wrap:wrap;gap:9px;padding-top:4px}
+button{font:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:5px;cursor:pointer;
+  border:1px solid var(--roxo);background:#fff;color:var(--roxo-escuro)}
+button.principal{background:var(--roxo);color:#fff}
+button:hover{filter:brightness(1.06)}
+.aviso{margin:13px 0 0;padding:11px 13px;border-radius:5px;font-size:13px;display:none}
+.aviso.ver{display:block}
+.aviso.ruim{background:var(--erro-fundo);color:var(--erro);border:1px solid #F0C4C0}
+.aviso.bom{background:#E8F5EC;color:var(--ok);border:1px solid #BFE0CB}
+
+.resultado{border-radius:4px;padding:10px 12px;font-size:13.5px;border:1px solid var(--linha);
+  background:#F7F5FA;color:var(--tinta-fraca)}
+.resultado.direta{background:#EFE7F7;border-color:#CDB6E4;color:var(--roxo-escuro)}
+.resultado.indireta{background:#E8F1E9;border-color:#BFE0CB;color:var(--ok)}
+.resultado.fora{background:#F2F1F4;border-color:var(--linha);color:var(--tinta-fraca)}
+.resultado b{display:block;font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  margin-bottom:3px}
+.anexo{border:1.5px dashed var(--campo-borda);border-radius:5px;background:var(--campo);
+  padding:14px 12px;text-align:center;cursor:pointer;transition:background .12s,border-color .12s}
+.anexo:hover,.anexo.sobre{background:#fff;border-color:var(--roxo)}
+.anexo .conv{font-size:13px;color:var(--tinta-fraca)}
+.anexo .conv b{color:var(--roxo-escuro)}
+.anexo.cheio{border-style:solid;background:#fff;text-align:left;padding:10px 12px}
+.anexo .arq{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.anexo .arq .nome{font-size:13.5px;font-weight:600;word-break:break-all}
+.anexo .arq .meta{font-size:11.5px;color:var(--tinta-fraca);font-family:var(--mono);margin-top:3px}
+.anexo .arq button{padding:3px 9px;font-size:12px;border-color:var(--linha);color:var(--tinta-fraca);
+  flex-shrink:0}
+.anexo .arq button:hover{border-color:var(--erro);color:var(--erro)}
+.anexo.err{border-color:var(--erro);background:var(--erro-fundo)}
+.totalAnexos{font-size:12.5px;color:var(--tinta-fraca);padding:10px 15px;border-top:1px solid var(--linha);
+  background:var(--lilas-claro)}
+.totalAnexos b{color:var(--roxo-escuro)}
+/* ---------- capa ---------- */
+.capaIntro{font-size:14.5px;line-height:1.6;max-width:82ch;margin:0 0 4px}
+.capaIntro + .capaIntro{margin-top:14px}
+table.indice{width:100%;border-collapse:collapse;margin:20px 0 6px;font-size:13.5px}
+table.indice th{background:var(--lilas);color:var(--roxo-escuro);text-align:left;font-size:11.5px;
+  font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:9px 12px;
+  border-bottom:1px solid var(--linha)}
+table.indice td{padding:11px 12px;border-bottom:1px solid #EDE9F2;vertical-align:top}
+table.indice tr{cursor:pointer}
+table.indice tr:hover td{background:var(--lilas-claro)}
+table.indice tr.na{opacity:.55}
+table.indice tr.na:hover td{background:#FAFAFB}
+table.indice .num{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--roxo-escuro);
+  width:38px;white-space:nowrap}
+table.indice .nome{font-weight:600;width:23%}
+table.indice .marco{width:15%;color:var(--tinta-fraca);font-size:12.5px}
+table.indice .sit{width:16%;text-align:right;white-space:nowrap;font-size:12.5px}
+table.indice .sit .b{display:inline-block;padding:3px 9px;border-radius:3px;font-weight:700;
+  font-size:11px;letter-spacing:.4px;text-transform:uppercase;border:1px solid var(--linha);background:#fff;
+  color:var(--tinta-fraca)}
+table.indice .sit .b.ok{color:var(--ok);border-color:#BFE0CB}
+table.indice .sit .b.pend{color:var(--erro);border-color:#F0C4C0}
+table.indice .porque{font-size:12px;color:var(--tinta-fraca);margin:4px 0 0;font-style:italic}
+.comoUsar{border:1px solid var(--linha);border-left:3px solid var(--roxo);border-radius:4px;
+  background:var(--lilas-claro);padding:14px 16px;margin:22px 0 0}
+.comoUsar h3{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--roxo-escuro)}
+.comoUsar dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.comoUsar dt{font-weight:600;white-space:nowrap}
+.comoUsar dd{margin:0;color:var(--tinta-fraca)}
+/* ---------- listas repetíveis ---------- */
+.itemLista{border:1px solid var(--linha);border-radius:5px;margin:12px 15px;overflow:hidden}
+.itemLista>header{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:var(--lilas-claro);padding:7px 12px;border-bottom:1px solid var(--linha)}
+.itemLista>header .rotulo{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--roxo-escuro)}
+.itemLista>header .direita{display:flex;align-items:center;gap:9px}
+.itemLista>header .estado{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 7px;border-radius:3px;border:1px solid var(--linha);background:#fff;color:var(--tinta-fraca)}
+.itemLista>header .estado.ok{color:var(--ok);border-color:#BFE0CB}
+.itemLista>header .estado.pend{color:var(--erro);border-color:#F0C4C0}
+.itemLista>header button{padding:3px 9px;font-size:12px;border-color:var(--linha);color:var(--tinta-fraca)}
+.itemLista>header button:hover{border-color:var(--erro);color:var(--erro)}
+.itemLista .campo{padding:10px 12px}
+.itemLista .erroItem{margin:0;padding:8px 12px;font-size:12.5px;color:var(--erro);
+  background:var(--erro-fundo);border-top:1px solid #F0C4C0;display:none}
+.itemLista .erroItem.ver{display:block}
+.addLinha{margin:0 15px 14px}
+.vazio{margin:12px 15px;padding:16px;border:1px dashed var(--linha);border-radius:5px;
+  font-size:13px;color:var(--tinta-fraca);text-align:center}
+.escopo{border:1px solid var(--linha);border-left:3px solid var(--roxo);border-radius:4px;
+  background:#FBFAFC;padding:11px 14px;font-size:12.5px;color:var(--tinta-fraca);margin:0 0 16px}
+.escopo b{color:var(--roxo-escuro);font-weight:700}
+.escopo .link{color:var(--roxo);text-decoration:underline;cursor:pointer}
+@media (max-width:980px){
+  .corpo{grid-template-columns:1fr}
+  aside{position:static;padding:0 22px 18px}
+  .campo{grid-template-columns:1fr}
+  .campo .entrada{grid-column:1;grid-row:auto}
+}
+@media print{body{background:#fff} nav.abas,aside,.acoes{display:none} .folha{box-shadow:none;max-width:none}
+  section.grupo{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="folha">
+<header class="topo">
+  <h1>Formulários de Habilitação &middot; Split Payment</h1>
+  <p>Os formulários compartilham o mesmo preenchimento. O que é declarado em uma aba determina o que as
+     demais pedem. Salve o preenchimento para retomá-lo nas datas de cada marco.</p>
+</header>
+
+<nav class="abas" id="abas"></nav>
+
+<div class="corpo">
+<main>
+  <h2 class="titAba" id="titAba"></h2>
+  <p class="subAba" id="subAba"></p>
+  <div class="escopo" id="escopo" style="display:none"></div>
+  <div class="coer impede" id="coerImpede"></div>
+  <div class="coer alerta" id="coerAlerta"></div>
+  <form id="f" novalidate></form>
+  <div class="gerais" id="gerais"></div>
+  <div class="acoes" id="acoes"></div>
+  <div class="aviso" id="aviso"></div>
+</main>
+<aside>
+  <div class="painel">
+    <h2 id="tituloPainel">Preenchimento</h2>
+    <ol id="resumo"></ol>
+    <div class="rodape"><strong id="pct">0%</strong><span id="falta">campos a preencher</span></div>
+  </div>
+</aside>
+</div>
+</div>
+
+<script>
+"use strict";
+
+/* ==================================================================
+   1. Validadores comuns a todos os formulários
+   ================================================================== */
+const soAlnum = s => (s||"").toUpperCase().replace(/[^0-9A-Z]/g,"");
+/* Um campo de lista pode declarar opções fixas ou uma função do estado. */
+const opcoesDe = c => typeof c.opcoes === "function" ? c.opcoes(ESTADO) : (c.opcoes || []);
+
+function cnpjValido(s){
+  const v = soAlnum(s);
+  if(v.length!==14 || !/^[0-9A-Z]{12}[0-9]{2}$/.test(v) || /^(.)\1{13}$/.test(v)) return false;
+  const dv = pos => {
+    let soma=0, peso=2;
+    for(let i=pos-1;i>=0;i--){ soma += (v.charCodeAt(i)-48)*peso; peso = peso===9 ? 2 : peso+1; }
+    const r = soma%11; return r<2 ? 0 : 11-r;
+  };
+  return dv(12)===Number(v[12]) && dv(13)===Number(v[13]);
+}
+function cpfValido(s){
+  const v=(s||"").replace(/\D/g,"");
+  if(v.length!==11 || /^(\d)\1{10}$/.test(v)) return false;
+  const dv = pos => { let soma=0; for(let i=0;i<pos;i++) soma += Number(v[i])*(pos+1-i);
+    const r=(soma*10)%11; return r===10 ? 0 : r; };
+  return dv(9)===Number(v[9]) && dv(10)===Number(v[10]);
+}
+const emailValido = s => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((s||"").trim());
+const telValido   = s => (s||"").replace(/\D/g,"").length>=10;
+
+function erroPadrao(c, valor){
+  const v=(valor||"").trim();
+  if(!v) return c.obr==="obr" ? "Campo obrigatório." : "";
+  switch(c.tipo){
+    case "cnpj":  return cnpjValido(v) ? "" : "CNPJ inválido. Informe 14 caracteres, sem pontuação.";
+    case "cpf":   return cpfValido(v)  ? "" : "CPF inválido. Informe 11 dígitos, sem pontuação.";
+    case "raiz":  return soAlnum(v).length===8 ? "" : "Informe oito caracteres, sem pontuação.";
+    case "email": return emailValido(v)? "" : "Informe um endereço eletrônico válido.";
+    case "telefone": return telValido(v) ? "" : "Informe DDD e número, com ao menos 10 dígitos.";
+    case "data":  return /^\d{4}-\d{2}-\d{2}$/.test(v) ? "" : "Informe uma data válida.";
+    case "lista": return opcoesDe(c).includes(v) ? "" : "Selecione uma das opções da lista.";
+    case "texto-longo": return v.length>=20 ? "" : "Descreva em ao menos 20 caracteres.";
+    default: return "";
+  }
+}
+
+/* ==================================================================
+   2. Formulário 01
+   ================================================================== */
+const FAIXA_CONTAS = ["Nenhuma conta de cliente Pessoa Jurídica","Até 100","101 a 1.000","1.001 a 10.000","10.001 a 100.000","Mais de 100.000"];
+const FAIXA_VOLUME = ["Nenhuma transação recebida","Até 1 mil","1.001 a 10 mil","10.001 a 100 mil","100.001 a 1 milhão","Mais de 1 milhão"];
+
+const F01 = {
+  sub:"Identificação da instituição, dos seus responsáveis e das atribuições que pretende assumir.",
+  gerais:"Regras gerais: o Responsável Técnico 1 é obrigatório. O Responsável Técnico 2 é opcional, mas "+
+    "seu bloco deve ser preenchido integralmente quando utilizado. Prestar serviço a outros PSPs é "+
+    "atribuição do mesmo cadastro, sujeita aos critérios do Capítulo 3 do Manual de Habilitação. "+
+    "As faixas de volumetria são declaratórias e servem ao dimensionamento pela Plataforma Pública.",
+  grupos:[
+    {id:"g1", titulo:"1. Identificação da instituição", campos:[
+      {id:"cnpj", rot:"CNPJ da instituição", obr:"obr", tipo:"cnpj", mono:true,
+       regra:"Informar 14 caracteres, sem pontuação. O campo aceita o padrão vigente do CNPJ."},
+      {id:"raiz", rot:"Raiz do CNPJ da instituição", obr:"aut", tipo:"derivado", mono:true,
+       regra:"Gerada a partir do CNPJ informado."},
+      {id:"razao", rot:"Razão social da instituição", obr:"obr", tipo:"texto",
+       regra:"Informar a razão social completa da instituição."}
+    ]},
+    {id:"g2", titulo:"2. Representante legal", campos:[
+      {id:"repNome", rot:"Nome completo do representante legal", obr:"obr", tipo:"texto",
+       regra:"Informar o nome completo do representante legal."},
+      {id:"repCpf", rot:"CPF do representante legal", obr:"obr", tipo:"cpf", mono:true,
+       regra:"Informar 11 dígitos, sem pontuação."}
+    ]},
+    {id:"g3", titulo:"3. Responsável técnico 1", campos:[
+      {id:"rt1Nome", rot:"Nome completo", obr:"obr", tipo:"texto", regra:"Responsável técnico principal."},
+      {id:"rt1Email", rot:"E-mail", obr:"obr", tipo:"email", regra:"Endereço eletrônico em formato válido."},
+      {id:"rt1Tel", rot:"Telefone", obr:"obr", tipo:"telefone", regra:"Informar DDD e número."},
+      {id:"rt1Cargo", rot:"Cargo", obr:"obr", tipo:"texto", regra:"Cargo ou função exercida na instituição."}
+    ]},
+    {id:"g4", titulo:"4. Responsável técnico 2", campos:[
+      {id:"rt2Nome", rot:"Nome completo", obr:"grupo", grupo:"rt2", tipo:"texto",
+       regra:"Preencher somente se houver segundo responsável técnico. Iniciado o bloco, os quatro campos passam a ser obrigatórios."},
+      {id:"rt2Email", rot:"E-mail", obr:"grupo", grupo:"rt2", tipo:"email", regra:"Endereço eletrônico em formato válido."},
+      {id:"rt2Tel", rot:"Telefone", obr:"grupo", grupo:"rt2", tipo:"telefone", regra:"Informar DDD e número."},
+      {id:"rt2Cargo", rot:"Cargo", obr:"grupo", grupo:"rt2", tipo:"texto", regra:"Cargo ou função exercida na instituição."}
+    ]},
+    {id:"g5", titulo:"5. Volumetria estimada", campos:[
+      {id:"qtdContas", rot:"Quantidade de contas de clientes Pessoa Jurídica", obr:"inf", tipo:"lista",
+       opcoes:FAIXA_CONTAS, regra:"Selecionar a faixa. A primeira opção vale para quem não mantém contas de clientes Pessoa Jurídica."},
+      {id:"volume", rot:"Volume mensal estimado de transações recebidas por clientes Pessoa Jurídica",
+       obr:"inf", tipo:"lista", opcoes:FAIXA_VOLUME,
+       regra:"Estimativa para dimensionamento, sem constituir compromisso. A primeira opção vale para quem não recebe transações de clientes Pessoa Jurídica."},
+      {id:"dataRef", rot:"Data de referência das informações de volumetria", obr:"inf", tipo:"data",
+       regra:"Informar a data a que se referem as faixas declaradas."}
+    ]},
+    {id:"g6", titulo:"6. Prestação de serviço a outros PSPs", campos:[
+      {id:"prestConexao", rot:"A instituição transmitirá informes ou acionará o MOC em nome de outros PSPs?",
+       obr:"obr", tipo:"lista", opcoes:["Sim","Não"],
+       regra:"É uma atribuição a mais do mesmo cadastro, não um processo separado. Responder Sim abre a aba do Formulário 03, onde se relacionam os PSPs atendidos."},
+      {id:"prestRepasse", rot:"A instituição realizará o Repasse Financeiro do CBS e do IBS em nome de outros PSPs?",
+       obr:"obr", tipo:"lista", opcoes:["Sim","Não"],
+       regra:"É uma atribuição a mais do mesmo cadastro, não um processo separado. Responder Sim abre a aba do Formulário 04, onde se relacionam os PSPs atendidos."}
+    ]},
+    {id:"g7", titulo:"7. Participação na Produção Assistida Escalonada", campos:[
+      {id:"interesseM1", rot:"A instituição manifesta interesse em participar do Momento 1 da PAE, sujeito à seleção?",
+       obr:"obr", tipo:"lista", opcoes:["Sim","Não"],
+       regra:"A participação é limitada a até 20 PSPs, selecionados pela Plataforma Pública em conjunto com a FIN."},
+      {id:"arranjoM1", rot:"Arranjo pelo qual pretende participar do Momento 1", obr:"obr", tipo:"lista",
+       opcoes:["TEF (Book Transfer)","Pix Estático Intrabancário"], quando:v=>v.interesseM1==="Sim",
+       regra:"No Momento 1 a participação é direta, sem Prestador de Serviço de Conexão ou de Repasse Financeiro."}
+    ]}
+  ],
+  exemplo:{cnpj:"12345678000195", razao:"Instituição de Pagamento Exemplo S.A.",
+    repNome:"Nome Exemplo", repCpf:"12345678909", rt1Nome:"Nome Exemplo",
+    rt1Email:"nome.sobrenome@exemplo.com.br", rt1Tel:"(11) 3000-1000", rt1Cargo:"Gerente de Exemplo",
+    rt2Nome:"Nome Exemplo 2", rt2Email:"nome.sobrenome2@exemplo.com.br", rt2Tel:"(11) 3000-1001",
+    rt2Cargo:"Coordenador de Exemplo", qtdContas:"10.001 a 100.000", volume:"100.001 a 1 milhão",
+    dataRef:"2027-03-31", prestConexao:"Sim", prestRepasse:"Não",
+    interesseM1:"Sim", arranjoM1:"TEF (Book Transfer)"}
+};
+
+/* ==================================================================
+   3. Formulário 02
+   ================================================================== */
+const ARRANJOS = [
+  {id:"bol", nome:"Boleto",            informes:false, indireta:true},
+  {id:"pxd", nome:"Pix Dinâmico",      informes:true,  indireta:true},
+  {id:"pxa", nome:"Pix Automático",    informes:true,  indireta:true},
+  {id:"pxe", nome:"Pix Estático",      informes:true,  indireta:true},
+  {id:"ted", nome:"TED",               informes:true,  indireta:false},
+  {id:"tef", nome:"TEF (Book Transfer)", informes:true, indireta:false}
+];
+const PISTA = {
+  bol:"Participam do Boleto os clientes da Plataforma Centralizadora de Recebíveis (PCR).",
+  pxd:"Participam do Pix as instituições da relação publicada pelo Banco Central, diretas ou indiretas.",
+  pxa:"Participam do Pix as instituições da relação publicada pelo Banco Central, diretas ou indiretas.",
+  pxe:"Participam do Pix as instituições da relação publicada pelo Banco Central, diretas ou indiretas.",
+  ted:"Participam do TED as instituições que operam a Liquidação Interbancária pelo STR e possuem Número-Código. No TED não há participação indireta.",
+  tef:"O TEF alcança toda instituição autorizada a funcionar, por ser transação intrabancária."
+};
+
+/* Cada arranjo tem uma triagem factual. A situação é apurada das respostas:
+   participação direta, indireta, ou fora do arranjo. */
+const IND_EXEMPLO = "Exemplo: transações em que a própria instituição, ou o seu cliente, figura como "+
+  "beneficiário, ainda que a operação seja cursada por outra instituição contratada para isso.";
+
+const TRIAGEM = {
+  bol:{
+    perguntas:[
+      {id:"bolPcr", rot:"A instituição é cliente da Plataforma Centralizadora de Recebíveis (PCR)?",
+       opcoes:["Sim","Não"],
+       regra:"A relação de clientes da PCR é publicada pela Núclea. Ser cliente caracteriza a "+
+             "participação direta no arranjo Boleto."},
+      {id:"bolInd", rot:"A instituição, ou os seus clientes, conseguem emitir ou pagar boletos por meio de outra instituição?",
+       opcoes:["Sim","Não"], quando:v=>v.bolPcr==="Não",
+       regra:"Exemplo: boletos em que a própria instituição figura como beneficiária, emitidos por um "+
+             "cliente da PCR contratado para isso."}
+    ],
+    deriva:v => v.bolPcr==="Sim" ? "Direta"
+      : v.bolPcr!=="Não" ? ""
+      : v.bolInd==="Sim" ? "Indireta" : v.bolInd==="Não" ? "Fora" : ""
+  },
+  ted:{
+    perguntas:[
+      {id:"tedStr", rot:"A instituição é participante do Sistema de Transferência de Reservas (STR)?",
+       opcoes:["Sim","Não"],
+       regra:"A relação de participantes do STR é publicada pelo Banco Central."},
+      {id:"tedComp", rot:"A instituição possui Número-Código?", opcoes:["Sim","Não"],
+       quando:v=>v.tedStr==="Sim",
+       regra:"É o identificador de três dígitos da instituição, antes chamado de código COMPE, atribuído a "+
+             "quem participa da Compensação Bancária. As câmaras de compensação participam do STR "+
+             "mas não possuem Número-Código, e por isso não são participantes diretas do arranjo TED."},
+    ],
+    /* No TED não há participação indireta: a Liquidação Interbancária é cursada
+       pelo próprio participante do STR. A apuração encerra em direta ou fora. */
+    deriva:v => (v.tedStr==="Sim" && v.tedComp==="Sim") ? "Direta"
+      : (v.tedStr==="Não" || v.tedComp==="Não") ? "Fora" : ""
+  },
+  tef:{
+    perguntas:[
+      {id:"tefBook", rot:"A instituição consegue transferir recursos entre contas dos seus próprios clientes?",
+       opcoes:["Sim","Não"],
+       regra:"É a transferência intrabancária, em que pagador e recebedor mantêm conta na mesma "+
+             "instituição. Não há participação indireta neste arranjo, por envolver um único PSP."}
+    ],
+    deriva:v => v.tefBook==="Sim" ? "Direta" : v.tefBook==="Não" ? "Fora" : ""
+  }
+};
+for(const id of ["pxd","pxe"]){
+  const nome = {pxd:"Pix Dinâmico", pxa:"Pix Automático", pxe:"Pix Estático"}[id];
+  TRIAGEM[id] = {
+    perguntas:[
+      {id:id+"Rel", rot:"Como a instituição consta da relação de participantes do Pix?",
+       opcoes:["Consta como participante direto","Consta como participante indireto","Não consta da relação"],
+       regra:"A relação é publicada e atualizada periodicamente pelo Banco Central e distingue os "+
+             "participantes diretos dos indiretos."},
+      {id:id+"Ind", rot:`A instituição, ou os seus clientes, conseguem receber transações de ${nome} em que figurem como beneficiários?`,
+       opcoes:["Sim","Não"], quando:v=>v[id+"Rel"]==="Não consta da relação",
+       regra:IND_EXEMPLO}
+    ],
+    deriva:v => v[id+"Rel"]==="Consta como participante direto" ? "Direta"
+      : v[id+"Rel"]==="Consta como participante indireto" ? "Indireta"
+      : v[id+"Rel"]!=="Não consta da relação" ? ""
+      : v[id+"Ind"]==="Sim" ? "Indireta" : v[id+"Ind"]==="Não" ? "Fora" : ""
+  };
+}
+
+
+/* O Pix Automático tem cadeia própria: constar como participante direto do Pix
+   não basta, é preciso a sinalização de oferta de recebimento. Quem não recebe
+   mas consegue pagar participa apenas do lado do Pagador. */
+const DIRETO_REL = "Consta como participante direto";
+const INDIRETO_REL = "Consta como participante indireto";
+const FORA_REL = "Não consta da relação";
+TRIAGEM.pxa = {
+  perguntas:[
+    {id:"pxaRel", rot:"Como a instituição consta da relação de participantes do Pix?",
+     opcoes:[DIRETO_REL, INDIRETO_REL, FORA_REL],
+     regra:"A relação é publicada pelo Banco Central e distingue os participantes diretos dos indiretos."},
+    {id:"pxaSinal", rot:"A instituição está sinalizada como “oferta recebimento de Pix Automático”?",
+     opcoes:["Sim","Não"], quando:v=>v.pxaRel===DIRETO_REL,
+     regra:"A sinalização consta da consulta de instituições do Banco Central. No Pix Automático, "+
+           "constar como participante direto do Pix não basta: é a sinalização que caracteriza a "+
+           "participação direta neste arranjo."},
+    {id:"pxaRec", rot:"A instituição, os seus clientes, ou os PSPs Recebedores Indiretos que ela atende conseguem receber transações de Pix Automático?",
+     opcoes:["Sim","Não"],
+     quando:v=>(v.pxaRel===DIRETO_REL && v.pxaSinal==="Não") || v.pxaRel===FORA_REL,
+     regra:"Alcança o recebimento por qualquer via, inclusive o de PSP Recebedor Indireto atendido pela "+
+           "instituição. Respondendo Sim sem a sinalização acima, convém rever a sinalização junto ao "+
+           "Banco Central."},
+    {id:"pxaPag", rot:"A instituição, ou os seus clientes, conseguem realizar pagamentos por Pix Automático?",
+     opcoes:["Sim","Não"], quando:v=>v.pxaRec==="Não",
+     regra:"A oferta de pagamento por Pix Automático é obrigatória a todo participante do Pix que "+
+           "oferte conta transacional. Conseguindo pagar, a instituição participa do arranjo no lado do "+
+           "Pagador, ainda que não possa receber."}
+  ],
+  deriva:v=>{
+    if(v.pxaRel===INDIRETO_REL) return "Indireta";
+    const base = v.pxaRel===DIRETO_REL ? "Direta" : v.pxaRel===FORA_REL ? "Indireta" : "";
+    if(!base) return "";
+    if(v.pxaRel===DIRETO_REL && v.pxaSinal==="Sim") return "Direta";
+    if(v.pxaRel===DIRETO_REL && v.pxaSinal!=="Não") return "";
+    if(v.pxaRec==="Sim") return base;
+    if(v.pxaRec!=="Não") return "";
+    return v.pxaPag==="Sim" ? "DiretaPagador" : v.pxaPag==="Não" ? "Fora" : "";
+  }
+};
+
+const situacaoDe = (E,a) => TRIAGEM[a.id].deriva(E.f02 || {});
+const RESUMO_SIT = {
+  Direta:{ titulo:"Participação direta",
+    texto:"A instituição se comunica com a Plataforma Pública, executa o Repasse Financeiro e adequa a "+
+          "experiência do usuário neste arranjo. Declare abaixo os caminhos de cada finalidade." },
+  Indireta:{ titulo:"Participação indireta",
+    texto:"A instituição opera por meio de outro PSP, que se comunica com a Plataforma Pública e "+
+          "executa o Repasse por ela. Resta adequar a experiência do usuário, no Formulário 06." },
+  DiretaPagador:{ titulo:"Participação direta, apenas no lado do Pagador",
+    texto:"A instituição participa diretamente do arranjo, mas não recebe transações nele. Aplica-se "+
+          "apenas a adequação da experiência do usuário no lado do Pagador, no Formulário 06. Não há "+
+          "informes, acionamento do MOC nem Repasse Financeiro neste arranjo." },
+  Fora:{ titulo:"Fora do arranjo",
+    texto:"Nada é exigido neste arranjo além desta declaração. Se a instituição passar a emitir, pagar "+
+          "ou receber transações neste arranjo, ainda que por meio de outra instituição, será preciso "+
+          "rever esta resposta e adequar a experiência do usuário." }
+};
+const CAMINHO = ["Diretamente pelo PSP Recebedor Direto","Por Prestador de Serviço de Conexão"];
+const CAM_REP = ["Diretamente pelo PSP Recebedor Direto","Por Prestador de Serviço de Repasse Financeiro"];
+
+function camposPrestador(pre, rotulo, quando){
+  return [
+    {id:pre+"Raiz", rot:"Raiz do CNPJ do "+rotulo, obr:"obr", tipo:"raiz", mono:true, quando,
+     regra:"Informar oito caracteres, sem pontuação."},
+    {id:pre+"Razao", rot:"Razão social do "+rotulo, obr:"obr", tipo:"texto", quando,
+     regra:"Razão social completa do prestador contratado."},
+    {id:pre+"Ini", rot:"Início pretendido da vigência", obr:"opc", tipo:"data", quando,
+     regra:"Opcional. Não informada, vale a primeira data definida pela Plataforma Pública após a aprovação."},
+    {id:pre+"Fim", rot:"Término pretendido da vigência", obr:"opc", tipo:"data", quando,
+     regra:"Opcional. Não informado, o vínculo é por prazo indeterminado."}
+  ];
+}
+
+function gruposF02(){
+  return ARRANJOS.map(a=>{
+    const p=a.id;
+    const direta = v => TRIAGEM[p].deriva(v)==="Direta";
+    const blocos = [
+      {id:p+"_sit", titulo:"Situação neste arranjo", campos:[
+        ...TRIAGEM[p].perguntas.map(q=>({id:q.id, rot:q.rot, obr:"obr", tipo:"lista",
+          opcoes:q.opcoes, quando:q.quando, regra:q.regra})),
+        {id:p+"Sit", rot:"Situação apurada", obr:"aut", tipo:"resultado",
+         resultado:v=>TRIAGEM[p].deriva(v),
+         regra:"Apurada a partir das respostas acima. Determina o que os demais formulários pedem."},
+      ]}
+    ];
+    if(a.informes){
+      blocos.push({id:p+"_inf", titulo:"Envio dos informes", quando:direta, campos:[
+        {id:p+"InfCaminho", rot:"Como serão enviados os informes das transações neste arranjo?", obr:"obr",
+         tipo:"lista", opcoes:CAMINHO, quando:direta,
+         regra:"O caminho dos informes é independente do caminho do Mecanismo de Ocorrências."},
+        ...camposPrestador(p+"Inf","prestador de informes",
+          v=>direta(v) && v[p+"InfCaminho"]==="Por Prestador de Serviço de Conexão")
+      ]});
+    } else {
+      blocos.push({id:p+"_inf", titulo:"Envio dos informes", quando:direta, campos:[], nota:
+        "Neste arranjo os informes são cumpridos pela Núclea para todas as instituições. Não há caminho a "+
+        "declarar nem Prestador de Serviço de Conexão a contratar para essa finalidade. O acionamento "+
+        "do Mecanismo de Ocorrências das transações de Boleto permanece com o participante e segue o "+
+        "caminho único declarado ao fim desta aba."});
+    }
+    blocos.push({id:p+"_rep", titulo:"Repasse Financeiro", quando:direta, campos:[
+      {id:p+"RepCaminho", rot:"Como será feito o Repasse Financeiro do CBS e do IBS à RFB e ao CGIBS?",
+       obr:"obr", tipo:"lista", opcoes:CAM_REP, quando:direta,
+       regra:"A responsabilidade pelo Repasse permanece com o PSP Recebedor Direto, ainda que contrate prestador."},
+      ...camposPrestador(p+"Rep","prestador de Repasse Financeiro",
+        v=>direta(v) && v[p+"RepCaminho"]==="Por Prestador de Serviço de Repasse Financeiro")
+    ]});
+    return {id:p, titulo:a.nome, blocos};
+  });
+}
+
+
+/* O MOC tem caminho único por participante: as ocorrências de todos os arranjos
+   trafegam pelo mesmo canal e o retorno da PP não é segregado por arranjo. As
+   opções derivam dos caminhos já declarados para os informes. */
+const PREST_MOC = "Por Prestador de Serviço de Conexão contratado para o MOC";
+function prestadoresInformes(E){
+  const out = [];
+  for(const a of ARRANJOS){
+    if(!ehDireta(E,a) || !a.informes) continue;
+    if(E.f02[a.id+"InfCaminho"]!=="Por Prestador de Serviço de Conexão") continue;
+    const raiz = E.f02[a.id+"InfRaiz"];
+    if(raiz && !out.some(p=>p.raiz===raiz))
+      out.push({raiz, razao:E.f02[a.id+"InfRazao"]||""});
+  }
+  return out;
+}
+const rotuloPrest = p => `Pelo prestador ${p.raiz}${p.razao ? " — "+p.razao : ""}`;
+function opcoesMoc(E){
+  const o = [DIRETO];
+  for(const p of prestadoresInformes(E)) o.push(rotuloPrest(p));
+  if(!prestadoresInformes(E).length) o.push(PREST_MOC);
+  return o;
+}
+const grupoMoc = () => ({
+  id:"moc", titulo:"Acionamento do Mecanismo de Ocorrências",
+  quando: E => ARRANJOS.some(a=>ehDireta(E,a)),
+  campos:[
+    {id:"mocCaminho", rot:"Por qual caminho a instituição acionará o Mecanismo de Ocorrências?",
+     obr:"obr", tipo:"lista", opcoes: E => opcoesMoc(E),
+     regra:"O MOC alcança os seis arranjos por um único caminho, porque o retorno da Plataforma "+
+           "Pública não é segregado por arranjo. As opções abaixo são os caminhos que a instituição "+
+           "declarou para os informes. No Boleto, cujos informes são da Núclea, as ocorrências seguem "+
+           "por este mesmo caminho."},
+    ...camposPrestador("moc", "prestador do MOC", v => v.mocCaminho===PREST_MOC)
+  ]
+});
+
+const F02 = {
+  sub:"Responda à triagem de cada um dos seis arranjos. A situação da instituição é apurada das "+
+      "respostas, e determina o que os demais formulários pedem.",
+  gerais:"Regras gerais: na participação indireta não há comunicação com a Plataforma Pública nem "+
+    "Repasse Financeiro a declarar. O envio dos informes e o acionamento do Mecanismo de Ocorrências são "+
+    "declarados separadamente e podem seguir caminhos distintos no mesmo arranjo. Para cada arranjo, a "+
+    "instituição pode contratar até um prestador para cada uma das três finalidades.",
+  grupos: [...gruposF02(), grupoMoc(), {
+    id:"dispensas", tipo:"lista", titulo:"Situações excepcionais", rotuloItem:"Pedido de dispensa",
+    minimo:0,
+    vazio:"A regra é implementar o Split Payment em todos os arranjos em que a instituição participa. "+
+          "A dispensa é medida excepcional, analisada caso a caso pela Plataforma Pública, e não "+
+          "altera as declarações feitas acima. Nenhum pedido foi registrado.",
+    disponivel: E => ARRANJOS.some(a=>ehDireta(E,a)),
+    indisponivel:"A regra é implementar o Split Payment em todos os arranjos em que a instituição "+
+      "participa. Esta seção só se abre quando a triagem apurar participação direta em algum arranjo.",
+    campos: E => [
+      {id:"arranjo", rot:"Arranjo a que se refere o pedido", obr:"obr", tipo:"lista",
+       opcoes: ARRANJOS.filter(a=>ehDireta(E,a)).map(a=>a.nome),
+       regra:"Somente arranjos em que a triagem apurou participação direta."},
+      {id:"justif", rot:"Circunstância que fundamenta o pedido", obr:"obr", tipo:"texto-longo",
+       regra:"Descrever de forma objetiva. O pedido não suspende as obrigações enquanto não for apreciado."}
+    ],
+    validaItem:(it,E)=>{
+      const lst = (E.f02.dispensas)||[];
+      if(it.arranjo && lst.filter(x=>x.arranjo===it.arranjo).length>1)
+        return "Há mais de um pedido para o mesmo arranjo. Reúna-os em um único registro.";
+      return "";
+    },
+    exemplo: E => []
+  }],
+  exemplo:{
+    /* Boleto: cliente da PCR, portanto direto */
+    bolPcr:"Sim",
+    bolRepCaminho:"Diretamente pelo PSP Recebedor Direto",
+    /* Pix Dinâmico: direto na relação, com prestador para informes e MOC */
+    pxdRel:"Consta como participante direto",
+    pxdInfCaminho:"Por Prestador de Serviço de Conexão", pxdInfRaiz:"23456789",
+    pxdInfRazao:"Banco Exemplo Alfa S.A.", pxdInfIni:"2027-03-01",
+    pxdRepCaminho:"Diretamente pelo PSP Recebedor Direto",
+    /* Pix Automático: direto e sinalizado para receber */
+    pxaRel:"Consta como participante direto", pxaSinal:"Sim",
+    pxaInfCaminho:"Diretamente pelo PSP Recebedor Direto",
+    pxaRepCaminho:"Diretamente pelo PSP Recebedor Direto",
+    /* Pix Estático: direto, com prestador de Repasse */
+    pxeRel:"Consta como participante direto",
+    pxeInfCaminho:"Diretamente pelo PSP Recebedor Direto",
+    pxeRepCaminho:"Por Prestador de Serviço de Repasse Financeiro", pxeRepRaiz:"34567890",
+    pxeRepRazao:"Banco Exemplo Beta S.A.", pxeRepIni:"2027-03-01",
+    /* TED: participante do STR com Número-Código, portanto direto */
+    tedStr:"Sim", tedComp:"Sim",
+    tedInfCaminho:"Diretamente pelo PSP Recebedor Direto",
+    tedRepCaminho:"Diretamente pelo PSP Recebedor Direto",
+    /* TEF: transfere entre contas próprias, portanto direto */
+    tefBook:"Sim",
+    tefInfCaminho:"Diretamente pelo PSP Recebedor Direto",
+    /* MOC: caminho único. Direto, porque o exemplo manifesta interesse no
+       Momento 1, que não admite prestador no arranjo escolhido. */
+    mocCaminho:"Diretamente pelo PSP Recebedor Direto",
+    tefRepCaminho:"Diretamente pelo PSP Recebedor Direto"
+  }
+};
+
+
+/* ==================================================================
+   3b. Escopo derivado do Formulário 02
+   ================================================================== */
+const DIRETO = "Diretamente pelo PSP Recebedor Direto";
+const ehDireta   = (E,a) => situacaoDe(E,a)==="Direta";
+const participa  = (E,a) => ["Direta","Indireta","DiretaPagador"].includes(situacaoDe(E,a));
+const podeInformes = (E,a) => ehDireta(E,a) && a.informes && E.f02[a.id+"InfCaminho"]===DIRETO;
+const mocProprio   = E => E.f02.mocCaminho===DIRETO;
+const podeRepasse  = (E,a) => ehDireta(E,a) && E.f02[a.id+"RepCaminho"]===DIRETO;
+
+const OPC_CONEXAO = ["Não presta neste arranjo","Presta o serviço de conexão"];
+const arranjosConexao = E => ARRANJOS.filter(a=>podeInformes(E,a));
+const arranjosRepasse = E => ARRANJOS.filter(a=>podeRepasse(E,a));
+const arranjosParticipa = E => ARRANJOS.filter(a=>participa(E,a));
+
+function textoEscopo(E, lista, oQue){
+  if(!lista.length)
+    return `<b>Sem arranjos disponíveis.</b> ${oQue} Ajuste o <span class="link" data-ir="f02">Formulário 02</span>.`;
+  return `<b>Escopo derivado do Formulário 02:</b> ${lista.map(a=>a.nome).join(", ")}. ${oQue} `+
+         `Para alterar, ajuste o <span class="link" data-ir="f02">Formulário 02</span>.`;
+}
+
+/* ==================================================================
+   3c. Formulário 03 - Prestação de Serviço de Conexão
+   ================================================================== */
+const F03 = {
+  sub:"Relacione os PSPs Recebedores Diretos atendidos e, para cada um, o que a instituição transmite "+
+      "em cada arranjo. O envio dos informes e o acionamento do MOC são finalidades distintas.",
+  gerais:"Regras gerais: só é possível prestar informes em arranjo de participação direta em que a "+
+    "própria instituição não contrate prestador. No Boleto não há prestação de informes, cumpridos "+
+    "pela Núclea. O Mecanismo de Ocorrências do contratante segue um caminho único: quando é esta "+
+    "instituição que o transmite, as ocorrências de todos os arranjos dele trafegam por aqui. Cada "+
+    "contratante ocupa uma linha.",
+  escopo: E => textoEscopo(E, arranjosConexao(E),
+    "São os arranjos de participação direta em que a instituição envia os informes por conta própria."),
+  grupos:[{
+    id:"contratantes", tipo:"lista", titulo:"PSPs Recebedores Diretos atendidos",
+    rotuloItem:"Contratante", minimo:1,
+    disponivel: E => arranjosConexao(E).length>0,
+    campos: E => [
+      {id:"raiz", rot:"Raiz do CNPJ do contratante", obr:"obr", tipo:"raiz", mono:true,
+       regra:"Informar oito caracteres, sem pontuação."},
+      {id:"razao", rot:"Razão social do contratante", obr:"obr", tipo:"texto",
+       regra:"Razão social completa do PSP Recebedor Direto atendido."},
+      ...arranjosConexao(E).map(a=>({id:"arr_"+a.id, rot:a.nome, obr:"obr", tipo:"lista",
+        opcoes: OPC_CONEXAO,
+        regra:"Indicar se a instituição transmite os informes deste contratante no arranjo."})),
+      {id:"moc", rot:"Transmite também o Mecanismo de Ocorrências deste contratante?", obr:"obr",
+       tipo:"lista", opcoes:["Sim","Não"],
+       regra:"O contratante tem um único caminho de MOC, que alcança todos os arranjos dele. Responder "+
+             "Sim quando for esta instituição a transmitir as ocorrências."},
+      {id:"ini", rot:"Início pretendido da prestação", obr:"opc", tipo:"data",
+       regra:"Opcional. Não informado, vale a primeira data definida pela Plataforma Pública."},
+      {id:"fim", rot:"Término pretendido da prestação", obr:"opc", tipo:"data",
+       regra:"Opcional. Não informado, prazo indeterminado."}
+    ],
+    validaItem:(it,E)=>{
+      const arr = arranjosConexao(E);
+      const semArranjo = arr.length &&
+        arr.every(a=>!it["arr_"+a.id] || it["arr_"+a.id]==="Não presta neste arranjo");
+      if(semArranjo && it.moc!=="Sim")
+        return "Indique ao menos um arranjo de informes ou o Mecanismo de Ocorrências deste contratante.";
+      if(it.ini && it.fim && it.fim < it.ini) return "O término não pode ser anterior ao início.";
+      return "";
+    },
+    exemplo: E => arranjosConexao(E).length ? [Object.assign(
+      {raiz:"98765432", razao:"Banco Exemplo Gama S.A.", ini:"2027-03-01"},
+      Object.fromEntries(arranjosConexao(E).map((a,i)=>
+        ["arr_"+a.id, i===0 ? "Presta o serviço de conexão" : "Não presta neste arranjo"])),
+      {moc:"Sim"})] : []
+  }]
+};
+
+/* ==================================================================
+   3d. Formulário 04 - Prestação de Serviço de Repasse Financeiro
+   ================================================================== */
+const F04 = {
+  sub:"Relacione os PSPs Recebedores Diretos para os quais a instituição realiza o Repasse Financeiro "+
+      "do CBS e do IBS à RFB e ao CGIBS.",
+  gerais:"Regras gerais: só é possível prestar em arranjo de participação direta em que a própria "+
+    "instituição realize o Repasse diretamente. A responsabilidade pelo Repasse permanece com o PSP "+
+    "Recebedor Direto contratante.",
+  escopo: E => textoEscopo(E, arranjosRepasse(E),
+    "São os arranjos de participação direta em que a instituição realiza o Repasse por conta própria."),
+  grupos:[{
+    id:"contratantes", tipo:"lista", titulo:"PSPs Recebedores Diretos atendidos",
+    rotuloItem:"Contratante", minimo:1,
+    disponivel: E => arranjosRepasse(E).length>0,
+    campos: E => [
+      {id:"raiz", rot:"Raiz do CNPJ do contratante", obr:"obr", tipo:"raiz", mono:true,
+       regra:"Informar oito caracteres, sem pontuação."},
+      {id:"razao", rot:"Razão social do contratante", obr:"obr", tipo:"texto",
+       regra:"Razão social completa do PSP Recebedor Direto atendido."},
+      ...arranjosRepasse(E).map(a=>({id:"arr_"+a.id, rot:a.nome, obr:"obr", tipo:"lista",
+        opcoes:["Não presta neste arranjo","Presta o Repasse Financeiro"],
+        regra:"Indicar se a instituição realiza o Repasse em nome do contratante neste arranjo."})),
+      {id:"ini", rot:"Início pretendido da prestação", obr:"opc", tipo:"data",
+       regra:"Opcional. Não informado, vale a primeira data definida pela Plataforma Pública."},
+      {id:"fim", rot:"Término pretendido da prestação", obr:"opc", tipo:"data",
+       regra:"Opcional. Não informado, prazo indeterminado."}
+    ],
+    validaItem:(it,E)=>{
+      const arr = arranjosRepasse(E);
+      if(arr.length && arr.every(a=>!it["arr_"+a.id] || it["arr_"+a.id]==="Não presta neste arranjo"))
+        return "Indique ao menos um arranjo em que a instituição presta o Repasse a este contratante.";
+      if(it.ini && it.fim && it.fim < it.ini) return "O término não pode ser anterior ao início.";
+      return "";
+    },
+    exemplo: E => arranjosRepasse(E).length ? [Object.assign(
+      {raiz:"98765432", razao:"Banco Exemplo Gama S.A.", ini:"2027-03-01"},
+      Object.fromEntries(arranjosRepasse(E).map((a,i)=>
+        ["arr_"+a.id, i===0 ? "Presta o Repasse Financeiro" : "Não presta neste arranjo"])))] : []
+  }]
+};
+
+/* ==================================================================
+   3e. Formulário 05 - Indicação de Empresas PAE
+   ================================================================== */
+const PAPEIS = ["Não participará","Pagador","Recebedor","Pagador e Recebedor"];
+/* A indicação de empresas é por momento da PAE: o mesmo arranjo pode ser
+   indicado em mais de um momento, e a relação cresce a cada marco. */
+const MOMENTOS = {
+  "Momento 1":{arranjos:["tef","pxe"],
+    nota:"Restrito a transações intrabancárias e a participantes diretos, entre os até 20 PSPs selecionados."},
+  "Momento 2":{arranjos:["pxe","ted","tef"], nota:"Arranjos iniciados pelo Pagador."},
+  "Momento 3":{arranjos:["bol","pxd","pxa"], nota:"Arranjos iniciados pelo Recebedor."}
+};
+const momentosDisponiveis = E => Object.keys(MOMENTOS)
+  .filter(m => m!=="Momento 1" || E.f01.interesseM1==="Sim");
+const arranjosDoMomento = (E, mom) => (MOMENTOS[mom] ? MOMENTOS[mom].arranjos : [])
+  .map(id=>ARRANJOS.find(a=>a.id===id))
+  .filter(a=>a && ["Direta","DiretaPagador"].includes(situacaoDe(E,a)));
+const papeisDoArranjo = (E, a) =>
+  situacaoDe(E,a)==="DiretaPagador" ? ["Não participará","Pagador"] : PAPEIS;
+
+const F05 = {
+  sub:"Indique as empresas que participarão da Produção Assistida Escalonada e o papel de cada uma "+
+      "em cada arranjo. A identificação do PSP indicante vem do Formulário 01.",
+  gerais:"Regras gerais: a indicação é por momento da PAE, e os arranjos disponíveis variam conforme "+
+    "ele. A mesma empresa indicada em mais de um momento ocupa uma linha por momento. A indicação do "+
+    "Momento 1 é fechada na seleção dos até 20 PSPs; as dos Momentos 2 e 3 podem ser ampliadas a cada "+
+    "marco, reenviando este formulário com as novas linhas. O Split Payment incide sobre o recebimento: "+
+    "uma empresa indicada apenas como Pagador em todos os arranjos não exercita o mecanismo do lado que "+
+    "importa. A pergunta sobre atendimento direto permite à Plataforma Pública filtrar as cadeias sem "+
+    "PSP Recebedor Indireto.",
+  escopo: E => textoEscopo(E, arranjosDiretos(E),
+    "São os arranjos de participação direta, únicos em que a instituição indica empresas."),
+  grupos:[{
+    id:"empresas", tipo:"lista", titulo:"Empresas indicadas", rotuloItem:"Empresa", minimo:1,
+    disponivel: E => arranjosDiretos(E).length>0,
+    campos: E => [
+      {id:"cnpj", rot:"CNPJ da empresa", obr:"obr", tipo:"cnpj", mono:true,
+       regra:"Informar 14 caracteres, sem pontuação."},
+      {id:"razao", rot:"Razão social da empresa", obr:"obr", tipo:"texto",
+       regra:"Razão social completa da empresa indicada."},
+      {id:"contatoNome", rot:"Nome completo do contato", obr:"obr", tipo:"texto",
+       regra:"Pessoa que responderá pela empresa durante a PAE."},
+      {id:"contatoEmail", rot:"E-mail do contato", obr:"obr", tipo:"email",
+       regra:"Endereço eletrônico em formato válido."},
+      {id:"contatoTel", rot:"Telefone do contato", obr:"obr", tipo:"telefone",
+       regra:"Informar DDD e número."},
+      {id:"contatoCargo", rot:"Cargo do contato", obr:"obr", tipo:"texto",
+       regra:"Cargo ou função exercida na empresa."},
+      {id:"momento", rot:"Momento da PAE em que a empresa participará", obr:"obr", tipo:"lista",
+       opcoes: E2 => momentosDisponiveis(E2),
+       regra:"Os arranjos disponíveis dependem do momento. A mesma empresa indicada em mais de um "+
+             "momento ocupa uma linha por momento."},
+      ...arranjosDiretos(E).map(a=>({id:"arr_"+a.id, rot:a.nome, obr:"obr", tipo:"lista",
+        opcoes: E2 => papeisDoArranjo(E2, a),
+        quando: it => arranjosDoMomento(ESTADO, it.momento).some(x=>x.id===a.id),
+        regra:"Papel da empresa neste arranjo durante o momento indicado."})),
+      {id:"direto", rot:"Atendida diretamente por esta instituição?", obr:"obr", tipo:"lista",
+       opcoes:["Sim","Não"],
+       regra:"Responder Não quando a empresa é atendida por meio de PSP Recebedor Indireto."}
+    ],
+    validaItem:(it,E)=>{
+      if(!it.momento) return "";
+      const arr = arranjosDoMomento(E, it.momento);
+      if(!arr.length)
+        return "Não há arranjo de participação da instituição neste momento da PAE.";
+      if(arr.every(a=>!it["arr_"+a.id] || it["arr_"+a.id]==="Não participará"))
+        return "Indique o papel da empresa em ao menos um arranjo deste momento.";
+      const dup = ((E.f05.empresas)||[]).filter(x =>
+        x.cnpj && x.cnpj===it.cnpj && x.momento===it.momento);
+      if(dup.length>1) return "Há mais de uma linha para esta empresa no mesmo momento da PAE.";
+      return "";
+    },
+    exemplo: E => arranjosParticipa(E).length ? [Object.assign(
+      {cnpj:"98765432000198", razao:"Comércio Varejista Modelo Ltda.", contatoNome:"Nome Exemplo",
+       contatoEmail:"nome.exemplo@modelo.com.br", contatoTel:"(11) 4000-2000",
+       contatoCargo:"Diretor Financeiro", direto:"Sim",
+       momento: momentosDisponiveis(E).slice(-1)[0]},
+      Object.fromEntries(arranjosDoMomento(E, momentosDisponiveis(E).slice(-1)[0]).map((a,i)=>
+        ["arr_"+a.id, papeisDoArranjo(E,a).slice(-1)[0]])))] : []
+  }]
+};
+
+
+/* ==================================================================
+   3f. Formulário 06 - Experiência do Usuário
+   ================================================================== */
+const DECLARACOES = ["Implementado","Não implementado","Não se aplica"];
+const RES = ["Atendido","Não atendido","Não se aplica"];
+const SEC06 = [{id:"g_b", titulo:"B. Boleto", arranjo:"bol",
+    itens:[{id:"EXP-B1", papel:"Recebedor", etapa:"Emissão do boleto (preenchimento)",
+      campos:"CBS/IBS Informado, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B2", papel:"Recebedor", etapa:"Consulta do boleto emitido",
+      campos:"Se não pago: CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, DF, ID DDA. Se pago: complementar com CBS/IBS Segregado e Valor Líquido.", ref:"Operações, 8.2.1"},{id:"EXP-B3", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B4", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B5", papel:"Pagador", etapa:"Visibilidade do Pagador antes da execução da cobrança (via código de barras ou DDA)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B6", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B7", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, ID DDA", ref:"Operações, 8.2.1"},{id:"EXP-B8", papel:"Ambos", etapa:"Documento de cobrança (PDF/versão impressa)",
+      campos:"Não exibir campos de CBS/IBS: o layout atual não deve ser alterado por causa do Split Payment.", ref:"Operações, 8.2.1"}]},{id:"g_c", titulo:"C. Pix Dinâmico", arranjo:"pxd",
+    itens:[{id:"EXP-C1", papel:"Recebedor", etapa:"Criação do QR Code Dinâmico (preenchimento)",
+      campos:"CBS/IBS Informado, DF, TxID", ref:"Operações, 8.2.2"},{id:"EXP-C2", papel:"Recebedor", etapa:"Consulta ao QR Code gerado",
+      campos:"Se não pago: CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, DF, TxID. Se pago: complementar com CBS/IBS Segregado e Valor Líquido.", ref:"Operações, 8.2.2"},{id:"EXP-C3", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, TxID, E2EID", ref:"Operações, 8.2.2"},{id:"EXP-C4", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, TxID, E2EID", ref:"Operações, 8.2.2"},{id:"EXP-C5", papel:"Pagador", etapa:"Consulta do QR Code para pagamento",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID", ref:"Operações, 8.2.2"},{id:"EXP-C6", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID, E2EID", ref:"Operações, 8.2.2"},{id:"EXP-C7", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID, E2EID", ref:"Operações, 8.2.2"},{id:"EXP-C8", papel:"Ambos", etapa:"Documento de cobrança (PDF/imagem do QR Code Dinâmico)",
+      campos:"Não exibir campos de CBS/IBS: o layout atual não deve ser alterado por causa do Split Payment.", ref:"Operações, 8.2.2"},{id:"EXP-C9", papel:"Ambos", etapa:"Comprovante POS (Slip)",
+      campos:"Não exibir campos de CBS/IBS: o layout atual não deve ser alterado por causa do Split Payment.", ref:"Operações, 8.2.2"}]},{id:"g_d", titulo:"D. Pix Automático", arranjo:"pxa",
+    itens:[{id:"EXP-D1", papel:"Recebedor", etapa:"Solicitação de agendamento de cobrança individual pelo Recebedor (preenchimento)",
+      campos:"Valor Original, CBS/IBS Informado, DF, TxID", ref:"Operações, 8.2.3"},{id:"EXP-D2", papel:"Recebedor", etapa:"Consulta às solicitações de cobrança",
+      campos:"Se não pago: Valor Original, CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, DF, TxID. Se pago: complementar com Valor Pago, CBS/IBS Segregado e Valor Líquido.", ref:"Operações, 8.2.3"},{id:"EXP-D3", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"Valor Pago, CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, TxID, E2EID", ref:"Operações, 8.2.3"},{id:"EXP-D4", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"Valor Pago, CBS/IBS Informado, CBS/IBS Corrigido, CBS/IBS Em Aberto, CBS/IBS Segregado, Valor Original, Valor Líquido, DF, TxID, E2EID", ref:"Operações, 8.2.3"},{id:"EXP-D5", papel:"Pagador", etapa:"Visibilidade da cobrança agendada",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID", ref:"Operações, 8.2.3"},{id:"EXP-D6", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID, E2EID", ref:"Operações, 8.2.3"},{id:"EXP-D7", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Aplicado, com disclaimer, DF, TxID, E2EID", ref:"Operações, 8.2.3"}]},{id:"g_e", titulo:"E. Pix Estático", arranjo:"pxe",
+    itens:[{id:"EXP-E1", papel:"Pagador", etapa:"Preenchimento dos dados de pagamento (CBS, IBS, DF)",
+      campos:"CBS/IBS Informado, DF", ref:"Operações, 8.2.4"},{id:"EXP-E2", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Informado, DF, E2EID", ref:"Operações, 8.2.4"},{id:"EXP-E3", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Informado, DF, E2EID", ref:"Operações, 8.2.4"},{id:"EXP-E4", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, E2EID", ref:"Operações, 8.2.4"},{id:"EXP-E5", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, E2EID", ref:"Operações, 8.2.4"}]},{id:"g_f", titulo:"F. TED", arranjo:"ted",
+    itens:[{id:"EXP-F1", papel:"Pagador", etapa:"Preenchimento dos dados de pagamento (CBS, IBS, DF)",
+      campos:"CBS/IBS Informado, DF", ref:"Operações, 8.2.5"},{id:"EXP-F2", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Informado, DF, NumCtrlSTR ou NumCtrlPAG", ref:"Operações, 8.2.5"},{id:"EXP-F3", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Informado, DF, NumCtrlSTR ou NumCtrlPAG", ref:"Operações, 8.2.5"},{id:"EXP-F4", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, NumCtrlSTR ou NumCtrlPAG", ref:"Operações, 8.2.5"},{id:"EXP-F5", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, NumCtrlSTR ou NumCtrlPAG", ref:"Operações, 8.2.5"}]},{id:"g_g", titulo:"G. TEF (Book Transfer)", arranjo:"tef",
+    itens:[{id:"EXP-G1", papel:"Pagador", etapa:"Preenchimento dos dados de pagamento (CBS, IBS, DF)",
+      campos:"CBS/IBS Informado, DF", ref:"Operações, 8.2.6"},{id:"EXP-G2", papel:"Pagador", etapa:"Comprovante de pagamento (formato individual)",
+      campos:"CBS/IBS Informado, DF, NumCtrlTEF", ref:"Operações, 8.2.6"},{id:"EXP-G3", papel:"Pagador", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Informado, DF, NumCtrlTEF", ref:"Operações, 8.2.6"},{id:"EXP-G4", papel:"Recebedor", etapa:"Comprovante ou consulta de recebimento (formato individual)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, NumCtrlTEF", ref:"Operações, 8.2.6"},{id:"EXP-G5", papel:"Recebedor", etapa:"Detalhamento, zoom do extrato ou retorno (formato de tabela)",
+      campos:"CBS/IBS Segregado, Valor Líquido, DF, NumCtrlTEF", ref:"Operações, 8.2.6"}]},{id:"g_h", titulo:"H. Requisitos gerais", arranjo:"todos",
+    itens:[{id:"EXP-H1", papel:"Ambos", etapa:"Separação das jornadas de Pessoa Física e Pessoa Jurídica nas etapas críticas",
+      campos:"Jornadas distintas no preenchimento dos dados da transação, de modo que somente clientes PJ acessem os campos de CBS, IBS e Documento Fiscal.", ref:"Operações, 8.1"},{id:"EXP-H2", papel:"Ambos", etapa:"Campos fiscais nos arquivos retorno destinados a clientes PJ",
+      campos:"CBS, IBS e Documento Fiscal nos arquivos retorno, permitindo a conciliação contábil e fiscal.", ref:"Operações, 8.1"}]}];
+
+/* Onde a apuração resulta em participação somente como Pagador, os itens de
+   jornada do lado Recebedor não se aplicam. */
+function papelAplicavel(arrId, papel){
+  if(arrId==="todos") return true;
+  const a = ARRANJOS.find(x=>x.id===arrId);
+  if(!a) return true;
+  return situacaoDe(ESTADO, a)!=="DiretaPagador" || /Pagador|Ambos/.test(papel);
+}
+const F06 = {
+  sub:"Declare a conformidade da jornada do cliente Pessoa Jurídica em cada arranjo de participação. "+
+      "Não há evidência a anexar: este formulário é uma declaração.",
+  gerais:"Regras gerais: participar de um arranjo implica implementar a jornada nos dois lados, o do "+
+    "Pagador e o do Recebedor. Item não implementado não retém o envio: informe a data prevista. Os "+
+    "itens são exibidos conforme os arranjos apurados no Formulário 02.",
+  escopo: E => textoEscopo(E, arranjosParticipa(E),
+    "São os arranjos de participação, direta ou indireta. A jornada alcança os dois lados."),
+  grupos: SEC06.map(g => ({
+    id:g.id, titulo:g.titulo,
+    quando: E => g.arranjo==="todos" || ARRANJOS.some(a=>a.id===g.arranjo && participa(E,a)),
+    campos: g.itens.flatMap(i=>[
+      {id:i.id, rot:`${i.id} · ${i.etapa}`, obr:"obr", tipo:"lista", opcoes:DECLARACOES,
+       quando:()=>papelAplicavel(g.arranjo, i.papel),
+       regra:`Papel: ${i.papel}. Campos exigidos ao cliente PJ: ${i.campos}. Referência: ${i.ref}.`},
+      {id:i.id+"_prev", rot:"Data prevista para implementação", obr:"obr", tipo:"data",
+       quando:v=>v[i.id]==="Não implementado" && papelAplicavel(g.arranjo, i.papel),
+       regra:"Informe quando o item estará em produção. A pendência não retém o envio do formulário."}
+    ])
+  })),
+  exemplo: E => Object.fromEntries(SEC06.flatMap(g=>g.itens
+    .filter(i=>papelAplicavel(g.arranjo, i.papel)).map(i=>[i.id,"Implementado"])))
+};
+
+const F07 = {
+  sub:"Comprove o canal de rede seguro com a Plataforma Pública. Cada item atendido pede a referência e o arquivo de evidência.",
+  gerais:"Regras gerais: os itens tratam do canal, e não do arranjo. Um item marcado como atendido exige referência e evidência anexada. O item RED-D3 só se aplica a quem opera dois enlaces.",
+  escopo: E => `<b>Comprovação por caminho de comunicação.</b> Os itens abaixo tratam do canal com a Plataforma Pública, e não do arranjo. Quem contrata prestador para todas as finalidades não preenche esta aba. Exemplos de evidência acompanham o pacote, no arquivo <b>Exemplos Evidências Formulários.zip</b>.`,
+  anexos:true,
+  grupos:[{id:"07_a", titulo:"A. Pré-requisitos de rede", campos:[{id:"RED-A1", rot:"RED-A1 · IP público fixo por link.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: IP público fixo obrigatório; endereçamento dinâmico (DHCP) não é aceito; bloco /30 ou /29 documentado pela operadora. Evidência: Documento formal da operadora com o bloco atribuído e declaração de IP público fixo. Aplicabilidade: Todos"},{id:"RED-A1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-A1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-A1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-A1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-A2", rot:"RED-A2 · Link de internet dedicada (ADI).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Acesso dedicado, simétrico e com SLA; em dual-link, operadoras distintas e infraestrutura física diversa. Evidência: Contrato/descritivo do(s) link(s); em dual-link, evidência de operadoras e caminhos físicos distintos. Aplicabilidade: Todos"},{id:"RED-A2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-A2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-A2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-A2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-A3", rot:"RED-A3 · Equipamento de borda compatível.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Roteador/firewall suporta IKEv2 e os algoritmos do padrão; modelo e firmware/IOS registrados; equipamentos distintos por link em dual-link. Evidência: Registro de modelo e versão de firmware/IOS e declaração de compatibilidade. Aplicabilidade: Todos"},{id:"RED-A3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-A3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-A3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-A3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-A4", rot:"RED-A4 · Portas e protocolos liberados.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Entre peers: UDP 500/4500 e ESP (protocolo IP 50). Após o túnel: TCP 179 (BGP) e TCP 443 (HTTPS/REST). Evidência: Teste com tcpdump ou equivalente comprovando o tráfego e exportação das regras de firewall. Aplicabilidade: Todos"},{id:"RED-A4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-A4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-A4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-A4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"07_o", titulo:"Os parâmetros de Fase 1 e Fase 2 devem ser idênticos em ambos os túneis no modelo dual-link. IKEv1 não é aceito.", campos:[{id:"RED-B1", rot:"RED-B1 · Fase 1 (IKE) configurada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: IKEv2; AES-256; SHA-256; Diffie-Hellman Grupo 19 (ECP-256) — Grupo 14 aceitável; lifetime 28.800 s; DPD habilitado (intervalo e número de tentativas conforme definido pela Plataforma Pública). Evidência: Exportação/captura da configuração de Fase 1 e status ESTABLISHED do túnel. Aplicabilidade: Todos"},{id:"RED-B1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-B1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-B1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-B1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-B2", rot:"RED-B2 · Fase 2 (IPsec) configurada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: ESP; AES-256; SHA-256; PFS Grupo 19 (Grupo 14 aceitável); lifetime 3.600 s; Tunnel Mode; seletores de tráfego corretos. Evidência: Exportação/captura da configuração de Fase 2, status ESTABLISHED e seletores/PFS conferidos. Aplicabilidade: Todos"},{id:"RED-B2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-B2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-B2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-B2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-B3", rot:"RED-B3 · Autenticação por Pre-Shared Key (PSK).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: PSK com no mínimo 20 caracteres (maiúsculas, minúsculas, números e símbolos), recebida por canal seguro. Evidência: Confirmação do canal seguro de recebimento e registro de auditoria com o identificador da PSK (nunca o valor). Aplicabilidade: Todos"},{id:"RED-B3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-B3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-B3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-B3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"07_c", titulo:"C. Roteamento dinâmico (BGP, VTI e SNAT)", campos:[{id:"RED-C1", rot:"RED-C1 · Adjacência BGP sobre VTI estabelecida.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Sessão BGP entre as interfaces VTI (APIPA /30) com ASN privado; rotas aprendidas e anunciadas conforme acordado. Evidência: Captura do estado da sessão BGP (Established) e das rotas anunciadas/aprendidas. Aplicabilidade: Todos"},{id:"RED-C1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-C1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-C1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-C1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-C2", rot:"RED-C2 · SNAT na faixa reservada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: SNAT em faixa 100.100.x.x/31 aplicado, alcançando a Plataforma Pública com endereço conhecido e pré-definido. Evidência: Configuração de SNAT e evidência de alcance à PP pelo endereço de SNAT. Aplicabilidade: Todos"},{id:"RED-C2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-C2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-C2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-C2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-C3", rot:"RED-C3 · Menor privilégio de anúncio de sub-redes.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Anúncio apenas das sub-redes locais estritamente necessárias ao acesso à Plataforma. Evidência: Lista de prefixos anunciados e política de rota. Aplicabilidade: Todos"},{id:"RED-C3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-C3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-C3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-C3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-C4", rot:"RED-C4 · Definição de caminho primário/secundário.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: AS-path prepend define o caminho principal e o secundário. Evidência: Configuração de AS-prepend e evidência da preferência de caminho. Aplicabilidade: Todos"},{id:"RED-C4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-C4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-C4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-C4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"07_d", titulo:"D. Resiliência e failover", campos:[{id:"RED-D1", rot:"RED-D1 · Dead Peer Detection habilitado.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: DPD habilitado; intervalo e número de tentativas conforme definido pela Plataforma Pública. Evidência: Configuração de DPD e evidência de detecção de indisponibilidade. Aplicabilidade: Todos"},{id:"RED-D1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-D1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-D1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-D1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-D2", rot:"RED-D2 · Mecanismos de convergência rápida (BFD) e continuidade de rotas (graceful restart).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Recomendados, quando suportados por ambas as extremidades: BFD associado ao roteamento, para comutação e convergência rápidas; capability graceful-restart no BGP, para preservar o encaminhamento durante o restabelecimento da sessão. Evidência: Captura do estado do BFD e da configuração de graceful restart do BGP, quando habilitados. Aplicabilidade: Todos"},{id:"RED-D2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-D2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-D2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-D2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-D3", rot:"RED-D3 · Failover automático em dual-link.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Dual-link",
+       regra:"Critério de aptidão: Failover automático para o link secundário na queda do primário, com o secundário em prontidão. Evidência: Resultado do teste de failover, com o tempo de convergência observado. Aplicabilidade: Dual-link"},{id:"RED-D3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-D3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-D3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-D3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"07_e", titulo:"E. Segurança da rede e da comunicação", campos:[{id:"RED-E1", rot:"RED-E1 · Padrão criptográfico do túnel.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: IKEv2/AES-256/SHA-256 na Fase 1 e ESP/AES-256/SHA-256/PFS na Fase 2; IKEv1 recusado; parâmetros idênticos em dual-link. Evidência: Configuração comparada dos dois túneis evidenciando a paridade dos parâmetros. Aplicabilidade: Todos"},{id:"RED-E1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-E1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-E1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-E1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-E2", rot:"RED-E2 · Firewall restritivo com allowlisting.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Apenas as portas necessárias liberadas; origem/destino restritos aos peers e às sub-redes acordadas; acesso à API limitado às redes de integração. Evidência: Exportação das regras de firewall demonstrando o allowlisting. Aplicabilidade: Todos"},{id:"RED-E2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-E2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-E2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-E2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-E3", rot:"RED-E3 · NTP sincronizado nos equipamentos de borda.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Diferença de relógio inferior a 5 segundos. Evidência: Saída de status de NTP nos equipamentos de borda. Aplicabilidade: Todos"},{id:"RED-E3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-E3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-E3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-E3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-E4", rot:"RED-E4 · Segregação das redes internas de acesso à PP.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Redes que acessam a Plataforma segregadas das demais redes corporativas. Evidência: Diagrama/descrição da segregação e regras associadas. Aplicabilidade: Todos"},{id:"RED-E4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-E4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-E4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-E4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"07_f", titulo:"F. Onboarding e liberação da conectividade", campos:[{id:"RED-F1", rot:"RED-F1 · Informações obrigatórias de onboarding enviadas.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Razão social, raiz do CNPJ e ISPB, ambiente de destino, IP(s) público(s), dados do concentrador VPN, janela desejada e contatos técnicos informados. Evidência: Formulário de Configuração VPN preenchido e protocolado junto ao time de redes da PP. Aplicabilidade: Todos"},{id:"RED-F1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-F1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-F1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-F1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"RED-F2", rot:"RED-F2 · Validação e liberação pela Plataforma Pública.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Peer cadastrado, IPs autorizados, parâmetros validados e conectividade liberada para os testes de homologação. Evidência: Confirmação formal do time de redes da PP e registro da liberação de homologação. Aplicabilidade: Todos"},{id:"RED-F2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["RED-F2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"RED-F2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["RED-F2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]}],
+  exemplo: E => ({})
+};
+
+const F08 = {
+  sub:"Comprove os controles de identidade, certificados, assinatura e isolamento entre participantes.",
+  gerais:"Regras gerais: os itens tratam do canal, e não do arranjo. O item SEG-D3 só se aplica a quem presta serviço de conexão a outros PSPs.",
+  escopo: E => `<b>Comprovação por caminho de comunicação.</b> Os itens abaixo tratam do canal com a Plataforma Pública, e não do arranjo. Quem contrata prestador para todas as finalidades não preenche esta aba. Exemplos de evidência acompanham o pacote, no arquivo <b>Exemplos Evidências Formulários.zip</b>.`,
+  anexos:true,
+  grupos:[{id:"08_a", titulo:"A. Identidade e autenticação (mTLS)", campos:[{id:"SEG-A1", rot:"SEG-A1 · Canal mTLS estabelecido com a Plataforma Pública no ambiente de homologação.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Handshake mTLS bem-sucedido; TLS 1.2 ou superior; suíte de cifra permitida; troca de chaves ECDHE. Evidência: Trecho de log do gateway ou captura sanitizada do handshake indicando versão TLS, cipher suite e certificado cliente; resultado do caso de conectividade e autenticação mútua. Aplicabilidade: Todos"},{id:"SEG-A1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-A1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-A1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-A1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-A2", rot:"SEG-A2 · Suítes de cifra em conformidade com o padrão.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Apenas as suítes previstas para TLS 1.2/1.3; ECDHE obrigatório; ausência de suítes fracas. Evidência: Relatório de varredura TLS (ex.: testssl/sslscan) ou exportação da configuração de TLS do endpoint. Aplicabilidade: Todos"},{id:"SEG-A2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-A2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-A2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-A2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-A3", rot:"SEG-A3 · Rejeição de certificados inválidos antes do processamento.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Certificado ausente, expirado, revogado, de cadeia não confiável ou de ambiente incorreto resulta em rejeição sem processar a requisição. Evidência: Resultados dos casos negativos de mTLS (expirado, revogado, ausente, cadeia incompleta, ambiente incorreto, credencial não autorizada) com o código de rejeição. Aplicabilidade: Todos"},{id:"SEG-A3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-A3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-A3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-A3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-A4", rot:"SEG-A4 · Verificação de revogação (OCSP/CRL) habilitada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: OCSP ou CRL consultado; comportamento fail-closed em novos handshakes quando o status não puder ser confirmado, com registro e alerta. Evidência: Exportação da configuração de OCSP/CRL e trecho de log de verificação de revogação; evidência do comportamento na indisponibilidade. Aplicabilidade: Todos"},{id:"SEG-A4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-A4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-A4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-A4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-A5", rot:"SEG-A5 · Vínculo entre identidade técnica e identificadores de negócio.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Raiz do CNPJ e arranjo declarados pertencem ao certificado apresentado; requisição com raiz do CNPJ incompatível é bloqueada. Evidência: Resultado do caso \"raiz do CNPJ incompatível com o certificado em stream\" com o bloqueio da operação. Aplicabilidade: Todos"},{id:"SEG-A5_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-A5"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-A5_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-A5"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"08_b", titulo:"B. Certificados, chaves e distribuição via JWKS", campos:[{id:"SEG-B1", rot:"SEG-B1 · Certificados ICP-Brasil A1 (X.509) válidos.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Padrão A1, formato X.509, AC reconhecida pela ICP-Brasil; RSA 2048 bits ou ECC P-256; cadeia completa válida. Evidência: Certificado público (PEM/CER) e relatório de validação da cadeia (ex.: openssl verify) com fingerprint, validade e extensões de uso. Aplicabilidade: Todos"},{id:"SEG-B1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-B1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-B1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-B1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-B2", rot:"SEG-B2 · Endpoint JWKS do participante publicado e cadastrado.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Endpoint HTTPS por ambiente e finalidade, expondo kid, algoritmo, finalidade, ambiente, validade e fingerprint; URL cadastrada e em allowlist. Evidência: URL do JWKS e resposta do endpoint (JSON) com os metadados; confirmação do cadastro/allowlist no Portal da Reforma. Aplicabilidade: Todos"},{id:"SEG-B2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-B2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-B2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-B2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-B3", rot:"SEG-B3 · Segregação de credenciais por ambiente.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Endpoints, cadeias, escopos e certificados de homologação e produção segregados; credenciais de um ambiente não aceitas no outro. Evidência: Comprovação de JWKS/cadeias distintos por ambiente; resultado de teste de rejeição de credencial cruzada. Aplicabilidade: Todos"},{id:"SEG-B3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-B3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-B3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-B3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"08_c", titulo:"C. Assinatura e integridade de mensagens (JWS/JWT)", campos:[{id:"SEG-C1", rot:"SEG-C1 · Assinatura JWS detached nas rotas mutantes.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Header X-JWS-Signature presente; JWS compact detached; corpo JSON idêntico ao usado no cálculo da assinatura. Evidência: Exemplo de requisição assinada e validação bem-sucedida; resultados dos casos de assinatura por fluxo (transação, segregação, retorno). Aplicabilidade: Todos"},{id:"SEG-C1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-C2", rot:"SEG-C2 · Canonicalização JSON.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: JCS (RFC 8785) ou perfil equivalente definido pela Plataforma Pública antes da geração da assinatura. Evidência: Payload canonicalizado e hash correspondente em caso de teste; conferência com a validação da PP. Aplicabilidade: Todos"},{id:"SEG-C2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-C3", rot:"SEG-C3 · Algoritmos e claims obrigatórios.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: RS256 no mínimo (PS256/ES256 aceitáveis); typ=JWS e kid presentes; claims iss, sub, aud, iat, exp, jti e hashPayload; b64=false e crit=[\"b64\"]. Evidência: Protected header de exemplo e resultado da validação; caso de teste positivo. Aplicabilidade: Todos"},{id:"SEG-C3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-C4", rot:"SEG-C4 · Janela de expiração e sincronização de relógio.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: exp de até 5 minutos após iat em requisições síncronas; NTP sincronizado e clock skew limitado. Evidência: Evidência de sincronização NTP e do skew configurado; caso com assinatura expirada rejeitada. Aplicabilidade: Todos"},{id:"SEG-C4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-C5", rot:"SEG-C5 · Rejeição de assinatura inválida.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Assinatura inválida, kid desconhecido, certificado incompatível, claim divergente ou hash diferente resultam em rejeição. Evidência: Resultados dos casos negativos de assinatura com o código de rejeição. Aplicabilidade: Todos"},{id:"SEG-C5_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C5"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C5_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C5"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-C6", rot:"SEG-C6 · Validação da assinatura da Plataforma Pública nas respostas.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: O participante valida o header X-JWS-Signature das respostas da PP em todos os endpoints. Evidência: Trecho de log ou caso de teste demonstrando a validação da assinatura de resposta. Aplicabilidade: Todos"},{id:"SEG-C6_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-C6"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-C6_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-C6"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"08_d", titulo:"D. Autorização, escopo e isolamento entre participantes", campos:[{id:"SEG-D1", rot:"SEG-D1 · Menor privilégio por arranjo e endpoint.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Acesso negado a arranjos não homologados ou não delegados; rotas restritas no gateway conforme a participação nos arranjos. Evidência: Resultado de teste de acesso negado (HTTP 403) a endpoint de arranjo fora do escopo homologado. Aplicabilidade: Todos"},{id:"SEG-D1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-D1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-D1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-D1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-D2", rot:"SEG-D2 · Isolamento de dados entre participantes.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Tentativa de consultar, consumir ou referenciar recurso pertencente a outro participante é negada; não há vazamento de dados entre participantes. Evidência: Resultado do caso de acesso cruzado (HTTP 403/404) sem retorno de dados de terceiro. Aplicabilidade: Todos"},{id:"SEG-D2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-D2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-D2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-D2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"SEG-D3", rot:"SEG-D3 · Escopo delegado e segregação por PSP representado.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Prestador de Serviço de Conexão",
+       regra:"Critério de aptidão: O PSP por delegação opera somente no escopo delegado; segregação operacional por PSP representado. Evidência: Declaração de delegação e resultado de teste de segregação por PSP representado. Aplicabilidade: Prestador de Serviço de Conexão"},{id:"SEG-D3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["SEG-D3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"SEG-D3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["SEG-D3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]}],
+  exemplo: E => ({})
+};
+
+const F09 = {
+  sub:"Comprove a troca de mensagens com a Plataforma Pública. Os itens de envio de informes alcançam apenas os arranjos que trafegam por caminho próprio.",
+  gerais:"Regras gerais: os itens de igual natureza, inclusive o acionamento do MOC, são comprovados uma única vez. Os itens de informe dependem dos arranjos que trafegam pelo caminho.",
+  escopo: E => `<b>Comprovação por caminho de comunicação.</b> Os itens abaixo tratam do canal com a Plataforma Pública, e não do arranjo. Quem contrata prestador para todas as finalidades não preenche esta aba. Exemplos de evidência acompanham o pacote, no arquivo <b>Exemplos Evidências Formulários.zip</b>.`,
+  anexos:true,
+  grupos:[{id:"09_a", titulo:"A. Conformidade de endpoints e contratos", campos:[{id:"INT-A1", rot:"INT-A1 · Uso dos endpoints corretos por arranjo e informe.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Chamadas aos endpoints da tabela do Cap. 7 do Manual de Integração, conforme o escopo homologado. Evidência: Coleção de chamadas ou trechos de log por endpoint, cobrindo os informes do escopo. Aplicabilidade: Todos"},{id:"INT-A1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-A1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-A1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-A1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-A2", rot:"INT-A2 · Conformidade do payload com o dicionário de campos.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Campos, formatos e obrigatoriedades conforme o Dicionário de Campos e as matrizes por informe. Evidência: Payloads de exemplo validados e resultados dos casos por informe. Aplicabilidade: Todos"},{id:"INT-A2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-A2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-A2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-A2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-A3", rot:"INT-A3 · Conformidade com o contrato OpenAPI.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Requisições e respostas aderentes ao OpenAPI publicado (rotas, métodos, tipos, enums e obrigatoriedades); campos não previstos não são enviados. Evidência: Resultado de validação das mensagens contra o OpenAPI (ex.: validador de schema) por informe do escopo. Aplicabilidade: Todos"},{id:"INT-A3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-A3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-A3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-A3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_b", titulo:"B. Envio de informes", campos:[{id:"INT-B1", rot:"INT-B1 · Informe de Transação Iniciada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Boleto, Pix Dinâmico, Pix Automático",
+       regra:"Critério de aptidão: Envio no fluxo principal aceito (HTTP 201, itens em numValidos) para os arranjos aplicáveis. Evidência: Par requisição/resposta com resourceId e o resultado do caso na Matriz. Aplicabilidade: Boleto, Pix Dinâmico, Pix Automático"},{id:"INT-B1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-B1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-B1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-B1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-B2", rot:"INT-B2 · Informe de Transação Atualizada.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Boleto, Pix Dinâmico",
+       regra:"Critério de aptidão: Envio aceito no fluxo principal. Evidência: Par requisição/resposta com resourceId e resultado do caso. Aplicabilidade: Boleto, Pix Dinâmico"},{id:"INT-B2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-B2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-B2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-B2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-B3", rot:"INT-B3 · Informe de Baixa (exceto por pagamento).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Boleto, Pix Dinâmico, Pix Automático",
+       regra:"Critério de aptidão: Envio aceito no fluxo principal. Evidência: Par requisição/resposta com resourceId e resultado do caso. Aplicabilidade: Boleto, Pix Dinâmico, Pix Automático"},{id:"INT-B3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-B3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-B3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-B3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-B4", rot:"INT-B4 · Informe Preliminar de Pagamento.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Envio aceito no fluxo principal (opcional no TEF). Evidência: Par requisição/resposta com resourceId e resultado do caso. Aplicabilidade: Todos"},{id:"INT-B4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-B4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-B4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-B4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-B5", rot:"INT-B5 · Informe de Segregação (início, lotes e finalização).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Fluxo multietapa completo; idempotência do lote (201 cria, 200 no reenvio do mesmo idLote); finalização com totalTrans, vlTotalCbs e vlTotalIbs consistentes. Evidência: Sequência dos três passos com evidência de idempotência e dos casos de rejeição (HTTP 422). Aplicabilidade: Todos"},{id:"INT-B5_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-B5"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-B5_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-B5"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_c", titulo:"C. Recebimento e consumo (Super Inteligente)", campos:[{id:"INT-C1", rot:"INT-C1 · Consumo do Retorno Super Inteligente via long polling.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Boleto, Pix Dinâmico, Pix Automático",
+       regra:"Critério de aptidão: Consumo correto; interpretação dos códigos RSUP; semântica do HTTP 204, que traz o proximoToken no cabeçalho e não encerra a stream; validade de dois minutos do token e do streamId; encerramento por HTTP DELETE; e tratamento do HTTP 410, que exige abrir nova stream pelo /start. Evidência: Par requisição/resposta do long polling e evidência do tratamento dos códigos RSUP. Aplicabilidade: Boleto, Pix Dinâmico, Pix Automático"},{id:"INT-C1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-C1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-C1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-C1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-C2", rot:"INT-C2 · Consulta Retroativa Super Inteligente.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Boleto, Pix Dinâmico, Pix Automático",
+       regra:"Critério de aptidão: Consulta paginada por nsuInicial e nsuFinal, com o mesmo tratamento de assinatura e limites; encerramento por HTTP DELETE ao receber 204, que indica o fim do conjunto. Evidência: Chamadas de consulta com a paginação demonstrada. Aplicabilidade: Boleto, Pix Dinâmico, Pix Automático"},{id:"INT-C2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-C2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-C2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-C2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_d", titulo:"D. Validação pela Plataforma Pública (sintática e semântica)", campos:[{id:"INT-D1", rot:"INT-D1 · Validação sintática (schema) rejeitada corretamente.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Payload que viola o schema/OpenAPI (tipo, formato, tamanho, campo obrigatório ausente) é rejeitado com HTTP 400 e problem+json; o participante trata o erro sem retentar. Evidência: Caso negativo sintático com a requisição, o HTTP 400 e o problem+json apontando o campo. Aplicabilidade: Todos"},{id:"INT-D1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-D1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-D1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-D1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-D2", rot:"INT-D2 · Validação semântica por item (regra do arranjo).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Inconsistência semântica (domínio inválido, referência inexistente, regra do arranjo) é rejeitada item a item com HTTP 422, numErros e errors (index, field, message). Evidência: Caso com itens válidos e inválidos, evidenciando a rejeição semântica item a item. Aplicabilidade: Todos"},{id:"INT-D2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-D2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-D2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-D2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-D3", rot:"INT-D3 · Aceite com processamento parcial (HTTP 201).", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Lote com itens válidos e inválidos retorna HTTP 201 com numValidos, numErros, errors e resourceId; itens válidos são aceitos e apenas os inválidos apontados. Evidência: Par requisição/resposta demonstrando o resultado item a item e o resourceId. Aplicabilidade: Todos"},{id:"INT-D3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-D3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-D3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-D3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_e", titulo:"E. Tratamento de erros e retentativa", campos:[{id:"INT-E1", rot:"INT-E1 · Reenvio corretivo apenas dos itens rejeitados.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: A partir do resultado item a item (INT-D3), o participante corrige e reenvia somente os itens com erro, sem reprocessar os já aceitos nem duplicar itens. Evidência: Caso de reenvio corretivo evidenciando que os itens aceitos não são reenviados. Aplicabilidade: Todos"},{id:"INT-E1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-E1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-E1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-E1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-E2", rot:"INT-E2 · Erros permanentes (400/422/401/403) e stream encerrada (410), sem retentativa.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Não retenta; corrige a causa antes de reenviar (schema, regra de negócio, autenticação ou autorização). No HTTP 410 a stream está definitivamente encerrada: não se reutiliza o token, e o consumo recomeça pelo endpoint /start. Evidência: Resultados dos casos com o tratamento adequado. Aplicabilidade: Todos"},{id:"INT-E2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-E2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-E2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-E2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-E3", rot:"INT-E3 · Erros transitórios e de carga (429/500/503/504) e circuit breaker.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Retry conforme Retry-After e X-Retry-Allowed; backoff exponencial; respeito ao circuit breaker aberto, que retorna X-Circuit-Breaker: open, sem retentar de imediato. Evidência: Evidência da política de retry/backoff e da leitura dos headers de controle. Aplicabilidade: Todos"},{id:"INT-E3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-E3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-E3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-E3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-E4", rot:"INT-E4 · Duplicidade de requisição.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Reenvio de requisição já processada retorna erro, e o participante trata o retorno. Evidência: Caso de duplicidade com o tratamento do erro. Aplicabilidade: Todos"},{id:"INT-E4_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-E4"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-E4_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-E4"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_f", titulo:"F. Headers e assinatura", campos:[{id:"INT-F1", rot:"INT-F1 · Header X-JWS-Signature em requisições e validação nas respostas.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Header presente nas requisições e validado nas respostas de todos os endpoints; protected header com exatamente sete atributos: alg=RS256, typ=JWS, kid, jti (UUID v4), iat, b64=false e crit=[\"b64\"]; payload canonicalizado por JCS (RFC 8785) e assinatura JWS Compact Detached (RFC 7515). Evidência: Exemplo assinado e a validação; conferir com o Formulário 08 - Segurança PP (itens SEG-C). Aplicabilidade: Todos"},{id:"INT-F1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-F1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-F1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-F1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-F2", rot:"INT-F2 · Content-Type e codificação respeitados.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: application/json com UTF-8 nas requisições; interpretação de application/problem+json nas respostas de erro, conforme a RFC 7807. Evidência: Par requisição/resposta evidenciando o Content-Type e a leitura do problem+json. Aplicabilidade: Todos"},{id:"INT-F2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-F2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-F2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-F2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_g", titulo:"G. Rastreabilidade", campos:[{id:"INT-G1", rot:"INT-G1 · resourceId capturado e correlacionado.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: resourceId único por requisição, registrado nos logs e propagado entre serviços para rastreamento de ponta a ponta. Evidência: Trechos de log demonstrando o resourceId correlacionado ao longo do processamento. Aplicabilidade: Todos"},{id:"INT-G1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-G1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-G1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-G1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-G2", rot:"INT-G2 · Correlação ponta a ponta com a entrega ao destinatário.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: O evento enviado é correlacionável ao item recebido pelo destinatário no Retorno Super Inteligente (por resourceId/identificadores de negócio). Evidência: Evidência correlacionando a requisição de envio ao item consumido no Super Inteligente. Aplicabilidade: Todos"},{id:"INT-G2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-G2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-G2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-G2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_h", titulo:"H. Mecanismo de Ocorrências (MOC)", campos:[{id:"INT-H1", rot:"INT-H1 · Notificação de Transação em Análise.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: POST /api/v1/moc/notificacao funcional, com um nível superior infRequisicao e um array de ocorrências de 1 a 1.000; idOcor no formato NOT mais raiz do CNPJ, arranjo, data e contador; cnpjCpfDest preenchido; assinatura e retorno tratados. Evidência: Par requisição/resposta da notificação, com o idOcor gerado. Aplicabilidade: Todos"},{id:"INT-H1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-H1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-H1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-H1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-H3", rot:"INT-H3 · Consulta de Ocorrências e consumo das respostas.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: GET /api/v1/moc/{cnpjRaizPspRecDir}/ocorrencias consumido por polling, com nsuInicial obrigatório a partir de 1 e limite opcional de até 1.000; interpretação do 204 e do intervalo de 30 minutos quando não há mais ocorrências; leitura de codParecer, tpTrib, vlTribEst e idAprovEst. Evidência: Sequência de consultas com a paginação e o tratamento das respostas. Aplicabilidade: Todos"},{id:"INT-H3_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-H3"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-H3_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-H3"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-H2", rot:"INT-H2 · Solicitação de Estorno.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: POST /api/v1/moc/solicitacao funcional; idOcor com prefixo SOL; codMotOcor informado, sendo 01 incidente de segurança e 02 falha operacional; vlCbsEst e vlIbsEst preenchidos; assinatura e retorno tratados. Evidência: Par requisição/resposta da solicitação de estorno. Aplicabilidade: Todos"},{id:"INT-H2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-H2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-H2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-H2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_i", titulo:"I. Limites e convenções de dados", campos:[{id:"INT-I1", rot:"INT-I1 · Limite de 1.000 itens por requisição.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Envio acima de 1.000 é rejeitado; o limite aplica-se por requisição, por lote de segregação e por página de consulta. Evidência: Caso com mais de 1.000 itens rejeitado. Aplicabilidade: Todos"},{id:"INT-I1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-I1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-I1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-I1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-I2", rot:"INT-I2 · Convenções de campo respeitadas.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Decimal com 2 casas, ponto como separador, sem sinal negativo e sem notação científica; campos opcionais não aplicáveis omitidos, e não enviados como null; numCodBarras com exatamente 44 caracteres; idLote com 40 caracteres, no formato idInfSegr mais sequencial. Evidência: Payloads demonstrando as convenções de formatação e omissão. Aplicabilidade: Todos"},{id:"INT-I2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-I2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-I2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-I2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]},{id:"09_z", titulo:"Z. Prontidão de integração ponta a ponta", campos:[{id:"INT-Z1", rot:"INT-Z1 · Fluxo completo de um informe demonstrado.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Para ao menos um arranjo do escopo: envio assinado → aceite (HTTP 201) → entrega pela PP → consumo pelo destinatário no Retorno Super Inteligente, com correlação por resourceId. Evidência: Sequência ponta a ponta com os pares requisição/resposta e a correlação demonstrada. Aplicabilidade: Todos"},{id:"INT-Z1_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-Z1"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-Z1_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-Z1"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."},{id:"INT-Z2", rot:"INT-Z2 · Cobertura dos informes e casos do escopo.", obr:"obr",
+       tipo:"lista", opcoes:RES, apl:"Todos",
+       regra:"Critério de aptidão: Todos os informes aplicáveis ao escopo têm casos positivos e negativos previstos e vinculados na Matriz de Casos de Teste de Homologação, sem lacunas. Evidência: Índice da Matriz de Casos de Teste apontando cobertura por informe do escopo. Aplicabilidade: Todos"},{id:"INT-Z2_ref", rot:"Referência da evidência", obr:"obr", tipo:"texto",
+       quando:v=>v["INT-Z2"]==="Atendido",
+       regra:"Nome do arquivo ou identificação da evidência anexada."},{id:"INT-Z2_anexo", rot:"Evidência", obr:"anexo", tipo:"anexo",
+       quando:v=>v["INT-Z2"]==="Atendido",
+       regra:"Arraste o arquivo ou clique para escolher. Até 5 MB por arquivo."}]}],
+  exemplo: E => ({})
+};
+
+const F10 = {
+  sub:"Solicite a suspensão voluntária, a reativação ou a desabilitação voluntária. O envio ocorre "+
+      "quando a instituição decide, sem prazo no cronograma.",
+  gerais:"Regras gerais: a suspensão voluntária é sempre total e alcança toda a habilitação da "+
+    "instituição. Interromper a operação em parte do escopo é alteração de escopo e segue o Capítulo 5 "+
+    "do Manual de Habilitação de Participantes, pelo Formulário 02.",
+  grupos:[{id:"g_sol", titulo:"Solicitação", campos:[
+    {id:"tipo", rot:"Tipo de solicitação", obr:"obr", tipo:"lista",
+     opcoes:["Suspensão voluntária","Reativação","Desabilitação voluntária"],
+     regra:"A suspensão interrompe a operação e preserva o cadastro. A desabilitação encerra a "+
+           "participação e exige nova habilitação completa para retornar."},
+    {id:"dataPretendida", rot:"Data pretendida para o efeito", obr:"obr", tipo:"data",
+     regra:"A data efetiva é definida pela Plataforma Pública na aprovação."},
+    {id:"motivo", rot:"Motivo da solicitação", obr:"obr", tipo:"texto-longo",
+     regra:"Descrever de forma objetiva a circunstância que motiva a solicitação."},
+    {id:"ciencia", rot:"Declaração de ciência", obr:"obr", tipo:"lista",
+     opcoes:["Declaro ciência dos efeitos da solicitação"],
+     regra:"A suspensão e a desabilitação produzem os efeitos descritos no Capítulo 6 do Manual de "+
+           "Habilitação de Participantes."}
+  ]}],
+  exemplo: E => ({tipo:"Suspensão voluntária", dataPretendida:"2027-09-01",
+    motivo:"Migração da plataforma de recebimentos, com interrupção programada da operação no período.",
+    ciencia:"Declaro ciência dos efeitos da solicitação"})
+};
+
+/* ==================================================================
+   4. Abas. As não construídas já calculam a sua aplicabilidade.
+   ================================================================== */
+const temCaminhoProprio = E =>
+  ARRANJOS.some(a=>podeInformes(E,a)) || mocProprio(E);
+const participaDeAlgum = E => ARRANJOS.some(a=>participa(E,a));
+/* O Formulário 05 é devido por quem participa diretamente: o PSP Recebedor
+   Indireto não indica empresas para a PAE. */
+const participaDiretoDeAlgum = E =>
+  ARRANJOS.some(a=>["Direta","DiretaPagador"].includes(situacaoDe(E,a)));
+const arranjosDiretos = E =>
+  ARRANJOS.filter(a=>["Direta","DiretaPagador"].includes(situacaoDe(E,a)));
+/* Enquanto a apuração ou os caminhos não estiverem completos, a aplicabilidade
+   de uma aba ainda não está determinada: não é o mesmo que não se aplicar. */
+const triagemIncompleta = E => ARRANJOS.some(a=>!situacaoDe(E,a));
+const caminhosIncompletos = E => !E.f02.mocCaminho ||
+  ARRANJOS.some(a=>ehDireta(E,a) && a.informes && !E.f02[a.id+"InfCaminho"]);
+
+const ABAS = [
+  {id:"capa", num:"Início", curto:"Início", nome:"Índice dos formulários"},
+  {id:"f01", num:"01", curto:"Cadastro", nome:"Cadastro da Instituição", def:F01},
+  {id:"f02", num:"02", curto:"Arranjos", nome:"Cadastro de Arranjos", def:F02},
+  {id:"f03", num:"03",
+   aguarda: E => !E.f01.prestConexao,
+   aguardaPorque:"A abertura desta aba depende da resposta sobre prestação de serviço a outros PSPs, no Formulário 01.", curto:"Conexão", nome:"Declaração de Prestação de Serviço de Conexão", def:F03,
+   quando:E=>E.f01.prestConexao==="Sim",
+   porque:"Esta aba se abre quando a instituição declara, no Formulário 01, que transmite informes ou aciona o MOC em nome de outros PSPs.",
+   ondeMudar:["f01","prestConexao"]},
+  {id:"f04", num:"04",
+   aguarda: E => !E.f01.prestRepasse,
+   aguardaPorque:"A abertura desta aba depende da resposta sobre prestação de serviço a outros PSPs, no Formulário 01.", curto:"Repasse", nome:"Declaração de Prestação de Serviço de Repasse Financeiro", def:F04,
+   quando:E=>E.f01.prestRepasse==="Sim",
+   porque:"Esta aba se abre quando a instituição declara, no Formulário 01, que realiza o Repasse Financeiro em nome de outros PSPs.",
+   ondeMudar:["f01","prestRepasse"]},
+  {id:"f05", num:"05",
+   aguarda: E => triagemIncompleta(E),
+   aguardaPorque:"A abertura desta aba depende da apuração do Formulário 02, que ainda não foi concluída em todos os arranjos.", curto:"Empresas", nome:"Indicação de Empresas PAE", def:F05,
+   quando:participaDiretoDeAlgum,
+   porque:"Esta aba se abre quando a apuração do Formulário 02 indica participação direta em ao menos um arranjo. O PSP Recebedor Indireto não indica empresas para a PAE.",
+   ondeMudar:["f02","bolPcr"]},
+  {id:"f06", num:"06",
+   aguarda: E => triagemIncompleta(E),
+   aguardaPorque:"A abertura desta aba depende da apuração do Formulário 02, que ainda não foi concluída em todos os arranjos.", curto:"Experiência", nome:"Experiência do Usuário", def:F06,
+   quando:participaDeAlgum,
+   porque:"Esta aba se abre quando a instituição declara participação em ao menos um arranjo. Participar implica implementar a jornada daquele arranjo nos dois lados.",
+   ondeMudar:["f02","bolPcr"]},
+  {id:"f07", num:"07",
+   aguarda: E => triagemIncompleta(E) || caminhosIncompletos(E),
+   aguardaPorque:"A abertura desta aba depende da apuração do Formulário 02 e dos caminhos de comunicação declarados em cada arranjo de participação direta.", curto:"Rede", nome:"Conectividade PP", def:F07, quando:temCaminhoProprio,
+   porque:"Esta aba se abre quando a instituição opera caminho próprio de comunicação com a Plataforma Pública em algum arranjo. Quem contrata prestador para todas as finalidades não a preenche.",
+   ondeMudar:["f02","bolPcr"]},
+  {id:"f08", num:"08",
+   aguarda: E => triagemIncompleta(E) || caminhosIncompletos(E),
+   aguardaPorque:"A abertura desta aba depende da apuração do Formulário 02 e dos caminhos de comunicação declarados em cada arranjo de participação direta.", curto:"Segurança", nome:"Segurança PP", def:F08, quando:temCaminhoProprio,
+   porque:"Esta aba se abre quando a instituição opera caminho próprio de comunicação com a Plataforma Pública em algum arranjo.",
+   ondeMudar:["f02","bolPcr"]},
+  {id:"f09", num:"09",
+   aguarda: E => triagemIncompleta(E) || caminhosIncompletos(E),
+   aguardaPorque:"A abertura desta aba depende da apuração do Formulário 02 e dos caminhos de comunicação declarados em cada arranjo de participação direta.", curto:"Integração", nome:"Integração PP", def:F09, quando:temCaminhoProprio,
+   porque:"Esta aba se abre quando a instituição opera caminho próprio de comunicação com a Plataforma Pública em algum arranjo.",
+   ondeMudar:["f02","bolPcr"]},
+  {id:"f10", num:"10", curto:"Suspensão", nome:"Suspensão, Reativação ou Desabilitação", def:F10,
+   sob:"Enviado quando a instituição solicita suspensão, reativação ou desabilitação. Não tem prazo no cronograma."}
+];
+
+/* ==================================================================
+   5. Coerência entre abas
+   ================================================================== */
+const REGRAS = [
+  {peso:"impede", ver(E){
+    if(E.f01.interesseM1!=="Sim") return null;
+    const alvo = E.f01.arranjoM1==="TEF (Book Transfer)" ? "tef"
+               : E.f01.arranjoM1==="Pix Estático Intrabancário" ? "pxe" : null;
+    if(!alvo) return null;
+    const nome = ARRANJOS.find(a=>a.id===alvo).nome;
+    const sit = TRIAGEM[alvo].deriva(E.f02||{});
+    const primeira = TRIAGEM[alvo].perguntas[0].id;
+    if(sit==="Fora")
+      return {texto:`O Formulário 01 manifesta interesse no Momento 1 pelo ${E.f01.arranjoM1}, mas a triagem do Formulário 02 apura que a instituição está fora do arranjo ${nome}.`,
+              ir:["f02", primeira]};
+    if(sit==="Indireta")
+      return {texto:`O Momento 1 admite apenas participação direta, mas a triagem do Formulário 02 apura participação indireta no arranjo ${nome}.`,
+              ir:["f02", primeira]};
+    if(sit!=="Direta")
+      return {texto:`O Formulário 01 manifesta interesse no Momento 1 pelo ${E.f01.arranjoM1}, mas a triagem do arranjo ${nome} ainda não foi respondida no Formulário 02.`,
+              ir:["f02", primeira]};
+    return null;
+  }},
+  {peso:"impede", ver(E){
+    if(E.f01.interesseM1!=="Sim") return null;
+    const alvo = E.f01.arranjoM1==="TEF (Book Transfer)" ? "tef"
+               : E.f01.arranjoM1==="Pix Estático Intrabancário" ? "pxe" : null;
+    if(!alvo) return null;
+    const chave = ["InfCaminho","RepCaminho"].find(k=>
+      (E.f02[alvo+k]||"").startsWith("Por Prestador"));
+    const mocPorPrestador = E.f02.mocCaminho && E.f02.mocCaminho!==DIRETO;
+    if(!chave && !mocPorPrestador) return null;
+    const qual = !chave ? "o acionamento do MOC"
+               : chave==="RepCaminho" ? "o Repasse Financeiro" : "o envio dos informes";
+    return {texto:`No Momento 1 a participação é direta, sem prestadores. O Formulário 02 declara prestador para ${qual}.`,
+            ir:["f02", chave ? alvo+chave : "mocCaminho"]};
+  }},
+  {peso:"alerta", ver(E){
+    if(E.f01.prestConexao!=="Sim") return null;
+    if(((E.f03.contratantes)||[]).length) return null;
+    return {texto:"O Formulário 01 declara que a instituição transmite informes ou aciona o MOC em nome de outros PSPs. A aba do Formulário 03 precisa relacionar os atendidos.",
+            ir:["f03", null]};
+  }},
+  {peso:"alerta", ver(E){
+    if(E.f01.prestRepasse!=="Sim") return null;
+    if(((E.f04.contratantes)||[]).length) return null;
+    return {texto:"O Formulário 01 declara que a instituição realiza o Repasse Financeiro em nome de outros PSPs. A aba do Formulário 04 precisa relacionar os atendidos.",
+            ir:["f04", null]};
+  }},
+  {peso:"impede", ver(E){
+    if(E.f01.prestConexao!=="Sim") return null;
+    if(!arranjosConexao(E).length)
+      return {texto:"O Formulário 01 solicita atuação como Prestador de Serviço de Conexão, mas o "+
+        "Formulário 02 não deixa nenhum arranjo disponível: é preciso participação direta em algum "+
+        "arranjo com informes ou MOC por conta própria.", ir:["f02", null]};
+    return null;
+  }},
+  {peso:"impede", ver(E){
+    if(E.f01.prestRepasse!=="Sim") return null;
+    if(!arranjosRepasse(E).length)
+      return {texto:"O Formulário 01 solicita atuação como Prestador de Serviço de Repasse Financeiro, "+
+        "mas o Formulário 02 não deixa nenhum arranjo disponível: é preciso participação direta em "+
+        "algum arranjo com o Repasse por conta própria.", ir:["f02", null]};
+    return null;
+  }},
+  {peso:"impede", ver(E){
+    /* No TEF, a comunicação própria depende de o participante ser direto no TED
+       ou no Pix; quem é direto apenas no TEF conduz por prestador. */
+    const diretos = ARRANJOS.filter(a=>ehDireta(E,a));
+    if(diretos.length!==1 || diretos[0].id!=="tef") return null;
+    const propria = E.f02.tefInfCaminho===DIRETO || E.f02.mocCaminho===DIRETO;
+    if(!propria) return null;
+    return {texto:"A participação direta se limita ao arranjo TEF. Nesse caso a comunicação com a "+
+      "Plataforma Pública não pode ser própria: ela é conduzida por Prestador de Serviço de Conexão, "+
+      "conforme a Seção 3.2 do Manual de Habilitação de Participantes.",
+      ir:["f02","tefInfCaminho"]};
+  }},
+  {peso:"impede", ver(E){
+    const eu = E.f01.raiz;
+    if(!eu) return null;
+    for(const chave of ["f03","f04"]){
+      const lst = (E[chave].contratantes)||[];
+      if(lst.some(it=>soAlnum(it.raiz)===eu))
+        return {texto:`O Formulário ${chave.slice(1)} relaciona a própria instituição como contratante. `+
+          "O prestador declara os participantes que atende, não a si mesmo.", ir:[chave, null]};
+    }
+    return null;
+  }},
+  {peso:"impede", ver(E){
+    const lst = (E.f02.dispensas)||[];
+    const validos = ARRANJOS.filter(a=>ehDireta(E,a)).map(a=>a.nome);
+    const fora = lst.find(it=>it.arranjo && !validos.includes(it.arranjo));
+    if(fora)
+      return {texto:`Há pedido de dispensa para o arranjo ${fora.arranjo}, em que a triagem não apura `+
+        "participação direta. A dispensa alcança apenas quem participa diretamente.", ir:["f02", null]};
+    return null;
+  }},
+  {peso:"alerta", ver(E){
+    const emp = (E.f05.empresas)||[];
+    if(!emp.length) return null;
+    const arr = arranjosDiretos(E).filter(a=>situacaoDe(E,a)==="Direta");
+    if(!arr.length) return null;
+    const temRecebedor = emp.some(it=>arr.some(a=>
+      ["Recebedor","Pagador e Recebedor"].includes(it["arr_"+a.id])));
+    if(temRecebedor) return null;
+    return {texto:"Nenhuma empresa foi indicada como Recebedor em nenhum arranjo. O Split Payment "+
+      "incide sobre o recebimento, de modo que a PAE não exercitaria o mecanismo.", ir:["f05", null]};
+  }},
+  {peso:"alerta", ver(E){
+    const semDeclarar = ARRANJOS.filter(a=>!situacaoDe(E,a));
+    if(!semDeclarar.length) return null;
+    return {texto:`A triagem do Formulário 02 ainda não foi concluída em ${semDeclarar.length} arranjo${semDeclarar.length>1?"s":""}: ${semDeclarar.map(a=>a.nome).join(", ")}. A declaração alcança os seis.`,
+            ir:["f02", TRIAGEM[semDeclarar[0].id].perguntas[0].id]};
+  }}
+];
+
+/* ==================================================================
+   6. Estado e motor
+   ================================================================== */
+const ESTADO = Object.fromEntries(ABAS.map(a=>[a.id,{}]));
+let abaAtiva = "capa";
+let tocados = {};
+ABAS.forEach(a=>tocados[a.id]=new Set());
+
+const el = id => document.getElementById(id);
+const defDe = id => (ABAS.find(a=>a.id===id)||{}).def;
+const aplicavel = (c, v) => !c.quando || c.quando(v);
+const valeInst = inst => grupoVale(inst.gdef, ESTADO) && aplicavel(inst.def, inst.item);
+
+/* Cada campo visível na tela é uma instância: campos planos têm uma; campos de
+   lista têm uma por linha. O id no DOM carrega a linha. */
+const grupoVale = (g, E) => !g.quando || g.quando(E);
+
+function instancias(abaId){
+  const d = defDe(abaId);
+  if(!d) return [];
+  const v = ESTADO[abaId];
+  const out = [];
+  for(const g of d.grupos){
+    if(g.tipo==="lista"){
+      const campos = g.campos(ESTADO);
+      (v[g.id]||[]).forEach((it,i)=>{
+        for(const c of campos)
+          out.push({dom:`${g.id}__${i}__${c.id}`, def:c, grupo:g.id, gdef:g, lista:g.id, i, item:it});
+      });
+    } else {
+      const campos = g.blocos ? g.blocos.flatMap(b=>b.campos) : g.campos;
+      for(const c of campos)
+        out.push({dom:c.id, def:c, grupo:g.id, gdef:g, lista:null, i:null, item:v});
+    }
+  }
+  return out;
+}
+const valorDe = inst => (inst.item||{})[inst.def.id] || "";
+function porValor(inst, valor){
+  if(inst.lista===null) ESTADO[abaAtiva][inst.def.id] = valor;
+  else ESTADO[abaAtiva][inst.lista][inst.i][inst.def.id] = valor;
+}
+const grupoIniciado = (abaId, g, v) => {
+  const d = defDe(abaId); if(!d) return false;
+  return d.grupos.flatMap(x=>x.blocos ? x.blocos.flatMap(b=>b.campos) : (x.campos||[]))
+    .filter(c=>c && c.grupo===g).some(c=>(v[c.id]||"").trim()!=="");
+};
+
+function erroDaInstancia(abaId, inst){
+  const c = inst.def, ctx = inst.item;
+  if(!valeInst(inst)) return "";
+  if(c.tipo==="anexo") return ANEXOS[inst.dom] ? "" : "Anexe o arquivo de evidência.";
+  if(c.obr==="grupo" && !grupoIniciado(abaId, c.grupo, ctx)) return "";
+  const base = erroPadrao({...c, obr: c.obr==="grupo" ? "obr" : c.obr}, valorDe(inst));
+  if(base) return base;
+  if(/Fim$/.test(c.id)){
+    const ini = ctx[c.id.replace(/Fim$/,"Ini")];
+    if(ini && valorDe(inst) && valorDe(inst) < ini) return "O término não pode ser anterior ao início.";
+  }
+  return "";
+}
+function aplicavelAba(aba, E){ return aba.quando ? aba.quando(E) : true; }
+function listaDisponivel(g, E){ return g.disponivel ? g.disponivel(E) : true; }
+
+/* --------------------------- desenho --------------------------- */
+const CHIP = {obr:["obr","Obrigatório"], grupo:["opc","Opcional"], opc:["opc","Opcional"],
+              inf:["inf","Informativo"], aut:["aut","Automático"]};
+
+function htmlCampo(c, dom){
+  const [cls,txt] = CHIP[c.obr] || CHIP.obr;
+  let ent;
+  if(c.tipo==="lista")
+    ent = `<select id="${dom}"><option value="">Selecione…</option>`+
+          opcoesDe(c).map(o=>`<option>${o}</option>`).join("")+`</select>`;
+  else if(c.tipo==="texto-longo") ent = `<textarea id="${dom}" rows="3"></textarea>`;
+  else if(c.tipo==="derivado")    ent = `<input id="${dom}" class="mono" readonly placeholder="—">`;
+  else if(c.tipo==="resultado")   ent = `<div class="resultado" id="${dom}"></div>`;
+  else if(c.tipo==="anexo")       ent = `<div class="anexo" id="${dom}" tabindex="0" role="button"></div>`;
+  else ent = `<input id="${dom}" type="${c.tipo==="data"?"date":"text"}"${c.mono?' class="mono"':''}>`;
+  return `<div class="campo" id="campo_${dom}">`+
+    `<p class="rot">${c.rot}${c.obr==="obr"?'<span class="ast">*</span>':''}`+
+    `<span class="chip ${cls}">${txt}</span></p>`+
+    `<p class="regra">${c.regra||""}</p>`+
+    `<div class="entrada">${ent}<p class="msg" id="msg_${dom}"></p></div></div>`;
+}
+
+function htmlLista(g){
+  const v = ESTADO[abaAtiva];
+  if(!listaDisponivel(g, ESTADO))
+    return `<section class="grupo" id="grupo_${g.id}"><h3>${g.titulo}`+
+           `<span class="marca" id="marca_${g.id}">indisponível</span></h3>`+
+           `<div class="vazio">${g.indisponivel || `Não há arranjo disponível para esta declaração. `+
+           `Ajuste o Formulário 02.`}</div></section>`;
+  const campos = g.campos(ESTADO);
+  const itens = v[g.id] || [];
+  let html = `<section class="grupo" id="grupo_${g.id}"><h3>${g.titulo}`+
+             `<span class="marca" id="marca_${g.id}">—</span></h3>`;
+  if(!itens.length)
+    html += `<div class="vazio">${g.vazio || `Nenhum ${g.rotuloItem.toLowerCase()} incluído. `+
+            `Use o botão abaixo para acrescentar o primeiro.`}</div>`;
+  itens.forEach((it,i)=>{
+    html += `<div class="itemLista" id="item_${g.id}_${i}"><header>`+
+      `<span class="rotulo">${g.rotuloItem} ${i+1}</span><span class="direita">`+
+      `<span class="estado" id="estItem_${g.id}_${i}">—</span>`+
+      `<button type="button" data-rem="${g.id}" data-i="${i}">Remover</button></span></header>`+
+      campos.map(c=>htmlCampo(c, `${g.id}__${i}__${c.id}`)).join("")+
+      `<p class="erroItem" id="erroItem_${g.id}_${i}"></p></div>`;
+  });
+  html += `<div class="addLinha"><button type="button" data-add="${g.id}">`+
+          `Acrescentar ${g.rotuloItem.toLowerCase()}</button></div></section>`;
+  return html;
+}
+
+
+/* ==================================================================
+   Capa: índice vivo dos dez formulários
+   ================================================================== */
+const RESUMO_FORM = {
+  f01:{marco:"Cadastro", oque:"Identifica a instituição, o representante legal, os responsáveis "+
+       "técnicos e as atribuições de prestação de serviço que pretende assumir."},
+  f02:{marco:"Cadastro", oque:"Apura a situação da instituição em cada um dos seis arranjos e, nos de "+
+       "participação direta, registra os caminhos de envio dos informes, de acionamento do MOC e de "+
+       "Repasse Financeiro."},
+  f03:{marco:"Cadastro", oque:"Relaciona os PSPs Recebedores Diretos para quem a instituição transmite "+
+       "informes ou aciona o MOC, e o que presta em cada arranjo."},
+  f04:{marco:"Cadastro", oque:"Relaciona os PSPs Recebedores Diretos para quem a instituição realiza o "+
+       "Repasse Financeiro do CBS e do IBS."},
+  f05:{marco:"Indicação de empresas", oque:"Indica as empresas que participarão da Produção Assistida "+
+       "Escalonada e o papel de cada uma em cada arranjo."},
+  f06:{marco:"Prontidão", oque:"Declara a conformidade da jornada do cliente Pessoa Jurídica, nos dois "+
+       "lados, em cada arranjo de participação. Sem evidência a anexar."},
+  f07:{marco:"Prontidão", oque:"Comprova o canal de rede seguro com a Plataforma Pública: enlaces, "+
+       "túneis, roteamento e resiliência."},
+  f08:{marco:"Prontidão", oque:"Comprova os controles de identidade, certificados, assinatura e "+
+       "isolamento entre participantes."},
+  f09:{marco:"Prontidão", oque:"Comprova a troca de mensagens com a Plataforma Pública: endpoints, "+
+       "informes, tratamento de erros, rastreabilidade e Mecanismo de Ocorrências."},
+  f10:{marco:"Sob demanda", oque:"Solicita a suspensão voluntária, a reativação ou a desabilitação "+
+       "voluntária da participação."}
+};
+
+function htmlCapa(){
+  let aplic = 0, prontos = 0;
+  const linhas = ABAS.filter(a=>a.def).map(a=>{
+    const r = RESUMO_FORM[a.id];
+    const vale = aplicavelAba(a, ESTADO);
+    let cls = "", txt = "não iniciado", porque = "";
+    if(!vale && a.aguarda && a.aguarda(ESTADO)){
+      txt = "a definir"; cls = ""; porque = a.aguardaPorque || "";
+    }
+    else if(!vale){ txt = "não se aplica"; cls = ""; porque = a.porque || ""; }
+    else {
+      aplic++;
+      const c = contarAba(a.id);
+      if(!c.iniciada) txt = "não iniciado";
+      else if(c.pend){ txt = c.pend+" pendência"+(c.pend>1?"s":""); cls = "pend"; }
+      else { txt = "completo"; cls = "ok"; prontos++; }
+    }
+    return `<tr class="${vale?"":"na"}" data-vai="${a.id}">`+
+      `<td class="num">${a.num}</td>`+
+      `<td class="nome">${a.nome}</td>`+
+      `<td>${r.oque}${porque?`<p class="porque">${porque}</p>`:""}</td>`+
+      `<td class="marco">${r.marco}</td>`+
+      `<td class="sit"><span class="b ${cls}">${txt}</span></td></tr>`;
+  }).join("");
+
+  return `<p class="capaIntro">Este arquivo reúne os dez formulários do processo de habilitação ao `+
+    `Split Payment. Eles compartilham o mesmo preenchimento: o que é declarado em um determina o que os `+
+    `demais pedem, e nem todos se aplicam a toda instituição.</p>`+
+    `<p class="capaIntro">Comece pelo <b>Formulário 01</b> e siga para o <b>02</b>, cuja apuração define `+
+    `quais dos demais se abrem. A coluna de situação abaixo acompanha o preenchimento em tempo real; `+
+    `clique em qualquer linha para ir ao formulário.</p>`+
+    `<table class="indice"><thead><tr><th></th><th>Formulário</th><th>O que declara</th>`+
+    `<th>Marco</th><th>Situação</th></tr></thead><tbody>${linhas}</tbody></table>`+
+    `<div class="comoUsar"><h3>Como usar</h3><dl>`+
+    `<dt>Salvar preenchimento</dt><dd>Baixa um arquivo com todas as abas, para retomar depois. `+
+    `Guarde-o: cada formulário é enviado no seu próprio marco, e o contexto anterior permanece.</dd>`+
+    `<dt>Abrir preenchimento</dt><dd>Recarrega um arquivo salvo e restaura todas as abas.</dd>`+
+    `<dt>Gerar arquivo</dt><dd>Produz o envio de uma aba. Nos Formulários 07, 08 e 09, um pacote com as `+
+    `evidências anexadas e o índice com o SHA-256 de cada arquivo.</dd>`+
+    `<dt>Exemplo</dt><dd>Preenche a aba com um caso fictício, para consulta. Substitua pelos dados da `+
+    `instituição antes de gerar: o envio é recusado enquanto o CNPJ for o do exemplo.</dd>`+
+    `</dl></div>`;
+}
+
+function desenharAba(){
+  const aba = ABAS.find(a=>a.id===abaAtiva);
+  el("titAba").textContent = `Formulário ${aba.num} · ${aba.nome}`;
+  el("subAba").textContent = aba.def ? aba.def.sub : (aba.sob || "");
+  el("gerais").style.display = aba.def ? "" : "none";
+  if(aba.def) el("gerais").textContent = aba.def.gerais;
+  const f = el("f"); f.innerHTML = "";
+  const cxEscopo = el("escopo");
+  cxEscopo.style.display = "none";
+
+  if(!aplicavelAba(aba, ESTADO)){
+    const esperando = aba.aguarda && aba.aguarda(ESTADO);
+    f.innerHTML = `<div class="na-aviso">`+
+      `<h3>${esperando ? "Ainda não é possível saber se esta aba se aplica"
+                       : "Esta aba não se aplica"}</h3>`+
+      `<p>${esperando ? aba.aguardaPorque : aba.porque}</p>`+
+      `<button type="button" id="btIr">Ir ao campo que define isso</button></div>`;
+    el("acoes").innerHTML = "";
+    el("btIr").onclick = ()=> irPara(aba.ondeMudar[0], aba.ondeMudar[1]);
+    desenharAbas();
+    return;
+  }
+  if(aba.id==="capa"){
+    el("titAba").textContent = "Formulários de Habilitação ao Split Payment";
+    el("subAba").textContent = "";
+    f.innerHTML = htmlCapa();
+    el("acoes").innerHTML =
+      `<button type="button" id="btSalvar">Salvar preenchimento</button>`+
+      `<button type="button" id="btAbrir">Abrir preenchimento</button>`+
+      `<button type="button" id="btImprimir">Imprimir</button>`+
+      `<input type="file" id="arq" accept=".json" hidden>`;
+    ligarAcoes();
+    desenharAbas();
+    desenharPainel({});
+    coerencia();
+    return;
+  }
+  if(!aba.def){
+    f.innerHTML = `<div class="emobra"><strong>Aba a construir</strong>`+
+      `A estrutura desta aba será entregue na próxima etapa. A regra que define quando ela se aplica `+
+      `já está ativa: ${aba.porque || aba.sob}</div>`;
+    el("acoes").innerHTML = "";
+    desenharAbas();
+    return;
+  }
+
+  if(aba.def.escopo){
+    cxEscopo.innerHTML = aba.def.escopo(ESTADO);
+    cxEscopo.style.display = "";
+  }
+
+  for(const g of aba.def.grupos){
+    if(g.tipo==="lista"){ f.insertAdjacentHTML("beforeend", htmlLista(g)); continue; }
+    const sec = document.createElement("section");
+    sec.className="grupo"; sec.id="grupo_"+g.id;
+    let html = `<h3>${g.titulo}<span class="marca" id="marca_${g.id}">—</span></h3>`;
+    if(g.blocos){
+      for(const b of g.blocos)
+        html += `<div class="bloco" id="bloco_${b.id}"><h4>${b.titulo}</h4>`+
+                (b.nota?`<p class="nota">${b.nota}</p>`:"")+
+                b.campos.map(c=>htmlCampo(c, c.id)).join("")+`</div>`;
+    } else {
+      html += `<div class="bloco">`+g.campos.map(c=>htmlCampo(c, c.id)).join("")+`</div>`;
+    }
+    sec.innerHTML = html;
+    f.appendChild(sec);
+  }
+  el("acoes").innerHTML =
+    `<button type="button" class="principal" id="btGerar">Gerar arquivo do Formulário ${aba.num}</button>`+
+    `<button type="button" id="btSalvar">Salvar preenchimento</button>`+
+    `<button type="button" id="btAbrir">Abrir preenchimento</button>`+
+    `<button type="button" id="btExemplo">Preencher esta aba com o exemplo</button>`+
+    `<button type="button" id="btImprimir">Imprimir</button>`+
+    `<input type="file" id="arq" accept=".json" hidden>`;
+  if(aba.def.anexos)
+    el("f").insertAdjacentHTML("beforeend",
+      `<p class="totalAnexos" id="totalAnexos"></p>`);
+  ligarAcoes();
+  escrever();
+  reavaliar();
+}
+
+function escrever(){
+  for(const inst of instancias(abaAtiva)){
+    if(inst.def.tipo==="resultado") continue;
+    const e = el(inst.dom);
+    if(e) e.value = valorDe(inst);
+  }
+}
+function ler(){
+  for(const inst of instancias(abaAtiva)){
+    if(inst.def.tipo==="resultado") continue;
+    const e = el(inst.dom);
+    if(e) porValor(inst, e.value);
+  }
+}
+
+/* --------------------------- reavaliação --------------------------- */
+function contarAba(id){
+  const d = defDe(id);
+  if(!d) return {pend:0, exig:0, iniciada:false};
+  const v = ESTADO[id];
+  let pend=0, exig=0, iniciada=false;
+  const antes = abaAtiva;
+  for(const inst of instancias(id)){
+    if(valorDe(inst)) iniciada = true;
+    const c = inst.def;
+    if(!valeInst(inst) || c.obr==="aut") continue;
+    const exigido = c.obr==="obr" || (c.obr==="grupo" && grupoIniciado(id, c.grupo, inst.item));
+    if(exigido) exig++;
+    if(erroDaInstancia(id, inst)) pend++;
+  }
+  for(const g of d.grupos){
+    if(!grupoVale(g, ESTADO)) continue;
+    if(g.tipo!=="lista" || !listaDisponivel(g, ESTADO)) continue;
+    const itens = v[g.id] || [];
+    if(itens.length) iniciada = true;
+    if(itens.length < (g.minimo||0)){ exig++; pend++; }
+    if(g.validaItem) itens.forEach(it=>{ if(g.validaItem(it, ESTADO)) pend++; });
+  }
+  return {pend, exig, iniciada};
+}
+
+function reavaliar(){
+  ler();
+  const v = ESTADO[abaAtiva];
+  const def = defDe(abaAtiva);
+
+  if(abaAtiva==="f01"){
+    const r = soAlnum(v.cnpj).slice(0,8);
+    v.raiz = r.length===8 ? r : "";
+    if(el("raiz")) el("raiz").value = v.raiz;
+  }
+
+  for(let volta=0; volta<3; volta++){
+    let mudou=false;
+    for(const inst of instancias(abaAtiva))
+      if(!valeInst(inst) && valorDe(inst)){
+        porValor(inst, ""); if(el(inst.dom)) el(inst.dom).value=""; mudou=true;
+      }
+    if(!mudou) break;
+  }
+  for(const inst of instancias(abaAtiva)){
+    /* Campo cujas opções derivam do estado é regerado quando a lista muda. */
+    if(inst.def.tipo==="lista" && typeof inst.def.opcoes === "function"){
+      const cx = el(inst.dom);
+      if(cx){
+        const atuais = opcoesDe(inst.def);
+        const noDom = Array.from(cx.options).slice(1).map(o=>o.value);
+        if(atuais.length!==noDom.length || atuais.some((o,i)=>o!==noDom[i])){
+          const antes = cx.value;
+          cx.innerHTML = `<option value="">Selecione…</option>`+
+            atuais.map(o=>`<option>${o}</option>`).join("");
+          cx.value = atuais.includes(antes) ? antes : "";
+        }
+      }
+    }
+    if(inst.def.tipo==="lista" && valorDe(inst) && !opcoesDe(inst.def).includes(valorDe(inst)))
+      porValor(inst, "");
+    const d = el("campo_"+inst.dom);
+    if(d) d.classList.toggle("oculto", !valeInst(inst));
+    if(inst.def.tipo==="anexo"){
+      pintarAnexo(inst);
+      continue;
+    }
+    if(inst.def.tipo==="resultado"){
+      const cx = el(inst.dom);
+      const r = inst.def.resultado(inst.item);
+      if(cx){
+        const info = RESUMO_SIT[r];
+        cx.className = "resultado " + (r ? r.toLowerCase() : "");
+        cx.innerHTML = info ? `<b>${info.titulo}</b>${info.texto}`
+                            : "Responda às perguntas acima para apurar a situação.";
+      }
+      if(inst.lista===null) ESTADO[abaAtiva][inst.def.id] = r;
+    }
+  }
+  if(def) for(const g of def.grupos) if(g.blocos) for(const b of g.blocos){
+    const d = el("bloco_"+b.id); if(d) d.classList.toggle("oculto", b.quando ? !b.quando(v) : false);
+  }
+
+  const porGrupo = {};
+  if(def) for(const g of def.grupos) porGrupo[g.id] = {pend:0, vazio:true};
+  for(const inst of instancias(abaAtiva)){
+    const c = inst.def;
+    if(!valeInst(inst) || c.obr==="aut") continue;
+    if(valorDe(inst)) porGrupo[inst.grupo].vazio = false;
+    const erro = erroDaInstancia(abaAtiva, inst);
+    const campo = el(inst.dom), msg = el("msg_"+inst.dom);
+    const mostrar = erro && tocados[abaAtiva].has(inst.dom);
+    if(campo) campo.classList.toggle("err", !!mostrar);
+    if(msg){ msg.textContent = erro; msg.classList.toggle("ver", !!mostrar); }
+    if(erro) porGrupo[inst.grupo].pend++;
+  }
+
+  if(def) for(const g of def.grupos){
+    const sec = el("grupo_"+g.id);
+    if(sec) sec.classList.toggle("oculto", !grupoVale(g, ESTADO));
+    if(!grupoVale(g, ESTADO)) continue;
+    if(g.tipo==="lista" && listaDisponivel(g, ESTADO)){
+      const itens = v[g.id] || [];
+      if(itens.length) porGrupo[g.id].vazio = false;
+      if(itens.length < (g.minimo||0)) porGrupo[g.id].pend++;
+      itens.forEach((it,i)=>{
+        const e = g.validaItem ? g.validaItem(it, ESTADO) : "";
+        if(e) porGrupo[g.id].pend++;
+        const cx = el(`erroItem_${g.id}_${i}`);
+        const mostra = e && tocados[abaAtiva].has("lista_"+g.id);
+        if(cx){ cx.textContent = e; cx.classList.toggle("ver", !!mostra); }
+        const st = el(`estItem_${g.id}_${i}`);
+        if(st){
+          const campos = g.campos(ESTADO);
+          const p = campos.filter(c=>erroPadrao(c, it[c.id])).length + (e?1:0);
+          st.textContent = p ? p+" pendente"+(p>1?"s":"") : "completo";
+          st.className = "estado " + (p ? "pend" : "ok");
+        }
+      });
+    }
+    const m = el("marca_"+g.id);
+    if(m && listaDisponivel(g, ESTADO)){
+      const p = porGrupo[g.id].pend;
+      const sitG = g.blocos && TRIAGEM[g.id] ? TRIAGEM[g.id].deriva(v) : "";
+      m.textContent = porGrupo[g.id].vazio && !p ? "não iniciado"
+        : (p ? p+" pendente"+(p>1?"s":"")
+             : (sitG==="Fora" ? "fora do arranjo" : "completo"));
+      m.className = "marca " + (porGrupo[g.id].vazio && !p ? "" : (p ? "pend" : "ok"));
+    }
+  }
+
+  const tot = el("totalAnexos");
+  if(tot){
+    const usados = instancias(abaAtiva).filter(i=>i.def.tipo==="anexo" && ANEXOS[i.dom]);
+    const soma = usados.reduce((t,i)=>t+ANEXOS[i.dom].tamanho, 0);
+    tot.innerHTML = usados.length
+      ? `<b>${usados.length} evidência${usados.length===1?"":"s"} anexada${usados.length===1?"":"s"}</b>, `+
+        `somando ${tamanhoLegivel(soma)}. O pacote gerado traz o índice com o SHA-256 de cada arquivo.`
+      : `Nenhuma evidência anexada. Exemplos de preenchimento e de evidência acompanham o pacote, `+
+        `no arquivo <b>Exemplos Evidências Formulários.zip</b>.`;
+  }
+  desenharAbas();
+  desenharPainel(porGrupo);
+  return coerencia();
+}
+
+function criarAbas(){
+  el("abas").innerHTML = ABAS.map(a=>
+    `<button type="button" data-aba="${a.id}"><span class="n">${a.num}</span>`+
+    `<span class="e" id="est_${a.id}"></span></button>`).join("");
+}
+function desenharAbas(){
+  for(const a of ABAS){
+    const bt = el("abas").querySelector(`button[data-aba="${a.id}"]`);
+    const sp = el("est_"+a.id);
+    if(a.id==="capa"){ sp.textContent=""; bt.className = a.id===abaAtiva ? "ativa" : ""; continue; }
+    const apl = aplicavelAba(a, ESTADO);
+    const esperando = !apl && a.aguarda && a.aguarda(ESTADO);
+    let est, cls="";
+    if(esperando){ est="a definir"; cls="na"; }
+    else if(!apl){ est="não se aplica"; cls="na"; }
+    else if(!a.def){ est="a construir"; }
+    else { const c=contarAba(a.id);
+      if(!c.iniciada) est="não iniciado";
+      else if(c.pend){ est=c.pend+" pendência"+(c.pend>1?"s":""); cls="pend"; }
+      else { est="completo"; cls="ok"; } }
+    sp.textContent = est;
+    sp.className = "e " + (cls==="na" ? "" : cls);
+    bt.className = (a.id===abaAtiva ? "ativa " : "") + (cls==="na" ? "na" : "");
+  }
+}
+
+function desenharPainel(porGrupo){
+  const def = defDe(abaAtiva);
+  if(abaAtiva==="capa"){
+    el("tituloPainel").textContent = "Conjunto";
+    const alvo = ABAS.filter(a=>a.def && aplicavelAba(a, ESTADO));
+    const prontos = alvo.filter(a=>{ const c=contarAba(a.id); return c.iniciada && !c.pend; });
+    el("resumo").innerHTML = alvo.map(a=>{
+      const c = contarAba(a.id);
+      const cls = !c.iniciada ? "" : (c.pend ? "pend" : "ok");
+      const t = !c.iniciada ? "—" : (c.pend ? c.pend+" pend." : "completo");
+      return `<li class="${cls}" data-vai="${a.id}"><span>${a.num} · ${a.curto}</span>`+
+             `<span class="n">${t}</span></li>`;
+    }).join("");
+    el("pct").textContent = alvo.length ? Math.round(prontos.length/alvo.length*100)+"%" : "0%";
+    el("falta").textContent = `${prontos.length} de ${alvo.length} formulários aplicáveis concluídos`;
+    return;
+  }
+  if(!def){ el("resumo").innerHTML=""; el("pct").textContent="—";
+            el("falta").textContent="aba sem preenchimento"; return; }
+  const v = ESTADO[abaAtiva];
+  el("tituloPainel").textContent = abaAtiva==="f02" ? "Arranjos" : "Preenchimento";
+  el("resumo").innerHTML = def.grupos.filter(g=>grupoVale(g, ESTADO)).map(g=>{
+    const p = (porGrupo[g.id]||{pend:0}).pend;
+    const vazio = (porGrupo[g.id]||{vazio:true}).vazio;
+    const naoPart = g.blocos && TRIAGEM[g.id] && TRIAGEM[g.id].deriva(v)==="Fora";
+    const indisp = g.tipo==="lista" && !listaDisponivel(g, ESTADO);
+    const cls = indisp ? "fora" : (p ? "pend" : (naoPart ? "fora" : (vazio ? "" : "ok")));
+    const txt = indisp ? "indisponível"
+              : (p ? p+" pend." : (naoPart ? "não participa" : (vazio ? "—" : "completo")));
+    return `<li class="${cls}" data-alvo="grupo_${g.id}"><span>${g.titulo.replace(/^\d+\.\s*/,"")}</span>`+
+           `<span class="n">${txt}</span></li>`;
+  }).join("");
+  const c = contarAba(abaAtiva);
+  const feitos = Math.max(0, c.exig - c.pend);
+  el("pct").textContent = c.exig ? Math.round(feitos/c.exig*100)+"%" : "0%";
+  el("falta").textContent = c.pend ? c.pend+" campo"+(c.pend>1?"s":"")+" a ajustar"
+                                   : "sem pendências nesta aba";
+}
+
+function coerencia(){
+  const achados = REGRAS.map(r=>({peso:r.peso, r:r.ver(ESTADO)})).filter(x=>x.r);
+  for(const [peso, cx] of [["impede","coerImpede"],["alerta","coerAlerta"]]){
+    const lista = achados.filter(a=>a.peso===peso);
+    const box = el(cx);
+    box.classList.toggle("ver", lista.length>0);
+    if(lista.length){
+      box.innerHTML = `<h4>${peso==="impede" ? "Contradições entre abas" : "Pontos de atenção"}</h4><ul>`+
+        lista.map((a,i)=>`<li data-i="${i}">${a.r.texto}</li>`).join("")+`</ul>`;
+      box.dataset.alvos = JSON.stringify(lista.map(a=>a.r.ir));
+    }
+  }
+  return achados.filter(a=>a.peso==="impede").length;
+}
+
+function irPara(aba, campo){
+  ler(); abaAtiva = aba; desenharAba();
+  if(campo) setTimeout(()=>{
+    const d = el("campo_"+campo);
+    if(d){ d.scrollIntoView({behavior:"smooth", block:"center"}); const i=el(campo); if(i) i.focus(); }
+  }, 60);
+}
+
+/* --------------------------- ações --------------------------- */
+
+/* ==================================================================
+   Anexos. Os arquivos ficam em memória, indexados pelo campo, e o
+   pacote é montado sem depender de biblioteca externa.
+   ================================================================== */
+const LIMITE = 5 * 1024 * 1024;
+const ANEXOS = {};                     // dom -> {nome, tamanho, hash, bytes}
+
+const tamanhoLegivel = n => n < 1024 ? n+" B"
+  : n < 1048576 ? (n/1024).toFixed(1)+" kB" : (n/1048576).toFixed(2)+" MB";
+
+async function hashDe(bytes){
+  const h = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+
+function pintarAnexo(inst){
+  const cx = el(inst.dom);
+  if(!cx) return;
+  const a = ANEXOS[inst.dom];
+  if(a){
+    cx.className = "anexo cheio";
+    cx.innerHTML = `<div class="arq"><div><div class="nome">${a.nome}</div>`+
+      `<div class="meta">${tamanhoLegivel(a.tamanho)} · SHA-256 ${a.hash.slice(0,16)}…</div></div>`+
+      `<button type="button" data-tira-anexo="${inst.dom}">Remover</button></div>`;
+  } else {
+    const erro = tocados[abaAtiva].has(inst.dom) ? " err" : "";
+    cx.className = "anexo" + erro;
+    cx.innerHTML = `<div class="conv"><b>Arraste o arquivo aqui</b> ou clique para escolher.<br>`+
+                   `Até ${tamanhoLegivel(LIMITE)} por arquivo.</div>`;
+  }
+}
+
+async function guardarAnexo(dom, file){
+  if(file.size > LIMITE){
+    mostrar(`O arquivo “${file.name}” tem ${tamanhoLegivel(file.size)} e excede o limite de `+
+            `${tamanhoLegivel(LIMITE)}. Reduza o arquivo ou divida a evidência.`, false);
+    return;
+  }
+  const bytes = await file.arrayBuffer();
+  ANEXOS[dom] = {nome:file.name, tamanho:file.size, hash:await hashDe(bytes), bytes};
+  const inst = instancias(abaAtiva).find(i=>i.dom===dom);
+  if(inst){
+    const ref = inst.def.id.replace(/_anexo$/,"_ref");
+    const alvo = el(ref);
+    if(alvo && !alvo.value){ alvo.value = file.name; }
+  }
+  tocados[abaAtiva].delete(dom);
+  reavaliar();
+}
+
+/* --------- pacote ZIP, escrito sem biblioteca externa --------- */
+function crc32(u8){
+  let c, tab = crc32.tab;
+  if(!tab){
+    tab = crc32.tab = new Uint32Array(256);
+    for(let n=0;n<256;n++){ c=n; for(let k=0;k<8;k++) c = c&1 ? 0xEDB88320 ^ (c>>>1) : c>>>1; tab[n]=c>>>0; }
+  }
+  c = 0xFFFFFFFF;
+  for(let i=0;i<u8.length;i++) c = tab[(c ^ u8[i]) & 0xFF] ^ (c>>>8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function montarZip(arquivos){
+  const enc = new TextEncoder();
+  const locais = [], central = [];
+  let desloc = 0;
+  for(const {nome, dados} of arquivos){
+    const n = enc.encode(nome), d = dados instanceof Uint8Array ? dados : new Uint8Array(dados);
+    const crc = crc32(d);
+    const lh = new DataView(new ArrayBuffer(30));
+    lh.setUint32(0, 0x04034b50, true); lh.setUint16(4, 20, true); lh.setUint16(6, 0x0800, true);
+    lh.setUint16(8, 0, true); lh.setUint16(10, 0, true); lh.setUint16(12, 0x2921, true);
+    lh.setUint32(14, crc, true); lh.setUint32(18, d.length, true); lh.setUint32(22, d.length, true);
+    lh.setUint16(26, n.length, true); lh.setUint16(28, 0, true);
+    locais.push(new Uint8Array(lh.buffer), n, d);
+    const ch = new DataView(new ArrayBuffer(46));
+    ch.setUint32(0, 0x02014b50, true); ch.setUint16(4, 20, true); ch.setUint16(6, 20, true);
+    ch.setUint16(8, 0x0800, true); ch.setUint16(10, 0, true);
+    ch.setUint16(12, 0, true); ch.setUint16(14, 0x2921, true);
+    ch.setUint32(16, crc, true); ch.setUint32(20, d.length, true); ch.setUint32(24, d.length, true);
+    ch.setUint16(28, n.length, true); ch.setUint32(38, 0x20, true); ch.setUint32(42, desloc, true);
+    central.push(new Uint8Array(ch.buffer), n);
+    desloc += 30 + n.length + d.length;
+  }
+  const tamCentral = central.reduce((t,p)=>t+p.length, 0);
+  const fim = new DataView(new ArrayBuffer(22));
+  fim.setUint32(0, 0x06054b50, true);
+  fim.setUint16(8, arquivos.length, true); fim.setUint16(10, arquivos.length, true);
+  fim.setUint32(12, tamCentral, true); fim.setUint32(16, desloc, true);
+  return new Blob([...locais, ...central, new Uint8Array(fim.buffer)], {type:"application/zip"});
+}
+
+function mostrar(txt, bom){
+  const a = el("aviso"); a.textContent = txt;
+  a.className = "aviso ver " + (bom ? "bom" : "ruim");
+}
+function baixar(nome, conteudo){
+  const u = URL.createObjectURL(new Blob([conteudo], {type:"application/json"}));
+  const a = document.createElement("a"); a.href=u; a.download=nome; a.click();
+  setTimeout(()=>URL.revokeObjectURL(u), 1000);
+}
+const CNPJ_EXEMPLO = F01.exemplo.cnpj;
+
+function dadosDaAba(id){
+  const d = defDe(id); if(!d) return {};
+  const v = ESTADO[id], out = {};
+  for(const g of d.grupos){
+    if(!grupoVale(g, ESTADO)) continue;
+    if(g.tipo==="lista"){
+      const itens = (v[g.id]||[]).map(it=>{
+        const o = {};
+        for(const c of g.campos(ESTADO)) if(it[c.id]) o[c.id] = it[c.id];
+        return o;
+      }).filter(o=>Object.keys(o).length);
+      if(itens.length) out[g.id] = itens;
+    } else {
+      const campos = g.blocos ? g.blocos.flatMap(b=>b.campos) : g.campos;
+      for(const c of campos)
+        if(!["derivado","resultado"].includes(c.tipo) && aplicavel(c, v) && v[c.id]) out[c.id] = v[c.id];
+    }
+  }
+  return out;
+}
+const apuracao = () => Object.fromEntries(
+  ARRANJOS.map(a=>[a.nome, situacaoDe(ESTADO,a) || "não apurada"]));
+function pacoteCompleto(){
+  return {conjunto:"Formulários de Habilitação - Split Payment", versao:"1.0",
+          geradoEm:new Date().toISOString(), raizCnpj:ESTADO.f01.raiz||"",
+          apurado:{situacaoPorArranjo:apuracao()},
+          abas:Object.fromEntries(ABAS.filter(a=>a.def).map(a=>[a.id, dadosDaAba(a.id)]))};
+}
+
+function exemploDaAba(){
+    const d = defDe(abaAtiva);
+    const novo = {...(typeof d.exemplo === "function" ? d.exemplo(ESTADO) : (d.exemplo || {}))};
+    for(const g of d.grupos)
+      if(g.tipo==="lista") novo[g.id] = g.exemplo ? g.exemplo(ESTADO).map(x=>({...x})) : [];
+    ESTADO[abaAtiva] = novo;
+    tocados[abaAtiva] = new Set();
+    desenharAba();
+    mostrar("Exemplo carregado nesta aba. Substitua pelos dados da instituição antes de gerar o arquivo.", true);
+  
+}
+
+function ligarAcoes(){
+  const aba = ABAS.find(a=>a.id===abaAtiva);
+  if(el("btGerar")) el("btGerar").onclick = ()=>{
+    tocados[abaAtiva] = new Set(instancias(abaAtiva).map(i=>i.dom));
+    for(const g of defDe(abaAtiva).grupos)
+      if(g.tipo==="lista") tocados[abaAtiva].add("lista_"+g.id);
+    const impede = reavaliar();
+    const c = contarAba(abaAtiva);
+    if(c.pend){
+      mostrar(`Há ${c.pend} campo${c.pend>1?"s":""} a ajustar nesta aba.`, false);
+      const p = instancias(abaAtiva).find(x=>el(x.dom) && el(x.dom).classList.contains("err"));
+      if(p) el("campo_"+p.dom).scrollIntoView({behavior:"smooth", block:"center"});
+      return;
+    }
+    if(impede){ mostrar("Há contradição entre abas. Resolva os pontos listados acima antes de gerar.", false); return; }
+    if(ESTADO.f01.cnpj === CNPJ_EXEMPLO){
+      mostrar("O CNPJ ainda é o do exemplo. Substitua pelos dados da instituição antes de gerar o arquivo.", false);
+      return;
+    }
+    if(aba.def.anexos){
+      const usados = instancias(abaAtiva).filter(i=>i.def.tipo==="anexo" && ANEXOS[i.dom]);
+      const arquivos = usados.map(i=>({
+        nome:`${i.def.id.replace(/_anexo$/,"")}/${ANEXOS[i.dom].nome}`,
+        dados:ANEXOS[i.dom].bytes}));
+      const meta = {formulario:`${aba.num} - ${aba.nome}`, versao:"1.0",
+        geradoEm:new Date().toISOString(), raizCnpj:ESTADO.f01.raiz||"",
+        dados:dadosDaAba(abaAtiva),
+        evidencias:usados.map(i=>({item:i.def.id.replace(/_anexo$/,""), arquivo:ANEXOS[i.dom].nome,
+          bytes:ANEXOS[i.dom].tamanho, sha256:ANEXOS[i.dom].hash}))};
+      arquivos.unshift({nome:`Formulário ${aba.num}.json`,
+        dados:new TextEncoder().encode(JSON.stringify(meta, null, 2))});
+      const u = URL.createObjectURL(montarZip(arquivos));
+      const el2 = document.createElement("a");
+      el2.href = u; el2.download = `Formulário ${aba.num} - ${aba.nome}.zip`; el2.click();
+      setTimeout(()=>URL.revokeObjectURL(u), 1000);
+      mostrar(`Pacote gerado com ${usados.length} evidência${usados.length===1?"":"s"}. Cada arquivo `+
+        `traz o seu SHA-256 no índice, para conferência pela Plataforma Pública.`, true);
+      return;
+    }
+    baixar(`Formulário ${aba.num} - ${aba.nome}.json`,
+      JSON.stringify(Object.assign({formulario:`${aba.num} - ${aba.nome}`, versao:"1.0",
+        geradoEm:new Date().toISOString(), raizCnpj:ESTADO.f01.raiz||""},
+        abaAtiva==="f02" ? {apurado:{situacaoPorArranjo:apuracao()}} : {},
+        {dados:dadosDaAba(abaAtiva)}), null, 2));
+    mostrar("Arquivo gerado. Encaminhe-o pelo canal indicado no Capítulo 7 do Manual de Habilitação de Participantes.", true);
+  };
+  if(el("btExemplo")) el("btExemplo").onclick = exemploDaAba;
+  el("btSalvar").onclick = ()=>{
+    ler();
+    baixar("Formulários de Habilitação - preenchimento.json", JSON.stringify(pacoteCompleto(), null, 2));
+    mostrar("Preenchimento salvo, com todas as abas. Use “Abrir preenchimento” para retomar.", true);
+  };
+  el("btAbrir").onclick = ()=> el("arq").click();
+  el("arq").onchange = ev=>{
+    const f = ev.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = ()=>{
+      try{
+        const j = JSON.parse(r.result);
+        const abas = j.abas || {};
+        for(const a of ABAS) if(a.def) ESTADO[a.id] = {...(abas[a.id] || {})};
+        ABAS.forEach(a=>tocados[a.id]=new Set());
+        desenharAba();
+        mostrar("Preenchimento carregado.", true);
+      }catch(e){ mostrar("Não foi possível ler o arquivo. Selecione um arquivo gerado por este conjunto.", false); }
+    };
+    r.readAsText(f); ev.target.value="";
+  };
+  el("btImprimir").onclick = ()=> window.print();
+}
+
+el("f").addEventListener("click", ev=>{
+  const linha = ev.target.closest("tr[data-vai]");
+  if(linha){ irPara(linha.dataset.vai, null); return; }
+  const tira = ev.target.closest("button[data-tira-anexo]");
+  if(tira){ delete ANEXOS[tira.dataset.tiraAnexo]; tocados[abaAtiva].delete(tira.dataset.tiraAnexo);
+            reavaliar(); return; }
+  const cx = ev.target.closest(".anexo");
+  if(cx && !ANEXOS[cx.id]){
+    const inp = document.createElement("input");
+    inp.type = "file";
+    inp.onchange = e => { if(e.target.files[0]) guardarAnexo(cx.id, e.target.files[0]); };
+    inp.click();
+    return;
+  }
+  const add = ev.target.closest("button[data-add]");
+  if(add){
+    ler();
+    const g = defDe(abaAtiva).grupos.find(x=>x.id===add.dataset.add);
+    ESTADO[abaAtiva][g.id] = ESTADO[abaAtiva][g.id] || [];
+    ESTADO[abaAtiva][g.id].push({});
+    desenharAba();
+    const itens = ESTADO[abaAtiva][g.id];
+    const alvo = el(`item_${g.id}_${itens.length-1}`);
+    if(alvo) alvo.scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  const rem = ev.target.closest("button[data-rem]");
+  if(rem){
+    ler();
+    const lst = ESTADO[abaAtiva][rem.dataset.rem] || [];
+    lst.splice(Number(rem.dataset.i), 1);
+    desenharAba();
+  }
+});
+for(const evt of ["dragenter","dragover"])
+  el("f").addEventListener(evt, ev=>{
+    const cx = ev.target.closest(".anexo");
+    if(!cx) return;
+    ev.preventDefault(); cx.classList.add("sobre");
+  });
+el("f").addEventListener("dragleave", ev=>{
+  const cx = ev.target.closest(".anexo");
+  if(cx) cx.classList.remove("sobre");
+});
+el("f").addEventListener("drop", ev=>{
+  const cx = ev.target.closest(".anexo");
+  if(!cx) return;
+  ev.preventDefault(); cx.classList.remove("sobre");
+  const f = ev.dataTransfer.files[0];
+  if(f) guardarAnexo(cx.id, f);
+});
+el("f").addEventListener("keydown", ev=>{
+  const cx = ev.target.closest(".anexo");
+  if(cx && (ev.key==="Enter" || ev.key===" ")){ ev.preventDefault(); cx.click(); }
+});
+el("escopo").addEventListener("click", ev=>{
+  const lk = ev.target.closest("[data-ir]");
+  if(lk) irPara(lk.dataset.ir, null);
+});
+el("f").addEventListener("input", e=>{ tocados[abaAtiva].add(e.target.id); reavaliar(); });
+el("f").addEventListener("change", e=>{ tocados[abaAtiva].add(e.target.id); reavaliar(); });
+el("f").addEventListener("blur", e=>{ if(e.target.id){ tocados[abaAtiva].add(e.target.id); reavaliar(); } }, true);
+
+criarAbas();
+
+el("abas").addEventListener("click", ev=>{
+  const bt = ev.target.closest("button[data-aba]");
+  if(!bt) return;
+  ler(); abaAtiva = bt.dataset.aba; desenharAba(); window.scrollTo({top:0, behavior:"smooth"});
+});
+el("resumo").addEventListener("click", ev=>{
+  const vai = ev.target.closest("li[data-vai]");
+  if(vai){ irPara(vai.dataset.vai, null); return; }
+  const li = ev.target.closest("li[data-alvo]");
+  if(!li) return;
+  const d = el(li.dataset.alvo);
+  if(d) d.scrollIntoView({behavior:"smooth", block:"start"});
+});
+for(const cx of ["coerImpede","coerAlerta"]){
+  el(cx).addEventListener("click", ev=>{
+    const li = ev.target.closest("li[data-i]");
+    if(!li) return;
+    const alvos = JSON.parse(el(cx).dataset.alvos || "[]");
+    const alvo = alvos[Number(li.dataset.i)];
+    if(alvo) irPara(alvo[0], alvo[1]);
+  });
+}
+
+desenharAba();
+</script>
+</body>
+</html>

@@ -66,7 +66,7 @@ export const casoCicloFeliz: CasoDemo = {
       coachTip: "Isto é a segregação: o imposto sai no pagamento, não meses depois.",
       mostraResultado: true,
       tecnico: {
-        endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
+        endpoint: "GET /api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start",
         descricao: "O PSP puxa os retornos do fisco (evento RSUP com o valor segregado).",
       },
     },
@@ -106,7 +106,7 @@ export const casoCorrecao: CasoDemo = {
         "O Retorno Super Inteligente é o canal por onde o fisco devolve correções (código RSUP). Nada se perde.",
       mostraResultado: false,
       tecnico: {
-        endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
+        endpoint: "GET /api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start",
         descricao: "Evento RSUP101 com o valor corrigido (vlCbsCorr).",
       },
     },
@@ -147,7 +147,7 @@ export const casoParcial: CasoDemo = {
       coachTip: "A fórmula segrega min((pago/nota) x tributo; tributo), truncado em centavos.",
       mostraResultado: true,
       tecnico: {
-        endpoint: "GET /api/v1/out/boleto/{psp}/tributos/stream/start",
+        endpoint: "GET /api/v1/out/boleto/{cnpjRaizPspRecDir}/transacoes/stream/start",
         descricao: "Retorno com o valor segregado proporcional.",
       },
     },

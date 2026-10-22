@@ -1,4 +1,5 @@
 import type { FastifyError, FastifyInstance, FastifyReply } from "fastify";
+import type { MemoryStore } from "../store/memory.js";
 
 /**
  * RFC 7807 application/problem+json, taxonomia do Manual de Integracao
@@ -17,7 +18,22 @@ export interface ProblemInput {
   headers?: Record<string, string>;
 }
 
+/**
+ * `resourceId` em toda resposta de erro do contrato. O v1.1.1 pos o campo em
+ * todos os schemas problem+json, e o capitulo 9 do manual diz que cada
+ * requisicao processada gera um, com sucesso ou com erro. So vale para /api/:
+ * as rotas utilitarias (/_scenario, /healthz) nao sao contrato e nao devem
+ * consumir o contador, que e deterministico por seed.
+ */
+function resourceIdDoErro(reply: FastifyReply, p: ProblemInput): string | undefined {
+  if (typeof p.extensions?.["resourceId"] === "string") return undefined;
+  if (!reply.request.url.startsWith("/api/")) return undefined;
+  const { store } = reply.server as Partial<{ store: MemoryStore }>;
+  return store?.proximoResourceId();
+}
+
 export function sendProblem(reply: FastifyReply, p: ProblemInput): FastifyReply {
+  const resourceId = resourceIdDoErro(reply, p);
   if (p.headers) {
     for (const [k, v] of Object.entries(p.headers)) reply.header(k, v);
   }
@@ -33,6 +49,7 @@ export function sendProblem(reply: FastifyReply, p: ProblemInput): FastifyReply 
       title: p.title,
       status: p.status,
       ...(p.detail !== undefined ? { detail: p.detail } : {}),
+      ...(resourceId !== undefined ? { resourceId } : {}),
       ...p.extensions,
     });
 }

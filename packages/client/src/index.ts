@@ -1,4 +1,4 @@
-export const VERSION = "0.2.0";
+export const VERSION = "0.3.0";
 export { calcularSegregacao } from "./domain/segregacao.js";
 export type { SegregacaoInput } from "./domain/segregacao.js";
 export type { CategoriaValor, PapelPsp, Tributo } from "./domain/types.js";

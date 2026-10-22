@@ -26,7 +26,6 @@ function itemBaixaBoleto(n: number): Record<string, unknown> {
     index: n,
     idDda: `DDA${n}`,
     numCtrlOrig: `CTRL${String(n).padStart(6, "0")}`,
-    numPgto: n,
     cnpjRaizPspRecDir: "12345678",
     dtHrBaixa: TS,
   };

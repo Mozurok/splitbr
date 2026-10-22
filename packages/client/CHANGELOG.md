@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 (2026-10-22)
+
+**Quebra compatibilidade nos tipos.** Migra para o contrato oficial **OpenAPI v1.1.1**, publicado pelo CGIBS em 24/09/2026 e aprovado pelo Ato Técnico Conjunto RFB/CGIBS nº 5. Rotas e nomes de schema não mudaram. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).
+
+- `indPgtoIntegral` saiu de Pix Dinâmico e Pix Automático, no Informe Preliminar e no lote de segregação. No Boleto continua obrigatório.
+- `cnpjRaizPspRecInd` saiu dos seis schemas de Boleto. Nos arranjos Pix continua opcional.
+- Respostas de erro 403, 410, 500 e os 422 de segregação, stream e MOC trocaram `errors` por `resourceId`. Os 400 e o envelope 201 mantêm `errors`.
+- Um teste de tipos trava as três remoções: contra os tipos do v1.1.0 ele não compila.
+- A assinatura não mudou. O Manual de Segurança v1.0.0 cita um claim `hashPayload` que o Manual de Integração v1.1.1 e o OpenAPI não pedem e que nenhum documento define; o client segue o OpenAPI.
+
 ## 0.2.0 (2026-09-04)
 
 **Quebra compatibilidade.** Migra para o contrato oficial **OpenAPI v1.1.0**, publicado pelo CGIBS em 24/08/2026. Veja o [guia de migração](https://mozurok.github.io/splitbr/migracao).

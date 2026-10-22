@@ -1,8 +1,8 @@
 {
   "_meta": {
-    "descricao": "Inventario pinado dos artefatos linkados na pagina oficial do Split Payment no CGIBS. O nome de cada arquivo carrega o timestamp de upload, entao a URL de um arquivo nao e alvo estavel; a pagina e. Um artefato novo publicado ali aparece aqui como chave a mais no vivo. Regenerar com: node scripts/drift-check.mjs --pin-cgibs",
+    "descricao": "Inventario pinado dos artefatos linkados na pagina oficial do Split Payment no CGIBS. O nome de cada arquivo carrega o timestamp de upload, entao a URL de um arquivo nao e alvo estavel; a pagina e. Um artefato novo publicado ali aparece aqui como chave a mais no vivo. Regenerar: extrairInventario() de scripts/drift-check.mjs aplicado ao HTML da pagina (nao ha flag de CLI para isso; o texto anterior citava uma --pin-cgibs que nunca existiu).",
     "fonte": "https://www.cgibs.gov.br/split-payment",
-    "capturadoEm": "2026-09-04"
+    "capturadoEm": "2026-10-22"
   },
   "artefatos": {
     "/upload/arquivos/202606/03153733-manual-de-integracao-plataforma-publica-de-split-payment-v1.pdf": true,
@@ -10,6 +10,15 @@
     "/upload/arquivos/202606/30145925-minuta-split-payment-manual-de-operacoes.pdf": true,
     "/upload/arquivos/202607/20150141-20260715-fin-split-payment-manual-de-tempos-minuta.docx": true,
     "/upload/arquivos/202608/24154349-20260811-manual-de-integracao-plataforma-publica-split-payment-revisao-fin.pdf": true,
-    "/upload/arquivos/202608/24154448-openapi-v1-1-0.zip": true
+    "/upload/arquivos/202608/24154448-openapi-v1-1-0.zip": true,
+    "/upload/arquivos/202609/24145320-split-payment-manual-de-seguranca-v1-0-0.zip": true,
+    "/upload/arquivos/202609/24145321-split-payment-manual-de-redes-v1-0-1.zip": true,
+    "/upload/arquivos/202609/24145322-split-payment-manual-de-operacoes-v1-0-1.zip": true,
+    "/upload/arquivos/202609/24145324-split-payment-manual-de-integracao-v1-1-1.zip": true,
+    "/upload/arquivos/202609/24145326-split-payment-formularios-de-habilitacao-modelo-preliminar.zip": true,
+    "/upload/arquivos/202609/24145326-split-payment-manual-de-habilitacao-de-participantes-v1-0-0.zip": true,
+    "/upload/arquivos/202609/24145327-split-payment-formularios-de-habilitacao-exemplo-preenchido.zip": true,
+    "/upload/arquivos/202609/24145327-split-payment-openapi-v1-1-1.zip": true,
+    "/upload/arquivos/202609/24145528-split-payment-manual-de-tempos-v1-0-1.zip": true
   }
 }

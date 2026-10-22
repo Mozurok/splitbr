@@ -2,7 +2,7 @@
 title: "Rode a plataforma na sua máquina em 10 minutos"
 ---
 
-<!-- OUTPUTS re-capturados em 2026-07-21 do pacote publicado (npx @splitbr/mock@0.1.0 do registro real, seed 1): passos 3-4 e 6-9 identicos byte a byte; so a linha Date do passo 9 varia, como o texto avisa (D-8 cumprido) -->
+<!-- OUTPUTS re-capturados em 2026-10-22 do build local que vira a 0.3.0 (node packages/mock/bin/splitbr-mock.mjs, seed 1), executando os comandos desta pagina: passos 3-4 e 6-9 identicos byte a byte; so Date e dtHrDisp do passo 9 variam, como o texto avisa. A captura anterior (2026-07-21, 0.1.0) ficou invalida na 0.2.0 e ninguem reexecutou: o passo 7 dava 400 e o passo 9 dava 404 ate esta revisao. -->
 
 # Rode a plataforma na sua máquina em 10 minutos
 
@@ -157,7 +157,7 @@ curl -X POST http://127.0.0.1:8377/api/v1/boleto/informe-preliminar-pagamento \
         "idDda": "DDA1",
         "numCtrlOrig": "CTRL000001",
         "numPgto": 1,
-        "numIdentcBaixa": 1,
+        "numIdentcBaixa": "1",
         "vlPago": 1000.00,
         "vlCbsSegr": 9.00,
         "vlIbsSegr": 1.00,
@@ -190,7 +190,7 @@ curl -X POST http://127.0.0.1:8377/_scenario/divergencia \
   -H 'content-type: application/json' \
   -d '{
     "arranjo": "boleto",
-    "idPsp": "PSP00001",
+    "cnpjRaizPspRecDir": "12345678",
     "chave": "CTRL000001",
     "tipo": "cbs-correcao",
     "procedimento": "padrao"
@@ -203,7 +203,7 @@ Resposta esperada:
 {"publicado":{"codMsg":"RSUP101","vlCbsCorr":9,"idDda":"DDA1","numCtrlOrig":"CTRL000001","vlInf":1000,"cnpjRaizPspRecDir":"12345678","nsuId":1}}
 ```
 
-**O que acabou de acontecer:** o mock fez o papel do fisco: recalculou a CBS do boleto `CTRL000001`, montou um evento de correção (código `RSUP101`, com o valor correto em `vlCbsCorr`) e colocou na fila de avisos do PSP (o prestador de serviços de pagamento, a instituição que processa pagamentos) `PSP00001`, para ser lido no próximo passo.
+**O que acabou de acontecer:** o mock fez o papel do fisco: recalculou a CBS do boleto `CTRL000001`, montou um evento de correção (código `RSUP101`, com o valor correto em `vlCbsCorr`) e colocou na fila de avisos do PSP (o prestador de serviços de pagamento, a instituição que processa pagamentos) cuja raiz de CNPJ é `12345678`, o mesmo que recebeu o boleto no passo 6, para ser lido no próximo passo.
 
 **Se deu errado:** se veio `422` com `Transacao 'CTRL000001' nao registrada para 'boleto'`, os passos 6 e 7 não rodaram nesta sessão do mock. Refaça a sequência desde o passo 6.
 
@@ -212,10 +212,11 @@ Resposta esperada:
 O aviso do passo 8 está na fila. Na vida real, o PSP puxa esses avisos de tempos em tempos, num canal chamado Retorno Super Inteligente. Vamos puxar (o `-i` faz o curl mostrar também os cabeçalhos da resposta):
 
 ```bash
-curl -i http://127.0.0.1:8377/api/v1/out/boleto/PSP00001/tributos/stream/start \
+curl -i http://127.0.0.1:8377/api/v1/out/boleto/12345678/transacoes/stream/start \
+  -H 'correlationId: TUTORIAL-0000000001'
 ```
 
-Resposta esperada (a linha `Date` vai mostrar a hora do seu computador):
+Resposta esperada (a linha `Date` e o campo `dtHrDisp` vão mostrar a hora do seu computador):
 
 ```txt
 HTTP/1.1 200 OK
@@ -223,19 +224,19 @@ correlationid: TUTORIAL-0000000001
 streamid: STREAM-11
 proximotoken: S2u
 content-type: application/json; charset=utf-8
-content-length: 145
-Date: Tue, 21 Jul 2026 01:53:58 GMT
+content-length: 188
+Date: Thu, 22 Oct 2026 15:45:37 GMT
 Connection: keep-alive
 Keep-Alive: timeout=72
 
-{"tributos":[{"codMsg":"RSUP101","vlCbsCorr":9,"idDda":"DDA1","numCtrlOrig":"CTRL000001","vlInf":1000,"cnpjRaizPspRecDir":"12345678","nsuId":1}]}
+{"transacoes":[{"codMsg":"RSUP101","vlCbsCorr":9,"idDda":"DDA1","numCtrlOrig":"CTRL000001","vlInf":1000,"cnpjRaizPspRecDir":"12345678","nsuId":"1","dtHrDisp":"2026-10-22T12:45:37-03:00"}]}
 ```
 
 **O que acabou de acontecer:** você abriu o stream do PSP e recebeu o evento `RSUP101` do passo 8, exatamente como um PSP homologado receberia da plataforma real.
 
 Dois campos merecem atenção. O `nsuId` é o número de série do evento na fila do seu PSP: começa em 1 e só cresce, então você sempre sabe a ordem e percebe se perdeu algum. O `proximotoken` é a chave para a próxima leitura: em vez de repetir o `/start`, o PSP chama `.../stream/S2u` para continuar de onde parou, e cada resposta traz um token novo para a chamada seguinte. É assim que o canal garante que nenhum aviso do fisco se perde.
 
-**Se deu errado:** se o comando ficou uns 25 segundos parado e terminou sem corpo (um `204`), a fila estava vazia: o passo 8 não rodou (ou você usou outro `idPsp`). Refaça o passo 8 e chame de novo. Se veio `422` com `Token de stream desconhecido`, você tentou reaproveitar um token antigo; chame o `/start` de novo.
+**Se deu errado:** se o comando ficou uns 25 segundos parado e terminou sem corpo (um `204`), a fila estava vazia: o passo 8 não rodou (ou você usou outra raiz de CNPJ no passo 8 e no endereço do passo 9). Refaça o passo 8 e chame de novo. Se veio `422` com `Token de stream desconhecido`, você tentou reaproveitar um token antigo; chame o `/start` de novo.
 
 ## Passo 10: Desligue tudo
 

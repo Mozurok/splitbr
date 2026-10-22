@@ -27,7 +27,7 @@ export interface SplitClientOptions {
 
 /**
  * Client tipado da Plataforma Pública do Split Payment, gerado do OpenAPI
- * v1.1.0, com a assinatura `X-JWS-Signature` aplicada a cada requisição.
+ * v1.1.1, com a assinatura `X-JWS-Signature` aplicada a cada requisição.
  */
 export function createSplitClient(options: SplitClientOptions): Client<paths> {
   const { baseUrl, fetch: customFetch, ...assinatura } = options;

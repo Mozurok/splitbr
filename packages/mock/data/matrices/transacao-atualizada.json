@@ -1,6 +1,6 @@
 {
   "informe": "transacao-atualizada",
-  "fonte": "Manual de Integracao v1.0, secao 3.2.1",
+  "fonte": "Manual de Integracao v1.1.1, secao 3.3.1 (desde a v1.1.0 a tabela so tem Boleto e Pix Dinamico; a coluna pix-automatico ficou sem correspondente)",
   "arranjos": ["boleto", "pix-automatico", "pix-dinamico"],
   "topo": {
     "dtHrMsg": ["M", "M", "M"]
@@ -15,7 +15,7 @@
     "vlCbsInf": ["M", "M", "M"],
     "vlIbsInf": ["M", "M", "M"],
     "docFiscal": ["O", "O", "O"],
-    "cnpjRaizPspRecInd": ["O", "O", "O"],
+    "cnpjRaizPspRecInd": ["NE", "O", "O"],
     "cnpjRaizPspRecDir": ["M", "M", "M"],
     "cnpjRec": ["NE", "M", "M"],
     "cnpjPagOrig": ["NE", "O", "O"],

@@ -9,13 +9,13 @@ import { dirname, resolve } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
-const specPath = resolve(repoRoot, "vendor/swagger/openapi-v1_1_0.json");
+const specPath = resolve(repoRoot, "vendor/swagger/openapi-v1_1_1.json");
 const manifestPath = resolve(repoRoot, "vendor/MANIFEST.md");
 const outPath = resolve(here, "../src/generated/platform.ts");
 
 const manifest = readFileSync(manifestPath, "utf8");
-const row = manifest.split("\n").find((l) => l.includes("swagger/openapi-v1_1_0.json"));
-if (!row) throw new Error("MANIFEST.md row for swagger/openapi-v1_1_0.json not found");
+const row = manifest.split("\n").find((l) => l.includes("swagger/openapi-v1_1_1.json"));
+if (!row) throw new Error("MANIFEST.md row for swagger/openapi-v1_1_1.json not found");
 const pinned = row.match(/\b([0-9a-f]{64})\b/)?.[1];
 if (!pinned) throw new Error("pinned sha256 not found in the manifest row");
 

@@ -110,3 +110,28 @@ describe("taxonomia base problem+json", () => {
     expect(res.json().status).toBe(404);
   });
 });
+
+// Contrato v1.1.1: todo schema problem+json ganhou resourceId, e o capitulo 9
+// do manual diz que cada requisicao processada gera um, com sucesso ou erro.
+describe("resourceId nas respostas de erro (v1.1.1)", () => {
+  it("erro em rota /api/ traz resourceId no formato do envelope de sucesso", async () => {
+    const app = buildServer({ exigirAssinatura: true });
+    app.get("/api/v1/_teste", async () => ({ ok: true }));
+    const semAssinatura = await app.inject({ method: "GET", url: "/api/v1/_teste" });
+    const inexistente = await app.inject({
+      method: "GET",
+      url: "/api/v1/nao-existe",
+      headers: headersValidos(),
+    });
+    expect(semAssinatura.json().resourceId).toMatch(/^RES\d{13}$/);
+    expect(inexistente.json().resourceId).toMatch(/^RES\d{13}$/);
+    expect(inexistente.json().resourceId).not.toBe(semAssinatura.json().resourceId);
+  });
+
+  it("rota utilitaria fora de /api/ nao consome o contador", async () => {
+    const app = buildServer();
+    const res = await app.inject({ method: "POST", url: "/_scenario/divergencia", payload: {} });
+    expect(res.statusCode).toBe(422);
+    expect(res.json().resourceId).toBeUndefined();
+  });
+});

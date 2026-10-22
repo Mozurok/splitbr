@@ -56,7 +56,7 @@ Ninguém na sua empresa chama a Plataforma Pública do Split Payment diretamente
 ## Quando isso começa
 
 ::: warning As datas ainda são fluidas
-O cronograma do split payment muda conforme a fonte e ainda está sendo fechado. O manual de operações publicado é uma minuta de junho de 2026. O piloto está previsto para o segundo semestre de 2026, e as datas de 2027 seguem em discussão. Não confie em datas vistas em posts, vídeos ou apresentações de terceiros (incluindo este site). Antes de qualquer decisão, confira a fonte primária: o [CGIBS](https://www.cgibs.gov.br/) e as [notícias da Receita Federal](https://www.gov.br/receitafederal/pt-br/assuntos/noticias).
+O cronograma do split payment muda conforme a fonte e ainda está sendo fechado. O Manual de Operações saiu da minuta em 24/09/2026, mas o Plano de Implantação, que traz o cronograma, ainda não foi publicado. O piloto está previsto para o segundo semestre de 2026, e as datas de 2027 seguem em discussão. Não confie em datas vistas em posts, vídeos ou apresentações de terceiros (incluindo este site). Antes de qualquer decisão, confira a fonte primária: o [CGIBS](https://www.cgibs.gov.br/) e as [notícias da Receita Federal](https://www.gov.br/receitafederal/pt-br/assuntos/noticias).
 :::
 
 ## E se o valor for corrigido depois?

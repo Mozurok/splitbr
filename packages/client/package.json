@@ -1,6 +1,6 @@
 {
   "name": "@splitbr/client",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Client TypeScript tipado para a Plataforma Publica do Split Payment (IBS/CBS, LC 214/2025)",
   "license": "MIT",
   "type": "module",

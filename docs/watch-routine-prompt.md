@@ -30,11 +30,13 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
      publicados, sem login. Confira a seção "Versão atual" contra o que está
      vendorado. Esta é a fonte de maior consequência da lista: o contrato dela
      é o que gera @splitbr/client e @splitbr/mock. Em 2026-08-24 ela publicou
-     o OAS v1.1.0 e ninguém viu por 11 dias.
+     o OAS v1.1.0 e ninguém viu por 11 dias; em 2026-09-24 publicou o v1.1.1
+     e ninguém viu por 28. Rode `pnpm drift-check` da sua máquina: o CI não
+     alcança esse host, então só uma rede local compara esse alvo de verdade.
    - CGIBS, raiz: https://www.cgibs.gov.br/ — novas resoluções (a série já vai
-     à 17 e só a 6/2026 está vendorada), Manual de Operações ou de Tempos
-     saindo de minuta, ou qualquer um dos 3 manuais ainda não publicados
-     (Redes, Segurança, Onboarding).
+     à 17 e só a 6/2026 está vendorada), novos Atos Técnicos Conjuntos
+     (página /atos-tecnicos-conjuntos; o n. 5 aprovou o pacote de 24/09), e
+     o Plano de Implantação, único documento da família ainda não publicado.
    - Notas Técnicas do Portal NF-e:
      https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=
      — versão de NT 2025.002 mais nova que a da baseline.
@@ -62,8 +64,7 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
 
 4. Se achar algo NOVO: siga "On finding something new" em
    docs/watch-routine.md (capture-references, abrir task se invalidar
-   artefato vendorado, tratamento especial se for um dos 4 manuais
-   inéditos).
+   artefato vendorado, tratamento especial se for o Plano de Implantação).
 
 5. Feche com um resumo de 3 a 5 linhas: o que foi checado, o que mudou (ou
    "nada mudou"), e o próximo passo se houver.
@@ -71,6 +72,26 @@ LC 214/2025) mudaram desde a última captura vendorada neste repositório.
 
 ## Histórico de execuções manuais
 
+- **2026-10-22**: O PACOTE DE 24/09 PASSOU 28 DIAS SEM DETECÇÃO. O CGIBS
+  publicou o **OpenAPI v1.1.1** e seis manuais (Integração v1.1.1, Operações
+  e Tempos v1.0.1 finais, e Segurança v1.0.0, Redes v1.0.1 e Habilitação de
+  Participantes v1.0.0 pela primeira vez), mais os Formulários de Habilitação,
+  aprovados pelo Ato Técnico Conjunto n. 5 (22/09). O v1.1.1 remove
+  `indPgtoIntegral` dos arranjos Pix e `cnpjRaizPspRecInd` do Boleto, e troca
+  `errors` por `resourceId` nas respostas de erro: quebra os tipos, virou a
+  0.3.0 dos dois pacotes. O `pnpm drift-check` local acusou na primeira
+  execução; o CI não alcança o host, e nenhuma checagem manual foi registrada
+  entre 04/09 e hoje. Quem viu primeiro foi um contribuidor externo, na issue
+  #13 (08/10). Também novos: NT 2025.002 v1.52 e IT 2025.002 v1.70 (01/10),
+  Calculadora em app 1.5.4 / banco V0059 (30/09; piloto em 1.6.0), com o
+  contrato de 40 para 49 rotas (issue #13, aberta em 14/09 e avisada 5 vezes
+  sem resposta). Atos Técnicos Conjuntos 3 a 8 publicados; só o 4 e o 5 são de
+  Split Payment. Receita sem notícia de Split Payment. Correções de processo:
+  o `_meta` do inventário do CGIBS citava uma flag `--pin-cgibs` que nunca
+  existiu (o repin agora é por `extrairInventario()`); e dois erros antigos
+  do mock apareceram na conferência com os manuais (códigos RSUP x02/x03
+  trocados desde o início, apesar de a tabela estar no manual v1.0, e
+  `numPgto` exigido na Baixa de Boleto desde a 0.2.0).
 - **2026-09-04**: SEIS ACHADOS, um deles grave. O **OpenAPI da Plataforma saiu
   do v0.0.10 para o v1.1.0** (publicado em 24/08/2026, pareado com o Manual de
   Integração v1.1.0): 12 rotas de stream renomeadas, 3 rotas novas do MOC,

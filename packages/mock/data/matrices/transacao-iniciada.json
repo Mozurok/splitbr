@@ -1,6 +1,6 @@
 {
   "informe": "transacao-iniciada",
-  "fonte": "Manual de Integracao v1.0, secao 3.1.1",
+  "fonte": "Manual de Integracao v1.1.1, secao 3.2.1",
   "arranjos": ["boleto", "pix-automatico", "pix-dinamico"],
   "topo": {
     "dtHrMsg": ["M", "M", "M"]
@@ -15,7 +15,7 @@
     "vlCbsInf": ["M", "M", "M"],
     "vlIbsInf": ["M", "M", "M"],
     "docFiscal": ["O", "O", "O"],
-    "cnpjRaizPspRecInd": ["O", "O", "O"],
+    "cnpjRaizPspRecInd": ["NE", "O", "O"],
     "cnpjRaizPspRecDir": ["M", "M", "M"],
     "cnpjRec": ["M", "M", "M"],
     "cnpjPagOrig": ["M", "O", "O"],

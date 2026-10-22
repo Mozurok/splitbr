@@ -878,11 +878,6 @@ export interface components {
              */
             docFiscal?: string;
             /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
-            /**
              * @description Raiz do CNPJ do PSP Recebedor Direto.
              * @example 12345678
              */
@@ -1102,11 +1097,6 @@ export interface components {
              */
             docFiscal?: string;
             /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
-            /**
              * @description Raiz do CNPJ do PSP Recebedor Direto.
              * @example 12345678
              */
@@ -1254,11 +1244,6 @@ export interface components {
              */
             docFiscal?: string;
             /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
-            /**
              * @description Raiz do CNPJ do PSP Recebedor Direto.
              * @example 12345678
              */
@@ -1330,12 +1315,6 @@ export interface components {
              * @example 1234567890123456789B123A5678901234567891123412345
              */
             docFiscal?: string;
-            /**
-             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
-             * @example 1
-             * @enum {string}
-             */
-            indPgtoIntegral: "0" | "1";
             /**
              * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
              * @example 87654321
@@ -1413,12 +1392,6 @@ export interface components {
              * @example 1234567890123456789B123A5678901234567891123412345
              */
             docFiscal?: string;
-            /**
-             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
-             * @example 1
-             * @enum {string}
-             */
-            indPgtoIntegral: "0" | "1";
             /**
              * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
              * @example 87654321
@@ -1672,11 +1645,6 @@ export interface components {
              */
             numCtrlOrig: string;
             /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
-            /**
              * @description Raiz do CNPJ do PSP Recebedor Direto.
              * @example 12345678
              */
@@ -1813,11 +1781,6 @@ export interface components {
              * @example 1234567890123456789B123A5678901234567891123412345
              */
             docFiscal?: string;
-            /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
             /**
              * @description Raiz do CNPJ do PSP Recebedor Direto.
              * @example 12345678
@@ -2018,11 +1981,6 @@ export interface components {
              */
             indPgtoIntegral: "0" | "1";
             /**
-             * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
-             * @example 87654321
-             */
-            cnpjRaizPspRecInd?: string;
-            /**
              * @description Raiz do CNPJ do PSP Pagador.
              * @example 87654321
              */
@@ -2096,12 +2054,6 @@ export interface components {
              * @example 1234567890123456789B123A5678901234567891123412345
              */
             docFiscal?: string;
-            /**
-             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
-             * @example 1
-             * @enum {string}
-             */
-            indPgtoIntegral: "0" | "1";
             /**
              * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
              * @example 87654321
@@ -2181,12 +2133,6 @@ export interface components {
              * @example 1234567890123456789B123A5678901234567891123412345
              */
             docFiscal?: string;
-            /**
-             * @description Indica se a transação foi integralmente paga, considerando todos os pagamentos até o momento. 1 = pagamento integral; 0 = não integral.
-             * @example 1
-             * @enum {string}
-             */
-            indPgtoIntegral: "0" | "1";
             /**
              * @description Raiz do CNPJ do PSP Recebedor Indireto onde o Recebedor mantém a conta.
              * @example 87654321
@@ -3599,12 +3545,8 @@ export interface components {
                     status?: number;
                     /** @example Stream encerrada. */
                     detail?: string;
-                    errors?: {
-                        /** @example token */
-                        field?: string;
-                        /** @example token pertence a uma stream encerrada */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3622,12 +3564,8 @@ export interface components {
                     status?: number;
                     /** @example Stream encerrada. */
                     detail?: string;
-                    errors?: {
-                        /** @example token */
-                        field?: string;
-                        /** @example token pertence a uma stream encerrada */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3656,6 +3594,8 @@ export interface components {
                         /** @example field1: propriedade obrigatória 'field1' não encontrada */
                         message?: string;
                     }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3679,6 +3619,8 @@ export interface components {
                         /** @example idInfSegr: formato invalido */
                         message?: string;
                     }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3702,6 +3644,8 @@ export interface components {
                         /** @example campoX: parametro obrigatorio nao informado */
                         message?: string;
                     }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3717,20 +3661,14 @@ export interface components {
                     title?: string;
                     /** @example 422 */
                     status?: number;
-                    /** @example Regras de negocio violadas para consulta de stream */
+                    /**
+                     * @example Regras de negocio violadas para consulta de stream
+                     * @example streamId inexistente
+                     * @example nsuInicial deve ser menor ou igual a nsuFinal
+                     */
                     detail?: string;
-                    errors?: {
-                        /**
-                         * @example streamId
-                         * @example nsuInicial
-                         */
-                        field?: string;
-                        /**
-                         * @example streamId inexistente
-                         * @example nsuInicial deve ser menor ou igual a nsuFinal
-                         */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3748,12 +3686,8 @@ export interface components {
                     status?: number;
                     /** @example Todas as transações do informe estão inválidas */
                     detail?: string;
-                    errors?: {
-                        /** @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição. */
-                        index?: number;
-                        field?: string;
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3771,12 +3705,8 @@ export interface components {
                     status?: number;
                     /** @example Todas as transações do informe estão inválidas */
                     detail?: string;
-                    errors?: {
-                        /** @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição. */
-                        index?: number;
-                        field?: string;
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3873,6 +3803,8 @@ export interface components {
                         /** @example campoX: parametro obrigatorio nao informado */
                         message?: string;
                     }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3888,14 +3820,13 @@ export interface components {
                     title?: string;
                     /** @example 422 */
                     status?: number;
-                    /** @example Regras de negocio violadas para a consulta de ocorrencias do MOC */
+                    /**
+                     * @example Regras de negocio violadas para a consulta de ocorrencias do MOC
+                     * @example proximoToken inexistente ou expirado
+                     */
                     detail?: string;
-                    errors?: {
-                        /** @example proximoToken */
-                        field?: string;
-                        /** @example proximoToken inexistente ou expirado */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3911,22 +3842,13 @@ export interface components {
                     title?: string;
                     /** @example 422 */
                     status?: number;
-                    /** @example Regra de negócio violada na abertura do informe de remessa de segregação. */
+                    /**
+                     * @example Regra de negócio violada na abertura do informe de remessa de segregação.
+                     * @example Já existe uma remessa de segregação iniciada para o idInfSegr informado
+                     */
                     detail?: string;
-                    errors?: {
-                        /**
-                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
-                         * @example 1
-                         */
-                        index?: number;
-                        /** @example idInfSegr */
-                        field?: string;
-                        /**
-                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
-                         * @example Já existe uma remessa de segregação iniciada para o idInfSegr informado
-                         */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3942,24 +3864,15 @@ export interface components {
                     title?: string;
                     /** @example 422 */
                     status?: number;
-                    /** @example Regra de negócio violada no envio do lote de transações da segregação. */
+                    /**
+                     * @example Regra de negócio violada no envio do lote de transações da segregação.
+                     * @example Não existe remessa de segregação iniciada para o idInfSegr informado
+                     * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
+                     * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
+                     */
                     detail?: string;
-                    errors?: {
-                        /**
-                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
-                         * @example 1
-                         */
-                        index?: number;
-                        /** @example idInfSegr */
-                        field?: string;
-                        /**
-                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
-                         * @example Não existe remessa de segregação iniciada para o idInfSegr informado
-                         * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
-                         * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
-                         */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };
@@ -3975,27 +3888,18 @@ export interface components {
                     title?: string;
                     /** @example 422 */
                     status?: number;
-                    /** @example Regra de negócio violada na finalização da remessa de segregação. */
+                    /**
+                     * @example Regra de negócio violada na finalização da remessa de segregação.
+                     * @example Não existe remessa de segregação iniciada para o idInfSegr informado
+                     * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
+                     * @example O valor informado em totalTrans difere da quantidade de transações enviadas
+                     * @example O valor informado em vlTotalCbs difere da soma dos valores de CBS das transações enviadas
+                     * @example O valor informado em vlTotalIbs difere da soma dos valores de IBS das transações enviadas
+                     * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
+                     */
                     detail?: string;
-                    errors?: {
-                        /**
-                         * @description Índice (1..n) do item rejeitado na lista enviada, permitindo correlacionar o erro ao item original da requisição.
-                         * @example 1
-                         */
-                        index?: number;
-                        /** @example idInfSegr */
-                        field?: string;
-                        /**
-                         * @description Mensagem da regra de negócio violada. Valores possíveis nesta etapa listados nos exemplos.
-                         * @example Não existe remessa de segregação iniciada para o idInfSegr informado
-                         * @example Já existe uma remessa de segregação finalizada para o idInfSegr informado
-                         * @example O valor informado em totalTrans difere da quantidade de transações enviadas
-                         * @example O valor informado em vlTotalCbs difere da soma dos valores de CBS das transações enviadas
-                         * @example O valor informado em vlTotalIbs difere da soma dos valores de IBS das transações enviadas
-                         * @example O cnpjRaizPspRecDir informado é diferente do cnpjRaizPspRecDir enviado na remessa de segregação iniciada para o idInfSegr informado
-                         */
-                        message?: string;
-                    }[];
+                    /** @example UEkBbgR-78VqKK-uvuq9O0r9-bqXyBH9Ur */
+                    resourceId?: string;
                 };
             };
         };

@@ -15,6 +15,30 @@ Ordem: mais recente primeiro. Semana sem mudança não gera entrada.
 
 Registro, em ordem cronológica inversa, das mudanças oficiais que afetam o Split Payment e a Reforma Tributária do Consumo: notas técnicas e informes do Portal NF-e, manuais e resoluções do Comitê Gestor do IBS (CGIBS), publicações da Receita Federal e versões da Calculadora de Tributos. Fontes oficiais verificadas toda segunda-feira às 9h (horário de Brasília); semanas sem mudança não geram entrada.
 
+## 2026-10-22: splitbr 0.3.0 acompanha o contrato v1.1.1
+
+- O que mudou: o `@splitbr/client` e o `@splitbr/mock` passaram a ser gerados do OpenAPI **v1.1.1**. Três remoções quebram quem usa os tipos: `indPgtoIntegral` saiu dos arranjos Pix, `cnpjRaizPspRecInd` saiu do Boleto, e as respostas de erro trocaram `errors` por `resourceId`. O mock também corrige os códigos RSUP x02 e x03, que estavam trocados desde a primeira versão, e deixa de exigir `numPgto` na Baixa de Boleto.
+- Impacto: o compilador aponta cada corpo que precisa mudar. O `^0.2.0` não puxa a 0.3.0 sozinho. O passo a passo está no [guia de migração](/migracao).
+- Fonte: https://www.cgibs.gov.br/split-payment
+
+## 2026-10-01: NT 2025.002 v1.52 e IT 2025.002 v1.70
+
+- O que mudou: o Portal NF-e publicou a NT 2025.002 v1.52, com alteração de regras de validação da NF-e e da NFC-e para a Reforma Tributária do Consumo, e o IT 2025.002 v1.70, que atualiza as tabelas de cClassTrib e de crédito presumido (cCredPres).
+- Impacto: as tabelas novas do IT entraram em homologação e produção até 16/10/2026; quem emite NF-e com os grupos de IBS e CBS precisa conferir os códigos de classificação.
+- Fonte: [Notas Técnicas](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=04BIflQt1aY=) e [Informes Técnicos](https://www.nfe.fazenda.gov.br/portal/listaConteudo.aspx?tipoConteudo=hXzemuyNHW4=) no Portal NF-e
+
+## 2026-09-30: Calculadora vai para o banco V0059, e o contrato dela para 49 rotas
+
+- O que mudou: o endpoint de versão da Calculadora passou a responder app 1.5.4 e banco V0059 ("Habilitação de 820 para NFSe"); o piloto já roda o app 1.6.0. O contrato de produção, que vinha mudando desde 14/09, foi de 40 para 49 rotas: base de cálculo unificada (inclusive para NFS-e), consultas por cClassTrib e por atores, e uma mudança incompatível em `/calculadora/dados-abertos/situacoes-tributarias/cbs-ibs`, que trocou parâmetros e formato de resposta.
+- Impacto: quem consome `situacoes-tributarias/cbs-ibs` precisa ajustar a chamada e o parse. O `@splitbr/client` e o `@splitbr/mock` não usam a Calculadora.
+- Fonte: [endpoint de versão da Calculadora](https://consumo.tributos.gov.br/servico/calcular-tributos-consumo/api/calculadora/dados-abertos/versao)
+
+## 2026-09-24: OpenAPI v1.1.1 e os seis manuais do Split Payment
+
+- O que mudou: o CGIBS publicou o OpenAPI v1.1.1 e o Manual de Integração v1.1.1, as versões finais dos Manuais de Operações e de Tempos (v1.0.1), e pela primeira vez os Manuais de Segurança (v1.0.0), Redes (v1.0.1) e Habilitação de Participantes (v1.0.0), com os Formulários de Habilitação. O Ato Técnico Conjunto RFB/CGIBS nº 5, de 22/09, aprova o pacote.
+- Impacto: é a primeira vez que a documentação da Plataforma sai completa e aprovada formalmente, com exceção do Plano de Implantação. O Manual de Segurança pede um claim `hashPayload` no JWS que o Manual de Integração e o OpenAPI não pedem; a divergência está registrada no [guia de migração](/migracao).
+- Fonte: https://www.cgibs.gov.br/split-payment
+
 ## 2026-09-04: splitbr 0.2.0 acompanha o contrato v1.1.0
 
 - O que mudou: o `@splitbr/client` e o `@splitbr/mock` passaram a ser gerados do OpenAPI **v1.1.0**, publicado pelo CGIBS em 24/08/2026. É quebra de compatibilidade: os quatro headers obrigatórios deixaram de existir e entrou a assinatura `X-JWS-Signature` em todas as operações, as 12 rotas de stream mudaram de caminho, entraram as três rotas do Mecanismo de Ocorrências e vários campos foram renomeados ou mudaram de tipo. O mock agora simula o ciclo do MOC, incluindo a resposta da RFB/CGIBS.

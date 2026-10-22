@@ -1,6 +1,6 @@
 {
   "informe": "segregacao-lote",
-  "fonte": "Manual de Integracao v1.0, secao 3.5.2 (passo 2)",
+  "fonte": "Manual de Integracao v1.1.1, secao 3.6.2 (passo 2)",
   "arranjos": ["boleto", "pix-automatico", "pix-dinamico", "pix-estatico", "ted", "tef"],
   "topo": {
     "cnpjRaizPspRecDir": ["M", "M", "M", "M", "M", "M"],
@@ -22,8 +22,8 @@
     "vlCbsSegr": ["M", "M", "M", "M", "M", "M"],
     "vlIbsSegr": ["M", "M", "M", "M", "M", "M"],
     "docFiscal": ["O", "O", "O", "M", "M", "M"],
-    "indPgtoIntegral": ["M", "M", "M", "NE", "NE", "NE"],
-    "cnpjRaizPspRecInd": ["O", "O", "O", "O", "NE", "O"],
+    "indPgtoIntegral": ["M", "NE", "NE", "NE", "NE", "NE"],
+    "cnpjRaizPspRecInd": ["NE", "O", "O", "O", "NE", "NE"],
     "cnpjRaizPspPag": ["M", "M", "M", "M", "M", "NE"],
     "cnpjRec": ["M", "M", "M", "M", "M", "M"],
     "cnpjCpfPagEfet": ["O", "M", "M", "M", "M", "M"],

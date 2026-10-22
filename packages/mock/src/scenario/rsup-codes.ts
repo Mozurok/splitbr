@@ -3,10 +3,14 @@ import type { Arranjo } from "../domain/matrices.js";
 /**
  * Codigos do Retorno Super Inteligente (CodMsgEnum do contrato oficial):
  * RSUP101-104 boleto, RSUP201-204 Pix Dinamico, RSUP601-604 Pix Automatico.
- * O spec v0.0.10 publica apenas o enum; a semantica por digito final
- * (1 = CBS correcao, 2 = IBS correcao, 3 = CBS em aberto, 4 = IBS em aberto)
- * segue o brief e fica marcada como interpretacao do mock ate o Manual de
- * Operacoes detalhar codigo a codigo.
+ * O spec publica so o enum; a semantica por digito final esta no capitulo 6
+ * do Manual de Integracao: 1 = CBS corrigido, 2 = CBS em aberto, 3 = IBS
+ * corrigido, 4 = IBS em aberto.
+ *
+ * Ate a versao 0.2.0 este comentario dizia que o significado de cada digito
+ * ainda nao tinha sido publicado, e o mapeamento seguia o brief do projeto,
+ * com o 2 e o 3 trocados. A tabela oficial ja estava no manual v1.0,
+ * vendorado desde julho de 2026; ninguem conferiu.
  */
 export type TipoDivergencia =
   | "cbs-correcao"
@@ -22,8 +26,8 @@ const PREFIXO: Partial<Record<Arranjo, string>> = {
 
 const DIGITO: Record<TipoDivergencia, string> = {
   "cbs-correcao": "1",
-  "ibs-correcao": "2",
-  "cbs-em-aberto": "3",
+  "cbs-em-aberto": "2",
+  "ibs-correcao": "3",
   "ibs-em-aberto": "4",
 };
 

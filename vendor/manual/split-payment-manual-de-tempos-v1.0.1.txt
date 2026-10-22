@@ -1,0 +1,1659 @@
+CGIBS                                                          RECEITA FEDERAL
+Comitê Gestor do IBS                                            Ministério da Fazenda
+
+
+
+
+                              Manual de
+                               Tempos
+
+                          Split Payment
+                             Reforma Tributária
+
+
+
+
+                            Manual de Tempos
+                       Versão 1.0.1 | 24 de Setembro de 2026
+     Manual de Tempos
+Versão 1.0.1 | 24 de Setembro de 2026
+Split Payment | Manual de Tempos                                                                                                Versão 1.0.1
+
+
+                                                               SUMÁRIO
+CAPÍTULO 1 – DISPOSIÇÕES GERAIS E ESCOPO ................................................................. 4
+  1.1 OBJETIVO DO MANUAL DE TEMPOS ............................................................................. 4
+  1.2 ESCOPO DE APLICAÇÃO ................................................................................................. 4
+CAPÍTULO 2 – FUNDAMENTOS DO MODELO DE TEMPOS .................................................... 6
+  2.1 CLASSIFICAÇÃO DOS ARRANJOS.................................................................................. 6
+  2.2 MARCOS TEMPORAIS DO CICLO ................................................................................... 6
+     2.2.1 Boleto ........................................................................................................................... 7
+     2.2.2 Pix Dinâmico ................................................................................................................ 8
+     2.2.3 Pix Automático ........................................................................................................... 10
+     2.2.4 Pix Estático ................................................................................................................ 12
+     2.2.5 TED............................................................................................................................ 13
+     2.2.6 TEF (Book Transfer) .................................................................................................. 14
+CAPÍTULO 3 – INFORMES E EVENTOS MONITORADOS ...................................................... 15
+CAPÍTULO 4 – ANS DE COMUNICAÇÃO E PROCESSAMENTO ........................................... 16
+  4.1 ENVIO DE INFORMES À PLATAFORMA PÚBLICA........................................................ 16
+  4.2 CONSUMO DO RETORNO SUPER INTELIGENTE ........................................................ 17
+  4.3 DEPENDÊNCIAS ENTRE OS ANS.................................................................................. 17
+CAPÍTULO 5 – JANELAS OPERACIONAIS E REGRAS DE CONTAGEM ............................... 18
+  5.1 DISPONIBILIDADE DA PLATAFORMA PÚBLICA ........................................................... 18
+  5.2 HORÁRIOS DE CORTE DO INFORME DE SEGREGAÇÃO ........................................... 18
+  5.3 REGRAS DE INÍCIO DE CONTAGEM DOS ANS ............................................................ 19
+  5.4 MARCOS DE INÍCIO E FIM DA CONTAGEM DOS ANS ................................................. 19
+  5.5 REGRAS DE CONTAGEM E INTERRUPÇÃO DOS ANS ............................................... 20
+  5.6 ENCERRAMENTO DA JANELA DO SUPER INTELIGENTE .......................................... 20
+CAPÍTULO 6 – REPASSE FINANCEIRO .................................................................................. 22
+  6.1 RELAÇÃO ENTRE O INFORME DE SEGREGAÇÃO E O REPASSE FINANCEIRO...... 22
+  6.2 PRAZOS DE REPASSE FINANCEIRO (D+1) .................................................................. 22
+CAPÍTULO 7 – OBSERVÂNCIA DOS ANS ............................................................................... 23
+  7.1 DIMENSÕES DE OBSERVÂNCIA ................................................................................... 23
+     7.1.1 Dimensão 1 (Taxa de Sucesso) ................................................................................. 25
+     7.1.2 Dimensão 2 (Cumprimento dos Tempos de Comunicação) ...................................... 26
+  7.2 CATEGORIAS DE PARTICIPANTE ................................................................................. 28
+  7.3 ÍNDICE GERAL DE ANS (IGA) ........................................................................................ 28
+  7.4 EXCEÇÕES E AUSÊNCIA DE PENALIDADE ................................................................. 29
+CAPÍTULO 8 – MECANISMO DE OCORRÊNCIAS .................................................................. 31
+  8.1 TEMPOS DO MECANISMO DE OCORRÊNCIAS ........................................................... 31
+CAPÍTULO 9 – HISTÓRICO DE REVISÃO ............................................................................... 33
+
+
+
+
+                                                            Página 3 de 33
+Split Payment | Manual de Tempos                                                                                      Versão 1.0.1
+
+CAPÍTUL O 1 – DISPOSIÇÕES GERAIS E ESCO PO
+
+
+
+
+                                             CAPÍTULO 1 – DISPOSIÇÕES GERAIS E ESCOPO
+
+
+
+1.1 OBJETIVO DO MANUAL DE TEMPOS
+
+Este manual estabelece os prazos, janelas e Acordos de Nível de Serviço (ANS) do Split Payment
+dos tributos CBS e IBS. Define, em parâmetros mensuráveis, o tempo em que cada participante
+deve cumprir suas obrigações no ciclo de uma transação e como esse cumprimento é apurado.
+
+As obrigações recaem sobre os Prestadores de Serviços de Pagamento (PSPs), a Núclea e a
+Plataforma Pública (PP), e abrangem o envio dos informes à PP, o consumo das mensagens de
+Retorno Super Inteligente e o Repasse Financeiro de CBS e IBS à RFB e ao CGIBS. Cada
+obrigação tem uma meta funcional (o desempenho esperado em condições normais) e um limite
+máximo (ANS); o descumprimento é apurado pelo Índice Geral de ANS (IGA) e pode ensejar
+penalidades.
+
+Este manual integra um conjunto de documentos do Split Payment, cada um com finalidade
+específica:
+
+         Documento                                    Finalidade
+
+                                                      Funcionamento operacional, fluxos, regras de cálculo, experiência do
+         Manual de Operações
+                                                      usuário
+
+         Manual de Integração + Documento             Especificação técnica da API, contratos de mensagens, endpoints,
+         OpenAPI                                      dicionário de campos
+
+         Manual de Tempos                             Prazos, janelas operacionais, ANS e marcos temporais
+
+         Manual de Redes                              Arquitetura de conexão, topologia, capacidade e resiliência
+
+         Manual de Segurança                          Autenticação, criptografia, auditoria e controles de proteção
+
+                                                      Checklist de conformidade para entrada de novos PSPs no Split
+         Manual de Habilitação de
+                                                      Payment, playbooks de onboarding e offboarding, governança de
+         Participantes
+                                                      incidentes
+
+                                                      Cronograma de implantação, marcos, prazos de envio dos formulários e
+         Plano de Implantação
+                                                      penalidades por etapa
+
+
+
+O conteúdo deste manual é complementar aos demais. Quando um tema for tratado em outro
+manual, este documento não reproduzirá o detalhamento técnico que pertence ao manual
+correspondente.
+
+1.2 ESCOPO DE APLICAÇÃO
+
+O manual aplica-se ao escopo da Fase 1 do Split Payment, B2B Opcional, que compreende seis
+arranjos, agrupados conforme o iniciador da transação: iniciados pelo Pagador (TED, Pix Estático
+e TEF (Book Transfer)) e iniciados pelo Recebedor (Boleto, Pix Dinâmico e Pix Automático).
+
+As regras vinculam o PSP Recebedor Direto, a Núclea (responsável pela comunicação com a
+PP no arranjo Boleto) e a própria Plataforma Pública, no que toca aos seus ANS de
+processamento e disponibilidade. No arranjo TEF, responde o PSP em que ocorreu a Liquidação
+Financeira.
+
+                                                              Página 4 de 33
+Split Payment | Manual de Tempos                                                  Versão 1.0.1
+
+
+A responsabilidade pelo cumprimento dos prazos é sempre do PSP Recebedor Direto e, no
+Boleto, da Núclea. Ela não se transfere quando o PSP contrata um Prestador de Serviço de
+Conexão ou um Prestador de Serviço de Repasse Financeiro, nem quando há PSP Recebedor
+Indireto na cadeia: nesses casos, eventuais falhas do terceiro são resolvidas na relação
+contratual entre eles, sem afetar a responsabilidade perante a PP, a RFB e o CGIBS.
+
+Ficam de fora do escopo os ambientes de desenvolvimento e homologação e as transações sem
+opção pelo split (aquelas em que o originador não preencheu os campos fiscais).
+
+Nota sobre formas de iniciação do Pix: a definição das formas de iniciação do Pix abrangidas
+por cada arranjo participante do Split Payment consta do Manual de Operações, Seção 2.2
+(Arranjos Participantes). Para fins deste Manual de Tempos, os arranjos Pix são tratados de
+forma agregada como Pix Estático, Pix Dinâmico e Pix Automático, conforme a classificação de
+prazos e marcos temporais aqui estabelecida.
+
+
+
+
+                                       Página 5 de 33
+Split Payment | Manual de Tempos                                                                                Versão 1.0.1
+
+CAPÍTUL O 2 – FUNDAMEN TO S DO MOD ELO DE TEM POS
+
+
+
+
+                                                    CAPÍTULO 2 – FUNDAMENTOS DO MODELO DE TEMPOS
+
+
+Dois elementos sustentam as regras deste manual: a forma como os arranjos se diferenciam
+quanto ao tempo e os marcos que delimitam cada etapa de uma transação. Ambos são
+apresentados a seguir. A descrição conceitual dos arranjos e dos modelos do split consta do
+Manual de Operações (Seção 2).
+
+2.1 CLASSIFICAÇÃO DOS ARRANJOS
+
+Os arranjos diferem em um ponto que determina seus prazos: a existência ou não de uma janela
+entre a iniciação (criação da transação) e o pagamento. Os arranjos iniciados pelo Recebedor
+(Boleto, Pix Dinâmico e Pix Automático) têm essa janela e, por isso, estão sujeitos ao Retorno
+Super Inteligente antes do pagamento. Os arranjos iniciados pelo Pagador (Pix Estático, TED e
+TEF) não têm janela e, portanto, não recebem esse retorno.
+
+         Arranjo                                                  Código     Iniciado por   Modelo
+
+         Boleto                                                   BOL        Recebedor      Super Inteligente
+
+         Pix Dinâmico                                             PXD        Recebedor      Super Inteligente
+
+         Pix Automático                                           PXA        Recebedor      Super Inteligente
+
+         Pix Estático                                             PXE        Pagador        Inteligente
+
+         TED                                                      TED        Pagador        Inteligente
+
+         TEF (Book Transfer)                                      TEF        Pagador        Inteligente
+
+
+
+2.2 MARCOS TEMPORAIS DO CICLO
+
+Cada etapa de uma transação corresponde a um marco temporal, e é entre esses marcos que
+os prazos do manual são medidos. Como o conjunto de etapas muda de um arranjo para outro,
+há um fluxo próprio para cada um dos seis arranjos. Os marcos são agrupados por fase do ciclo,
+identificada por uma letra, com numeração reiniciada a cada fase (TA1, TA2, …; TB1, TB2, …):
+TA, até o Informe de Transação Iniciada; TB, cancelamento, até o Informe de Baixa (Exceto por
+Pagamento); TC, atualização, até o Informe de Transação Atualizada; TD, Super Inteligente
+(disponibilização e consumo); TE, pagamento/liquidação/baixa, até o Informe Preliminar de
+Pagamento; e TF, até o Informe de Segregação. Os arranjos iniciados pelo Recebedor percorrem
+as fases TA a TF, com exceção do Pix Automático, que não possui a fase TC (atualização); os
+iniciados pelo Pagador (Pix Estático, TED e TEF) começam diretamente na fase TE (pagamento)
+e seguem para TF. Nos diagramas, o traço contínuo indica o fluxo principal (fases TA, TE e TF);
+o tracejado, os fluxos opcionais de cancelamento (TB) e de atualização (TC), tanto nas setas
+quanto nas caixas; e o pontilhado, as mensagens do Super Inteligente (TD).
+
+O evento que caracteriza a Liquidação Financeira em cada arranjo é definido no Manual de
+Operações (Seção 6.1) e os campos técnicos que registram cada marco constam do Manual de
+Integração.
+
+
+
+
+                                                                    Página 6 de 33
+Split Payment | Manual de Tempos                                                 Versão 1.0.1
+
+
+2.2.1 Boleto
+
+A transação é criada pelo Recebedor e registrada pela Núclea, que é o ator responsável pela
+comunicação com a Plataforma Pública. Há janela de Retorno Super Inteligente antes do
+pagamento.
+
+
+
+
+                                   Figura: Marcos temporais do arranjo Boleto.
+
+
+
+                                                Página 7 de 33
+Split Payment | Manual de Tempos                                                                       Versão 1.0.1
+
+
+                                   Tabela: Descrição dos marcos do arranjo Boleto.
+ Marco     Descrição                                                         Ator (origem → destino)
+
+                                                                             Recebedor → PSP Recebedor
+ TA1       Recebedor solicita a criação da transação ao seu PSP
+                                                                             Direto
+
+           PSP Recebedor Direto solicita o registro da transação à
+ TA2                                                                         PSP Recebedor Direto → Núclea
+           Núclea
+
+ TA3       Núclea registra a transação                                       Núclea
+
+ TA4       Envio do Informe de Transação Iniciada à Plataforma Pública       Núclea → Plataforma Pública
+
+           Recebedor solicita o cancelamento da transação ao seu PSP         Recebedor → PSP Recebedor
+ TB1
+           (opcional)                                                        Direto
+
+           PSP Recebedor Direto solicita o cancelamento do registro à
+ TB2                                                                         PSP Recebedor Direto → Núclea
+           Núclea (opcional)
+
+ TB3       Núclea registra a baixa da transação (exceto por pagamento)       Núclea
+
+           Envio do Informe de Baixa (Exceto por Pagamento) à
+ TB4                                                                         Núclea → Plataforma Pública
+           Plataforma Pública
+
+           Recebedor solicita a atualização da transação ao seu PSP          Recebedor → PSP Recebedor
+ TC1
+           (opcional)                                                        Direto
+
+           PSP Recebedor Direto solicita a atualização do registro à
+ TC2                                                                         PSP Recebedor Direto → Núclea
+           Núclea (opcional)
+
+ TC3       Núclea atualiza o registro da transação                           Núclea
+
+           Envio do Informe de Transação Atualizada à Plataforma
+ TC4                                                                         Núclea → Plataforma Pública
+           Pública
+
+ TD1       Plataforma Pública disponibiliza o Retorno Super Inteligente      Plataforma Pública → Núclea
+
+ TD2       Núclea consome o Retorno Super Inteligente                        Núclea → Plataforma Pública
+
+           Pagador autoriza o pagamento da transação, com
+ TE1                                                                         Pagador → PSP Pagador Direto
+           sensibilização a débito
+
+ TE2       PSP Pagador Direto envia a baixa da transação à Núclea            PSP Pagador Direto → Núclea
+
+ TE3       Núclea processa a baixa da transação                              Núclea
+
+ TE4       Núclea envia a baixa da transação ao PSP Recebedor Direto         Núclea → PSP Recebedor Direto
+
+           Envio do Informe Preliminar de Pagamento à Plataforma
+ TE5                                                                         Núclea → Plataforma Pública
+           Pública
+
+           Sensibilização a crédito do valor líquido ao Recebedor            PSP Recebedor Direto →
+ TF1
+           (ausência de impeditivos não contratuais)                         Recebedor
+
+ TF2       Informe de Segregação                                             Núclea → Plataforma Pública
+
+
+
+2.2.2 Pix Dinâmico
+
+O Recebedor gera um QR Code específico para cada cobrança e o próprio PSP Recebedor
+Direto se comunica com a Plataforma Pública. A Liquidação Interbancária ocorre no SPI, com
+janela de Retorno Super Inteligente antes do pagamento.
+
+
+
+
+                                                  Página 8 de 33
+Split Payment | Manual de Tempos                                                                     Versão 1.0.1
+
+
+
+
+                                   Figura: Marcos temporais do arranjo Pix Dinâmico.
+
+                              Tabela: Descrição dos marcos do arranjo Pix Dinâmico.
+ Marco     Descrição                                                       Ator (origem → destino)
+
+ TA1       Recebedor solicita a criação da transação ao seu PSP            Recebedor → PSP Recebedor Direto
+
+ TA2       PSP Recebedor Direto cria a transação                           PSP Recebedor Direto
+
+           Envio do Informe de Transação Iniciada à Plataforma             PSP Recebedor Direto → Plataforma
+ TA3
+           Pública                                                         Pública
+
+           Recebedor solicita o cancelamento da transação ao seu
+ TB1                                                                       Recebedor → PSP Recebedor Direto
+           PSP (opcional)
+
+           PSP Recebedor Direto registra a baixa da transação
+ TB2                                                                       PSP Recebedor Direto
+           (exceto por pagamento)
+
+           Envio do Informe de Baixa (Exceto por Pagamento) à              PSP Recebedor Direto → Plataforma
+ TB3
+           Plataforma Pública                                              Pública
+
+
+
+                                                   Página 9 de 33
+Split Payment | Manual de Tempos                                                                Versão 1.0.1
+
+
+ Marco     Descrição                                                  Ator (origem → destino)
+
+           Recebedor solicita a atualização da transação ao seu PSP
+ TC1                                                                  Recebedor → PSP Recebedor Direto
+           (opcional)
+
+ TC2       PSP Recebedor Direto atualiza a transação                  PSP Recebedor Direto
+
+           Envio do Informe de Transação Atualizada à Plataforma      PSP Recebedor Direto → Plataforma
+ TC3
+           Pública                                                    Pública
+
+           Plataforma Pública disponibiliza o Retorno Super           Plataforma Pública → PSP Recebedor
+ TD1
+           Inteligente                                                Direto
+
+           PSP Recebedor Direto consome o Retorno Super               PSP Recebedor Direto → Plataforma
+ TD2
+           Inteligente                                                Pública
+
+           Pagador autoriza o pagamento da transação, com
+ TE1                                                                  Pagador → PSP Pagador Direto
+           sensibilização a débito
+
+                                                                      PSP Pagador Direto → PSP Recebedor
+ TE2       Liquidação Interbancária (no SPI) ou Intrabancária
+                                                                      Direto
+
+           Envio do Informe Preliminar de Pagamento à Plataforma      PSP Recebedor Direto → Plataforma
+ TE3
+           Pública                                                    Pública
+
+           Sensibilização a crédito do valor líquido ao Recebedor
+ TF1                                                                  PSP Recebedor Direto → Recebedor
+           (ausência de impeditivos não contratuais)
+
+                                                                      PSP Recebedor Direto → Plataforma
+ TF2       Informe de Segregação
+                                                                      Pública
+
+
+
+2.2.3 Pix Automático
+
+O Pagador autoriza previamente cobranças recorrentes. Antes do ciclo de pagamento, há o
+consentimento da recorrência e o agendamento da cobrança; em seguida, a janela de Retorno
+Super Inteligente.
+
+
+
+
+                                                Página 10 de 33
+Split Payment | Manual de Tempos                                                                  Versão 1.0.1
+
+
+
+
+                               Figura: Marcos temporais do arranjo Pix Automático.
+
+No Pix Automático, as cobranças pressupõem um consentimento de recorrência firmado
+previamente com o Pagador, estabelecido uma única vez e válido como pré-requisito para as
+cobranças subsequentes. Cada cobrança agendada sob esse consentimento constitui uma
+transação distinta e enseja o envio de um Informe de Transação Iniciada próprio: há, portanto,
+um Informe de Transação Iniciada por cobrança agendada, e não por recorrência. A atualização
+de uma cobrança não é operação própria deste arranjo e não há fase de Transação Atualizada
+(TC): para alterá-la, cancela-se a cobrança vigente e cria-se uma nova. Por isso o Pix Automático
+também não possui Informe de Transação Atualizada.
+
+                             Tabela: Descrição dos marcos do arranjo Pix Automático.
+ Marco     Descrição                                                    Ator (origem → destino)
+
+ TA1       Recebedor solicita a criação da cobrança ao seu PSP          Recebedor → PSP Recebedor Direto
+
+                                                Página 11 de 33
+Split Payment | Manual de Tempos                                                                     Versão 1.0.1
+
+
+ Marco     Descrição                                                       Ator (origem → destino)
+
+ TA2       PSP Recebedor Direto cria a cobrança (CobR)                     PSP Recebedor Direto
+
+           Envio do Informe de Transação Iniciada à Plataforma             PSP Recebedor Direto → Plataforma
+ TA3
+           Pública                                                         Pública
+
+                                                                           PSP Recebedor Direto → PSP Pagador
+ TA4       PSP Recebedor Direto realiza o agendamento da cobrança
+                                                                           Direto
+
+           Recebedor solicita o cancelamento da cobrança ao seu
+ TB1                                                                       Recebedor → PSP Recebedor Direto
+           PSP (opcional)
+
+                                                                           PSP Recebedor Direto → PSP Pagador
+ TB2       PSP Recebedor Direto cancela a cobrança
+                                                                           Direto
+
+           Envio do Informe de Baixa (Exceto por Pagamento) à              PSP Recebedor Direto → Plataforma
+ TB3
+           Plataforma Pública                                              Pública
+
+           Plataforma Pública disponibiliza o Retorno Super                Plataforma Pública → PSP Recebedor
+ TD1
+           Inteligente                                                     Direto
+
+           PSP Recebedor Direto consome o Retorno Super                    PSP Recebedor Direto → Plataforma
+ TD2
+           Inteligente                                                     Pública
+
+ TE1       Sensibilização a débito na conta do Pagador                     Pagador → PSP Pagador Direto
+
+                                                                           PSP Pagador Direto → PSP Recebedor
+ TE2       Liquidação Interbancária (no SPI) ou Intrabancária
+                                                                           Direto
+
+           Envio do Informe Preliminar de Pagamento à Plataforma           PSP Recebedor Direto → Plataforma
+ TE3
+           Pública                                                         Pública
+
+           Sensibilização a crédito do valor líquido ao Recebedor
+ TF1                                                                       PSP Recebedor Direto → Recebedor
+           (ausência de impeditivos não contratuais)
+
+                                                                           PSP Recebedor Direto → Plataforma
+ TF2       Informe de Segregação
+                                                                           Pública
+
+
+
+2.2.4 Pix Estático
+
+Arranjo iniciado pelo Pagador, sem janela de Super Inteligente: o CBS/IBS Segregado
+corresponde ao CBS/IBS Informado na transação. A Liquidação Interbancária ocorre no SPI.
+
+
+
+
+                                   Figura: Marcos temporais do arranjo Pix Estático.
+
+
+
+                                                   Página 12 de 33
+Split Payment | Manual de Tempos                                                                  Versão 1.0.1
+
+
+                              Tabela: Descrição dos marcos do arranjo Pix Estático.
+ Marco     Descrição                                                    Ator (origem → destino)
+
+           Pagador autoriza o pagamento da transação, com
+ TE1                                                                    Pagador → PSP Pagador Direto
+           sensibilização a débito
+
+                                                                        PSP Pagador Direto → PSP Recebedor
+ TE2       Liquidação Interbancária (no SPI) ou Intrabancária
+                                                                        Direto
+
+           Envio do Informe Preliminar de Pagamento à Plataforma        PSP Recebedor Direto → Plataforma
+ TE3
+           Pública                                                      Pública
+
+           Sensibilização a crédito do valor líquido ao Recebedor
+ TF1                                                                    PSP Recebedor Direto → Recebedor
+           (ausência de impeditivos não contratuais)
+
+                                                                        PSP Recebedor Direto → Plataforma
+ TF2       Informe de Segregação
+                                                                        Pública
+
+
+
+2.2.5 TED
+
+Arranjo iniciado pelo Pagador, sem janela de Super Inteligente. A Liquidação Interbancária ocorre
+via SITRAF ou STR.
+
+
+
+
+                                     Figura: Marcos temporais do arranjo TED.
+
+                                   Tabela: Descrição dos marcos do arranjo TED.
+ Marco     Descrição                                                    Ator (origem → destino)
+
+           Pagador autoriza o pagamento da transação, com
+ TE1                                                                    Pagador → PSP Pagador Direto
+           sensibilização a débito
+
+           Liquidação Interbancária (via SITRAF ou STR) ou              PSP Pagador Direto → PSP Recebedor
+ TE2
+           Intrabancária                                                Direto
+
+           Envio do Informe Preliminar de Pagamento à Plataforma        PSP Recebedor Direto → Plataforma
+ TE3
+           Pública                                                      Pública
+
+           Sensibilização a crédito do valor líquido ao Recebedor
+ TF1                                                                    PSP Recebedor Direto → Recebedor
+           (ausência de impeditivos não contratuais)
+
+                                                                        PSP Recebedor Direto → Plataforma
+ TF2       Informe de Segregação
+                                                                        Pública
+
+
+
+
+                                                 Página 13 de 33
+Split Payment | Manual de Tempos                                                                  Versão 1.0.1
+
+
+2.2.6 TEF (Book Transfer)
+
+Transação intrabancária, em que Pagador e Recebedor mantêm contas no mesmo PSP. É
+iniciada pelo Pagador, sem janela de Super Inteligente, e o Informe Preliminar de Pagamento é
+opcional.
+
+
+
+
+                            Figura: Marcos temporais do arranjo TEF (Book Transfer).
+
+                          Tabela: Descrição dos marcos do arranjo TEF (Book Transfer).
+ Marco     Descrição                                                           Ator (origem → destino)
+
+           Pagador autoriza o pagamento da transação, com sensibilização a
+ TE1                                                                           Pagador → PSP
+           débito
+
+           Envio do Informe Preliminar de Pagamento à Plataforma Pública
+ TE2                                                                           PSP → Plataforma Pública
+           (opcional)
+
+           Sensibilização a crédito do valor líquido ao Recebedor (ausência
+ TF1                                                                           PSP → Recebedor
+           de impeditivos não contratuais)
+
+ TF2       Informe de Segregação                                               PSP → Plataforma Pública
+
+
+
+
+                                               Página 14 de 33
+Split Payment | Manual de Tempos                                                                                   Versão 1.0.1
+
+CAPÍTUL O 3 – INF ORMES E EVENTOS M ONITORA DOS
+
+
+
+
+                                                  CAPÍTULO 3 – INFORMES E EVENTOS MONITORADOS
+
+
+Os informes são as mensagens trocadas entre PSPs/Núclea e a Plataforma Pública ao longo da
+vida de uma transação. Cada arranjo usa um subconjunto deles. A tabela abaixo resume cada
+informe, os arranjos em que se aplica e o ANS de tempo a que está sujeito; a descrição funcional
+completa e os gatilhos de envio constam do Manual de Operações (Seções 4.2 e 4.4).
+
+         Informe                                              Aplicabilidade            Natureza de ANS
+
+         Informe de Transação Iniciada                        BOL, PXD, PXA             Envio de informes
+
+         Informe de Transação Atualizada                      BOL, PXD                  Envio de informes
+
+                                                                                        Consumo do Retorno Super
+         Retorno Super Inteligente                            BOL, PXD, PXA
+                                                                                        Inteligente
+
+         Informe de Baixa (Exceto por
+                                                              BOL, PXD, PXA             Envio de informes
+         Pagamento)
+
+         Informe Preliminar de Pagamento                      Todos (opcional em TEF)   Sem ANS de tempo (meta funcional)
+
+         Informe de Segregação                                Todos                     Envio de informes
+
+
+
+O Informe de Segregação é definitivo e vinculante: é ele que gera a obrigação de Repasse
+Financeiro. O Informe Preliminar de Pagamento é apenas informativo e a PP o descarta assim
+que recebe o Informe de Segregação da mesma transação. Já os Informes de Transação
+Iniciada, Atualizada e de Baixa (Exceto por Pagamento) servem para abrir, atualizar e encerrar
+a janela de Retorno Super Inteligente nos arranjos iniciados pelo Recebedor. A janela de Retorno
+Super Inteligente também é encerrada quando ocorre pagamento integral, comunicado através
+dos Informes Preliminar de Pagamento e de Segregação.
+
+
+
+
+                                                                  Página 15 de 33
+Split Payment | Manual de Tempos                                                                                                            Versão 1.0.1
+
+CAPÍTUL O 4 – ANS DE COMUNICAÇÃ O E PROC ESSAMEN TO
+
+
+
+
+                                                              CAPÍTULO 4 – ANS DE COMUNICAÇÃO E PROCESSAMENTO
+
+
+Os ANS de comunicação fixam em quanto tempo cada informe deve chegar à Plataforma Pública
+e em quanto tempo o Retorno Super Inteligente deve ser consumido. Para cada um, há uma
+meta funcional e um limite máximo (ANS). A contagem de tempo (quando começa e quando
+termina) é tratada no Capítulo 5; a apuração da observância, no Capítulo 7.
+
+4.1 ENVIO DE INFORMES À PLATAFORMA PÚBLICA
+
+O limite máximo de cada informe é contado a partir do evento que o origina. As tabelas a seguir
+trazem os limites máximos (que, se excedidos, podem gerar penalidades) e as metas funcionais
+por arranjo (não geram penalidades se excedidas).
+
+                                                                   Tabela 4.1.A: Limite máximo para envio de informes (ANS).
+                                                      Informe de      Informe de         Informe de Baixa
+                                                                                                             Informe Preliminar      Informe de
+         Arranjo                                      Transação       Transação          (Exceto por
+                                                                                                             de Pagamento            Segregação
+                                                      Iniciada        Atualizada         Pagamento)
+
+                                                                                                             N/A (somente meta       Conforme horário
+         Boleto                                       30 min          30 min             48h
+                                                                                                             funcional)              de corte (5.2)
+
+         Pix                                                                                                 N/A (somente meta       Conforme horário
+                                                      30 min          30 min             48h
+         Dinâmico                                                                                            funcional)              de corte (5.2)
+
+         Pix                                                                                                 N/A (somente meta       Conforme horário
+                                                      30 min          —                  48h
+         Automático                                                                                          funcional)              de corte (5.2)
+
+                                                                                                             N/A (somente meta       Conforme horário
+         Pix Estático                                 —               —                  —
+                                                                                                             funcional)              de corte (5.2)
+
+                                                                                                             N/A (somente meta       Conforme horário
+         TED                                          —               —                  —
+                                                                                                             funcional)              de corte (5.2)
+
+                                                                                                             N/A (somente meta
+                                                                                                                                     Conforme horário
+         TEF                                          —               —                  —                   funcional, envio
+                                                                                                                                     de corte (5.2)
+                                                                                                             opcional)
+
+
+
+O Informe Preliminar de Pagamento é obrigatório em todos os arranjos (exceto TEF, em que é
+opcional) e tem apenas meta funcional, seu envio não entra no cálculo de observância (Seção
+7). A meta funcional, sempre inferior ao limite máximo, representa o desempenho esperado em
+condições normais.
+
+                                                       Tabela 4.1.B: Meta funcional para envio de informes (objetivo de melhor esforço).
+                                                                            Informe de
+                                                      Informe de                                    Informe de Baixa             Informe Preliminar
+         Arranjo                                                            Transação
+                                                      Transação Iniciada                            (Exceto por Pagamento)       de Pagamento
+                                                                            Atualizada
+
+         Boleto                                       5 min                 5 min                   5 min                        5 min
+
+         Pix
+                                                      5 min                 5 min                   5 min                        5 min
+         Dinâmico
+
+         Pix
+                                                      5 min                 —                       5 min                        5 min
+         Automático
+
+
+
+                                                                                       Página 16 de 33
+Split Payment | Manual de Tempos                                                                    Versão 1.0.1
+
+
+                                     Informe de
+                Informe de                                   Informe de Baixa           Informe Preliminar
+ Arranjo                             Transação
+                Transação Iniciada                           (Exceto por Pagamento)     de Pagamento
+                                     Atualizada
+
+ Pix Estático   —                    —                       —                          5 min
+
+ TED            —                    —                       —                          5 min
+
+ TEF            —                    —                       —                          5 min (envio opcional)
+
+
+
+4.2 CONSUMO DO RETORNO SUPER INTELIGENTE
+
+Aplica-se apenas aos arranjos no modelo Super Inteligente (Boleto, Pix Dinâmico e Pix
+Automático). Mede o tempo entre a disponibilização da mensagem de Retorno Super Inteligente
+pela Plataforma Pública e o seu consumo pelo PSP Recebedor Direto/Núclea via long polling.
+
+ Métrica                                 Valor              Apuração
+
+ Limite máximo (ANS)                     30 minutos         Compõe o IGA (Capítulo 7)
+
+ Meta funcional                          5 minutos          N/A
+
+
+
+O consumo é assíncrono: o PSP Recebedor Direto/Núclea realiza o long polling, armazena a
+mensagem internamente e a utiliza no cálculo de CBS/IBS Segregado, no momento do
+pagamento (vide Manual de Operações). A medição refere-se ao intervalo entre a
+disponibilização pela PP e o consumo via polling, e não ao uso efetivo no cálculo. Os códigos
+RSUP associados a cada Retorno Super Inteligente são definidos no Manual de Integração (Item
+5: Lista de Retornos da Plataforma Pública).
+
+4.3 DEPENDÊNCIAS ENTRE OS ANS
+
+Os ANS do Split Payment têm dependências operacionais que condicionam seu funcionamento:
+    • O ANS de Consumo do Retorno Super Inteligente depende da disponibilização tempestiva
+      da mensagem pela PP, que por sua vez depende da resposta de RFB/CGIBS. Falhas na
+      cadeia governo→PP são excluídas do ANS do participante;
+    • O ANS do Informe de Segregação depende da efetiva Liquidação Financeira das
+      transações dentro da janela de corte (transações com Liquidação Financeira concluída
+      após o corte entram no Informe de Segregação seguinte);
+    • O ANS de Repasse Financeiro depende do envio prévio e correto do Informe de
+      Segregação (o Repasse Financeiro é honrado pelo valor constante do Informe de
+      Segregação);
+    • Nos arranjos com PSP Recebedor Indireto, a responsabilidade pela comunicação com a
+      PP recai integralmente sobre o PSP Recebedor Direto (ou a Núclea), sendo flexível a forma
+      de transmissão de dados entre PSP Recebedor Direto e PSP Recebedor Indireto;
+    • No arranjo Boleto, a Núclea é o ator responsável pela comunicação com a PP.
+
+
+
+
+                                                 Página 17 de 33
+Split Payment | Manual de Tempos                                                                                                                Versão 1.0.1
+
+CAPÍTUL O 5 – JAN ELA S OPERACION AIS E REGRAS DE C ONTA GEM
+
+
+
+
+                                                                CAPÍTULO 5 – JANELAS OPERACIONAIS E REGRAS DE CONTAGEM
+
+
+Este capítulo trata de quando os eventos podem ocorrer e de como o tempo é medido. Reúne a
+disponibilidade da Plataforma Pública, os horários de corte e a frequência do Informe de
+Segregação, o mapeamento dos marcos de início e fim da contagem por arranjo, o encerramento
+da janela do Super Inteligente e as regras de início e de interrupção da contagem dos ANS.
+
+5.1 DISPONIBILIDADE DA PLATAFORMA PÚBLICA
+
+A Plataforma Pública opera em regime de 24 horas por 7 dias para a recepção dos informes. Em
+caráter de exceção, o Informe de Segregação e o Repasse Financeiro ocorrem somente em dias
+úteis, com horários de corte específicos.
+
+         Operação                                                                                     Disponibilidade
+
+         Informe de Transação Iniciada; Informe de Transação
+         Atualizada; Informe de Baixa (Exceto por Pagamento);                                         24 horas × 7 dias
+         Informe Preliminar de Pagamento
+
+         Retorno Super Inteligente (long polling)                                                     24 horas × 7 dias
+
+         Consulta Retroativa (Super Inteligente)                                                      24 horas × 7 dias
+
+                                                                                                      Enviado 2x por dia útil, por arranjo e por PSP
+         Informe de Segregação
+                                                                                                      Recebedor Direto, conforme horários de corte (5.2)
+
+                                                                                                      Enviado 1x por dia útil, por arranjo, por PSP
+         Repasse Financeiro                                                                           Recebedor Direto e por tributo (CBS/IBS), conforme
+                                                                                                      prazo D+1 (Capítulo 6)
+
+
+
+5.2 HORÁRIOS DE CORTE DO INFORME DE SEGREGAÇÃO
+
+São estabelecidos dois horários de corte diários para o envio do Informe de Segregação à PP. A
+cada corte abre-se uma janela de processamento de 3 horas, dentro da qual o PSP/Núclea deve
+concluir o envio.
+
+Horário mínimo de corte: todas as transações cuja Liquidação Financeira tenha sido concluída
+até esse horário devem ser incluídas no respectivo Informe de Segregação. Transações cuja
+Liquidação Financeira foi efetivada após esse horário também podem ser incluídas (desde que
+dentro do limite máximo de envio).
+
+Limite máximo de envio: horário até o qual o Informe de Segregação deve ser enviado à PP
+(horário mínimo de corte acrescido de 3 horas).
+
+                                                               1º Corte (horário   1º Corte (limite       2º Corte (horário        2º Corte (limite
+         Arranjo
+                                                               mínimo de corte)    máximo de envio)       mínimo de corte)         máximo de envio)
+
+         Boleto                                                08:20               11:20                  16:10                    19:10
+
+         Pix
+                                                               12:00               15:00                  18:30                    21:30
+         Dinâmico
+
+         Pix
+                                                               12:00               15:00                  18:30                    21:30
+         Automático
+
+                                                                                           Página 18 de 33
+Split Payment | Manual de Tempos                                                                     Versão 1.0.1
+
+
+                1º Corte (horário     1º Corte (limite        2º Corte (horário         2º Corte (limite
+ Arranjo
+                mínimo de corte)      máximo de envio)        mínimo de corte)          máximo de envio)
+
+ Pix Estático   11:50                 14:50                   18:20                     21:20
+
+ TED            12:30                 15:30                   19:00                     22:00
+
+ TEF            12:10                 15:10                   18:40                     21:40
+
+Observação: a janela de processamento de 3 horas após cada horário de corte aplica-se exclusivamente aos dias
+úteis.
+
+5.3 REGRAS DE INÍCIO DE CONTAGEM DOS ANS
+
+O início e o fim da contagem de cada ANS vinculam-se aos marcos temporais definidos na Seção
+2.2, conforme o quadro a seguir. O quadro abaixo define o evento e o campo técnico de cada
+extremo da contagem; o marco temporal correspondente em cada arranjo consta da Seção 5.4.
+
+                                                                                  Encerramento (fim da
+ ANS                                   Início da contagem
+                                                                                  contagem)
+
+ Envio do Informe de Transação                                                    Recebimento do informe pela
+                                       Criação/Registro da transação (dtHrIni)
+ Iniciada                                                                         PP (dtHrMsg)
+
+ Envio do Informe de Transação                                                    Recebimento do informe pela
+                                       Atualização da transação (dtHrAtu)
+ Atualizada                                                                       PP (dtHrMsg)
+
+ Consumo do Retorno Super                                                         Consumo pelo PSP/Núclea
+                                       Disponibilização da mensagem na PP
+ Inteligente                                                                      (dtHrMsg)
+
+ Envio do Informe de Baixa (Exceto     Baixa da transação por motivo distinto     Recebimento do informe pela
+ por Pagamento)                        de pagamento no arranjo (dtHrBaixa)        PP (dtHrMsg)
+
+ Envio do Informe Preliminar de        Liquidação Interbancária ou Liquidação     Recebimento do informe pela
+ Pagamento (apenas meta funcional)     Intrabancária                              PP
+
+                                                                                  Limite de envio (horário de
+ Envio do Informe de Segregação        Horário de corte do arranjo (Seção 5.2)
+                                                                                  corte + 3h)
+
+                                                                                  12:00 de D+1 (limite de
+                                       Data do Informe de Segregação (ver
+ Repasse Financeiro                                                               envio) e 09:00 de D+1 (meta
+                                       Capítulo 6)
+                                                                                  funcional)
+
+
+
+A contagem do tempo da Notificação de Transação em Análise (Mecanismo de Ocorrências),
+que também compõe o IGA, é definida na Seção 8.1.
+
+5.4 MARCOS DE INÍCIO E FIM DA CONTAGEM DOS ANS
+
+Esta seção traduz, para cada arranjo, os conceitos de início e fim de contagem da Seção 5.3 nos
+marcos temporais concretos da Seção 2.2. Cada célula indica o marco em que a contagem do
+prazo do informe se inicia e o marco em que se encerra (marco inicial → marco final). O marco
+inicial corresponde ao evento que origina o informe, e não à solicitação que o antecede; por isso
+ele varia entre arranjos. No Boleto, por exemplo, a contagem do Informe de Transação Iniciada
+começa quando a Núclea registra a transação (TA3), e não quando o Recebedor solicita a criação
+(TA1); já no Pix Dinâmico, começa quando o próprio PSP Recebedor Direto cria a transação
+(TA2). Os prazos máximos (ANS) de cada informe constam da Seção 4.1; o traço (—) indica
+informe não aplicável ao arranjo.
+
+                                              Página 19 de 33
+Split Payment | Manual de Tempos                                                                    Versão 1.0.1
+
+
+                Tabela: Marcos de início e fim da contagem dos ANS de comunicação, por arranjo.
+                                         Pix           Pix            Pix
+ Informe                   Boleto                                                   TED           TEF
+                                         Dinâmico      Automático     Estático
+
+ Informe de Transação
+                           TA3 → TA4     TA2 → TA3     TA2 → TA3      —             —             —
+ Iniciada
+
+ Informe de Baixa
+ (Exceto por               TB3 → TB4     TB2 → TB3     TB2 → TB3      —             —             —
+ Pagamento)
+
+ Informe de Transação
+                           TC3 → TC4     TC2 → TC3     —              —             —             —
+ Atualizada
+
+ Consumo do Retorno
+                           TD1 → TD2     TD1 → TD2     TD1 → TD2      —             —             —
+ Super Inteligente
+
+ Informe Preliminar de
+                           TE3 → TE5     TE2 → TE3     TE2 → TE3      TE2 → TE3     TE2 → TE3     TE1 → TE2
+ Pagamento¹
+
+ Informe de                (horário de   (horário de   (horário de    (horário de   (horário de   (horário de
+ Segregação²               corte)        corte)        corte)         corte)        corte)        corte)
+
+¹ O Informe Preliminar de Pagamento possui apenas meta funcional (Seção 4.1) e não compõe o cálculo do IGA
+(Seção 7); o mapeamento é informado para referência. A contagem inicia-se na Liquidação Interbancária ou
+Intrabancária do arranjo.
+² A contagem do Informe de Segregação não se inicia em um marco temporal, mas no horário de corte do arranjo
+(Seção 5.2); o limite de envio é o horário de corte acrescido de 3 horas. O marco TF2 corresponde ao envio do
+informe à Plataforma Pública.
+
+5.5 REGRAS DE CONTAGEM E INTERRUPÇÃO DOS ANS
+
+A apuração do tempo decorrido em cada ANS observa as seguintes regras gerais:
+    • A apuração é mensal, por PSP Recebedor Direto, e considera todos os eventos do
+      participante, inclusive aqueles com erro, contabilizando inclusive as comunicações
+      realizadas por meio de Prestador de Serviço de Conexão;
+    • A contagem é realizada em tempo contínuo, no horário oficial de Brasília (UTC−3);
+    • Quando o PSP/Núclea reenvia um informe após erro, vale a entrega final: se ela ocorrer
+      corretamente e dentro do limite máximo, não há inconformidade. O tempo gasto para
+      corrigir e reenviar é contado no ANS quando o erro for do próprio participante;
+    • Períodos de indisponibilidade comprovada da Plataforma Pública e manutenções
+      programadas (comunicadas com antecedência mínima de 48 horas) são excluídos da
+      apuração. As hipóteses de exclusão e seus critérios técnicos constam da Seção 7.4.
+
+5.6 ENCERRAMENTO DA JANELA DO SUPER INTELIGENTE
+
+O Retorno Super Inteligente, encaminhado pela RFB/CGIBS por meio da Plataforma Pública,
+pode comunicar dois tipos de informação: CBS/IBS Corrigido, em que o valor de CBS/IBS
+Informado é corrigido “a maior” ou “a menor” em relação ao Documento Fiscal vinculado; ou
+CBS/IBS Em Aberto, em que parte do débito de CBS/IBS relacionado ao Documento Fiscal já foi
+extinta.
+
+A janela de Retorno Super Inteligente encerra-se em três marcos possíveis, que variam conforme
+o tipo de retorno (ver tabela abaixo):
+
+
+                                               Página 20 de 33
+Split Payment | Manual de Tempos                                                                     Versão 1.0.1
+
+
+    • (A) até 00:30 de D+1 (dia subsequente à criação da transação);
+    • (B) até o envio do Informe de Baixa (Exceto por Pagamento) à Plataforma Pública;
+    • (C) até o pagamento integral da transação, comunicado à Plataforma Pública por meio do
+      Informe Preliminar de Pagamento ou do Informe de Segregação.
+
+                                                            Marcos de
+ Tipo de Retorno
+                       Quando é aplicado                    encerramento   Observação
+ Super Inteligente
+                                                            aplicáveis
+
+                                                                           O marco de encerramento “A”
+                                                                           impede correções “a maior” de
+ Correção “a
+                       Em caso de discrepância entre o                     CBS/IBS após 00:30 de D+1,
+ maior” (CBS/IBS
+                       CBS/IBS Informado e o CBS/IBS                       buscando preservar o valor líquido
+ Corrigido maior que                                        A, B e C
+                       que consta no DF vinculado à                        mínimo do recebível e dar maior
+ CBS/IBS
+                       transação                                           segurança a eventuais operações
+ Informado)
+                                                                           de antecipação de recebíveis (fora
+                                                                           do escopo deste material).
+
+ Correção “a
+                       Em caso de discrepância entre o
+ menor” (CBS/IBS                                                           Sem janela máxima vinculante
+                       CBS/IBS Informado e o CBS/IBS
+ Corrigido menor                                            BeC            (pode ocorrer durante todo o ciclo
+                       que consta no DF vinculado à
+ que CBS/IBS                                                               de vida da transação).
+                       transação
+ Informado)
+
+                       Caso o débito tributário do DF
+                       vinculado à transação tenha sido
+                       extinto parcial ou totalmente,                      Sem janela máxima vinculante
+ CBS/IBS Em
+                       dispensando (parcial ou              BeC            (pode ocorrer durante todo o ciclo
+ Aberto
+                       totalmente) a realização do split,                  de vida da transação).
+                       para evitar recolhimento
+                       desnecessário de tributo
+
+
+
+Adicionalmente, o período de retenção dos dados do Super Inteligente para fins de Consulta
+Retroativa é de 3 dias corridos (72h), a contar da disponibilização. Após esse período, as
+mensagens deixam de estar disponíveis para consulta retroativa pelos participantes.
+
+
+
+
+                                                 Página 21 de 33
+Split Payment | Manual de Tempos                                                                                            Versão 1.0.1
+
+CAPÍTUL O 6 – REPA SSE FINANC EIR O
+
+
+
+
+                                                          CAPÍTULO 6 – REPASSE FINANCEIRO
+
+
+O Repasse Financeiro é a transferência efetiva dos valores de CBS e IBS segregados, do PSP
+Recebedor Direto às contas da RFB (CBS) e do CGIBS (IBS). Este capítulo trata da relação entre
+o Informe de Segregação e o Repasse Financeiro e dos prazos e janelas de execução em D+1.
+
+6.1 RELAÇÃO ENTRE O INFORME DE SEGREGAÇÃO E O REPASSE FINANCEIRO
+
+O Informe de Segregação é o documento de natureza vinculante que materializa a obrigação de
+Repasse Financeiro do PSP Recebedor Direto à RFB (CBS) e ao CGIBS (IBS). Como regra
+geral, o valor total do Repasse Financeiro deve ser sempre igual à soma dos valores dos Informes
+de Segregação correspondentes ao período de apuração.
+
+O encadeamento operacional observa a seguinte sequência:
+                                  • Ao final de cada janela de corte, o PSP Recebedor Direto/Núclea consolida as transações
+                                    com Liquidação Financeira concluída no período e envia o Informe de Segregação à PP,
+                                    diretamente ou por meio de Prestador de Serviço de Conexão;
+                                  • O tributo correspondente fica segregado e armazenado pelo PSP Recebedor Direto até a
+                                    data do Repasse Financeiro;
+                                  • Em D+1 (dia útil seguinte à Liquidação Financeira), o PSP Recebedor Direto executa o
+                                    Repasse Financeiro via TES (CBS) e STR (IBS), por arranjo e de forma consolidada,
+                                    podendo utilizar Prestador de Serviço de Repasse Financeiro.
+
+6.2 PRAZOS DE REPASSE FINANCEIRO (D+1)
+
+          Aspecto                                                Definição
+
+          Responsável pelo repasse                               PSP Recebedor Direto (participante direto do arranjo)
+
+          Prazo regulatório                                      D+1
+
+          Meta funcional                                         Até 09:00 (nove horas) de D+1
+
+          Limite máximo (ANS)                                    Até 12:00 (meio do dia) de D+1
+
+          Evento de repasse utilizado para CBS                   TES
+
+          Evento de repasse utilizado para IBS                   STR
+
+                                                                 Um Repasse Financeiro por dia útil, por variação de arranjo e por PSP
+          Consolidação
+                                                                 Recebedor Direto, segregado por tributo (CBS e IBS)
+
+
+
+O PSP Recebedor Direto poderá contratar Prestador de Serviço de Repasse Financeiro para
+executar a transferência em seu nome, mantendo a responsabilidade integral pelo cumprimento
+do prazo e do valor.
+
+
+
+
+                                                                       Página 22 de 33
+Split Payment | Manual de Tempos                                                                                 Versão 1.0.1
+
+CAPÍTUL O 7 – OB SER VÂNCIA DOS AN S
+
+
+
+
+                                                             CAPÍTULO 7 – OBSERVÂNCIA DOS ANS
+
+
+A observância dos Acordos de Nível de Serviço (ANS) dos participantes é avaliada em duas
+dimensões distintas: a Taxa de Sucesso, que mede a ausência de erros na comunicação dos
+eventos, e o Cumprimento dos Tempos de Comunicação, que mede se essa comunicação ocorre
+dentro dos prazos máximos. Ambas as dimensões são consolidadas no Índice Geral de ANS
+trimestral (IGAt), calculado a partir dos Índices Gerais de ANS mensais (IGAm) observados no
+respectivo trimestre.
+
+A apuração é realizada mensalmente, por indicador sujeito a ANS. Ao final de cada trimestre, os
+três IGAm são consolidados em um IGAt, utilizado para avaliar a regularidade do participante
+quanto à observância dos ANS.
+
+O IGAt é comparado ao valor de referência aplicável à categoria do participante. O participante
+é considerado regular quando o IGAt for igual ou superior ao valor de referência de sua categoria,
+ressalvadas as hipóteses de exceção e ausência de penalidade previstas na Seção 7.4.
+
+7.1 DIMENSÕES DE OBSERVÂNCIA
+
+Um indicador corresponde à combinação de um arranjo com um informe ou evento sujeito a ANS,
+como “Boleto × Informe de Transação Iniciada”. Cada indicador é avaliado em duas dimensões:
+a Dimensão 1 (Taxa de Sucesso), que verifica se as comunicações são concluídas sem erro, e
+a Dimensão 2 (Cumprimento dos Tempos de Comunicação), que verifica se são concluídas
+dentro do prazo.
+
+As duas dimensões incidem sobre o mesmo conjunto de eventos de cada indicador: a Dimensão
+1 verifica a ausência de erro e a Dimensão 2, o cumprimento do prazo. São apuradas de forma
+independente e podem ter resultados diferentes para o mesmo indicador, pois a comunicação de
+um evento pode ser concluída sem erro e, ainda assim, fora do prazo.
+
+As tabelas a seguir relacionam os indicadores aplicáveis aos PSPs e à Núclea. Cada linha é um
+indicador, identificado pelo informe ou evento e pelo arranjo a que se aplica.
+
+Para cada PSP Recebedor Direto (responsável pela comunicação nos arranjos Pix Dinâmico,
+Pix Automático, Pix Estático, TED e TEF), são utilizados até 14 indicadores, conforme os arranjos
+em que participa:
+
+         #                             Informe ou evento                                        Arranjo
+
+         1                             Informe de Transação Iniciada                            Pix Dinâmico
+
+         2                             Informe de Transação Iniciada                            Pix Automático
+
+         3                             Informe de Transação Atualizada                          Pix Dinâmico
+
+         4                             Informe de Baixa (Exceto por Pagamento)                  Pix Dinâmico
+
+         5                             Informe de Baixa (Exceto por Pagamento)                  Pix Automático
+
+         6                             Consumo do Retorno Super Inteligente                     Pix Dinâmico
+
+         7                             Consumo do Retorno Super Inteligente                     Pix Automático
+
+
+
+                                                                              Página 23 de 33
+Split Payment | Manual de Tempos                                                                 Versão 1.0.1
+
+
+ #       Informe ou evento                                                   Arranjo
+
+ 8       Informe de Segregação                                               Pix Dinâmico
+
+ 9       Informe de Segregação                                               Pix Automático
+
+ 10      Informe de Segregação                                               Pix Estático
+
+ 11      Informe de Segregação                                               TED
+
+ 12      Informe de Segregação                                               TEF (Book Transfer)
+
+ 13      Mecanismo de Ocorrências (Envio de Notificação)                     Todos os arranjos
+
+         Mecanismo de Ocorrências (Consumo das respostas da Solicitação de
+ 14                                                                          Todos os arranjos
+         Estorno)
+
+
+
+Para a Núclea (responsável pela comunicação no arranjo Boleto), há 5 indicadores:
+
+ #       Informe ou evento                                                                  Arranjo
+
+ 1       Informe de Transação Iniciada                                                      Boleto
+
+ 2       Informe de Transação Atualizada                                                    Boleto
+
+ 3       Informe de Baixa (Exceto por Pagamento)                                            Boleto
+
+ 4       Consumo do Retorno Super Inteligente                                               Boleto
+
+ 5       Informe de Segregação                                                              Boleto
+
+
+
+Nem todos os participantes são avaliados em todos os indicadores: cada PSP Recebedor Direto
+é avaliado apenas nos indicadores correspondentes aos arranjos que efetivamente opera. Por
+exemplo, um PSP Recebedor Direto que opera TED mas não oferece Pix Estático é avaliado no
+indicador de Informe de Segregação do TED, mas não no de Pix Estático. Os indicadores dos
+arranjos não operados pelo participante ficam fora do cálculo do seu IGA, não entrando no total
+nem na contagem de Aprovados.
+
+Nos arranjos Pix Estático, TED e TEF, por serem iniciados pelo Pagador e não operarem o
+Modelo Super Inteligente, não há Informe de Transação Iniciada, Informe de Transação
+Atualizada, Informe de Baixa nem Consumo do Retorno Super Inteligente. Nesses arranjos, o
+IGA é composto apenas pelo Informe de Segregação.
+
+O Informe Preliminar de Pagamento possui somente meta funcional e não compõe o cálculo do
+IGA.
+
+O Repasse Financeiro possui prazo próprio, definido no Capítulo 6, mas não compõe o cálculo
+do IGA.
+
+A apuração de cada indicador é realizada mensalmente, em separado para cada PSP Recebedor
+Direto (indicadores 1 a 14, conforme aplicabilidade), e para a Núclea (indicadores 1 a 5). Cada
+indicador é classificado como Aprovado ou Reprovado em duas dimensões, conforme os critérios
+das Seções 7.1.1 e 7.1.2.
+
+
+
+                                                Página 24 de 33
+Split Payment | Manual de Tempos                                                                    Versão 1.0.1
+
+
+7.1.1 Dimensão 1 (Taxa de Sucesso)
+
+A Dimensão 1 (Taxa de Sucesso) mede, em cada indicador, a proporção de eventos concluídos
+sem erro atribuível ao participante.
+
+A Taxa de Sucesso é apurada de forma independente para cada indicador: são considerados
+apenas os eventos daquele indicador específico, e não o conjunto total de eventos do
+participante.
+
+Exemplo: no mês, o indicador “1- Informe de Transação Iniciada para Pix Dinâmico” teve 10.000
+eventos, dos quais 9.980 concluídos sem erro, resultando em uma Taxa de Sucesso de 99,80%.
+Caso esse valor seja igual ou superior à Taxa Mínima de Sucesso estabelecida para a categoria
+do participante (A-D), o indicador é considerado Aprovado na Dimensão 1; caso esse valor seja
+inferior à Taxa Mínima de Sucesso, o indicador é considerado Reprovado.
+
+Para fins de comparação, a Taxa de Sucesso é arredondada para cima na segunda casa decimal
+(por exemplo, 99,781% é considerada 99,79% e 98,999% é considerada 99,00%). Considera-se
+o indicador Aprovado quando o valor arredondado for igual ou superior à Taxa Mínima de
+Sucesso de sua categoria.
+
+As Dimensões 1 e 2 consideram os mesmos eventos. Para cada evento, verifica-se se a
+comunicação a que ele dá origem (ex.: o envio do informe à Plataforma Pública, o consumo do
+Retorno Super Inteligente, ou o envio da Notificação de Transação em Análise (Mecanismo de
+Ocorrências)) foi concluída sem erro atribuível ao participante. O Informe de Segregação é
+transmitido em um ou mais lotes de transações e, para fins de apuração, cada lote constitui um
+evento próprio.
+
+Considera-se sem erro a comunicação que:
+    • É recepcionada pela Plataforma Pública;
+    • Retorna código HTTP de sucesso, incluindo códigos de sucesso sem conteúdo, quando
+      aplicável ao fluxo; e
+    • Atende às regras técnicas, estruturais e funcionais previstas na documentação aplicável,
+      incluindo contrato da API, obrigatoriedade de campos, formato dos dados e regras de
+      validação.
+
+Considera-se com erro a comunicação que:
+    • Retorna código HTTP de erro atribuível ao participante;
+    • É rejeitada por violação de contrato, schema, formato, obrigatoriedade de campos ou regra
+      funcional; ou
+    • Não pode ser processada por inconsistência atribuível ao participante responsável pelo
+      envio.
+
+Para cada indicador, a Taxa de Sucesso é calculada mensalmente conforme a seguinte fórmula:
+      Taxa de Sucesso do indicador = (Eventos sem erro do indicador / Total de eventos do indicador) × 100
+
+Em que, para o indicador considerado:
+
+
+
+                                               Página 25 de 33
+Split Payment | Manual de Tempos                                                      Versão 1.0.1
+
+
+     • Os eventos sem erro são aqueles cuja comunicação atende às condições descritas acima;
+       e
+     • O total de eventos é a soma, no mesmo indicador, dos eventos sem erro e dos eventos
+       com erro atribuível ao participante.
+
+As Taxas Mínimas de Sucesso, por categoria de participante (Seção 7.2), são:
+
+ Categoria                         Taxa Mínima de Sucesso
+
+ A                                 98,0%
+
+ B                                 97,0%
+
+ C                                 96,0%
+
+ D                                 95,0%
+
+
+
+A Dimensão 1 possui peso 2 na composição do Índice Geral de ANS mensal (IGAm). Cada
+indicador Aprovado na Dimensão 1 contribui com peso 2 no cálculo do Cumprimento de ANS
+(CA); cada indicador Reprovado deixa de contribuir com esse peso.
+
+A apuração da Dimensão 1 não substitui a da Dimensão 2: um evento pode ser concluído sem
+erro e, ainda assim, impactar negativamente a Dimensão 2 caso a comunicação tenha sido
+enviada ou consumida fora do prazo máximo aplicável.
+
+7.1.2 Dimensão 2 (Cumprimento dos Tempos de Comunicação)
+
+A Dimensão 2 (Cumprimento dos Tempos) mede, em cada indicador, a proporção de eventos
+concluídos dentro do prazo máximo aplicável.
+
+À semelhança da Dimensão 1, o Cumprimento dos Tempos é apurado de forma independente
+para cada indicador: são considerados apenas os eventos daquele indicador específico, e não o
+conjunto total de eventos do participante.
+
+Exemplo: no mês, o indicador “1- Informe de Transação Iniciada para Pix Dinâmico” teve 10.000
+eventos, dos quais 9.920 concluídos dentro do prazo, resultando em um Cumprimento dos
+Tempos de 99,2%. Como é igual ou superior a 99%, o indicador é considerado Aprovado na
+Dimensão 2; abaixo de 99%, Reprovado.
+
+Para fins deste indicador, considera-se evento cada ocorrência mensurável que gera obrigação
+de envio de informação à Plataforma Pública ou de consumo de informação por ela
+disponibilizada. São considerados, quando aplicáveis:
+     • Criação de transação sujeita ao Split Payment, que gera obrigação de envio do Informe de
+       Transação Iniciada;
+     • Atualização de transação sujeita ao Split Payment, que gera obrigação de envio do Informe
+       de Transação Atualizada;
+     • Baixa da transação por motivo distinto de pagamento, que gera obrigação de envio do
+       Informe de Baixa (Exceto por Pagamento);
+
+
+
+                                                Página 26 de 33
+Split Payment | Manual de Tempos                                                                   Versão 1.0.1
+
+
+    • Disponibilização de Retorno Super Inteligente pela Plataforma Pública, que gera obrigação
+      de consumo pelo PSP Recebedor Direto ou pela Núclea;
+    • O envio de cada lote de transações do Informe de Segregação, observado o horário de
+      corte aplicável ao arranjo, dentro da janela de processamento;
+    • Existência de impeditivos não contratuais para a sensibilização do crédito ao Recebedor
+      que impeçam a inclusão tempestiva da transação no Informe de Segregação, ocasionando
+      o envio da Notificação de Transação em Análise (Mecanismo de Ocorrências); e
+    • Disponibilização das respostas da Solicitação de Estorno pela Plataforma Pública, que
+      gera obrigação de consumo pelo PSP Recebedor Direto.
+
+O evento é considerado dentro do prazo quando a diferença entre o marco inicial e o marco final
+de contagem for igual ou inferior ao prazo máximo aplicável ao indicador. Os marcos de início e
+encerramento são os definidos na Seção 5.3. Em linhas gerais:
+    • Para informes enviados à Plataforma Pública, a contagem se inicia no evento de origem
+      do informe e se encerra no envio do informe pela Plataforma Pública;
+    • Para o Retorno Super Inteligente, a contagem se inicia na disponibilização da mensagem
+      pela Plataforma Pública e se encerra no consumo pelo PSP Recebedor Direto ou pela
+      Núclea;
+    • Para cada lote do Informe de Segregação, a contagem observa os horários de corte e os
+      limites máximos de envio definidos na Seção 5.2;
+    • Para a Notificação de Transação em Análise (Mecanismo de Ocorrências), a contagem
+      observa o prazo definido na Seção 8.1; e
+    • Para o consumo das respostas da Solicitação de Estorno, a contagem se inicia na
+      disponibilização da resposta pela Plataforma Pública e se encerra no consumo pelo PSP
+      Recebedor Direto, no prazo definido na Seção 8.1.
+
+Para cada indicador, o Cumprimento dos Tempos de Comunicação é calculado mensalmente
+conforme a seguinte fórmula:
+Cumprimento dos Tempos do indicador = (Eventos do indicador dentro do prazo / Total de eventos do indicador) ×
+                                                   100
+
+Em que, para o indicador considerado:
+    • Os eventos dentro do prazo são os comunicados ou consumidos dentro do limite de tempo
+      definido para aquele indicador; e
+    • O total de eventos é o conjunto de eventos daquele indicador passíveis de mensuração no
+      período, observadas as hipóteses de exclusão da Seção 7.4.
+
+O Cumprimento Mínimo dos Tempos de Comunicação é de 99% e aplica-se igualmente a todas
+as categorias de participante. Aplica-se a esse percentual o mesmo critério de arredondamento
+na segunda casa decimal definido na Seção 7.1.1.
+
+A Dimensão 2 possui peso 1 na composição do IGAm. Cada indicador Aprovado na Dimensão 2
+contribui com peso 1 no cálculo do Cumprimento de ANS (CA); cada indicador Reprovado deixa
+de contribuir com esse peso.
+
+
+                                              Página 27 de 33
+Split Payment | Manual de Tempos                                                                 Versão 1.0.1
+
+
+A Dimensão 2 não mede o sucesso técnico da comunicação, avaliado pela Dimensão 1, mas
+apenas se a obrigação temporal foi cumprida dentro do prazo máximo aplicável.
+
+7.2 CATEGORIAS DE PARTICIPANTE
+
+Para fins de observância dos ANS, os participantes são agrupados em quatro categorias (A, B,
+C e D), definidas pela quantidade de transações informadas à Plataforma Pública no último ano.
+A categoria determina tanto a Taxa Mínima de Sucesso aplicável à Dimensão 1 (Seção 7.1.1)
+quanto o valor de referência do IGAt (Seção 7.3).
+
+ Categoria        Critério (Total de transações sujeitas ao Split Payment informadas à PP no ano anterior)
+
+ A                Participantes com quantidade de transações maior que 50.000.000
+
+ B                Participantes com quantidade de transações de 10.000.001 a 50.000.000
+
+ C                Participantes com quantidade de transações de 1.000.001 a 10.000.000
+
+ D                Participantes com até 1.000.000 de transações
+
+
+
+A alocação dos participantes observa as seguintes regras:
+     • No primeiro trimestre de cada ano, a administração da Plataforma Pública divulga a
+       quantidade de transações informadas no ano anterior, por participante;
+     • Com base nesse total, cada participante identifica a faixa e a categoria correspondentes;
+     • A categoria assim definida vigora de julho do ano corrente a junho do ano seguinte; e
+     • Participantes sem transações informadas no período de referência são alocados na
+       categoria D.
+
+A título de exemplo, a quantidade de transações de 2028, divulgada no primeiro trimestre de
+2029, define a categoria que cada participante observará entre julho de 2029 e junho de 2030.
+
+7.3 ÍNDICE GERAL DE ANS (IGA)
+
+O Índice Geral de ANS (IGA) consolida, em um único número, o desempenho do participante nos
+indicadores de observância. É apurado em dois formatos: o IGA mensal (IGAm), utilizado para
+monitoramento, e o IGA trimestral (IGAt), utilizado para a avaliação de regularidade.
+
+São compostos a partir de todos os indicadores aplicáveis ao PSP Recebedor Direto ou à Núclea
+(Capítulos 3, 4 e 8). Cada indicador é avaliado nas duas dimensões, Dimensão 1 (Taxa de
+Sucesso) e Dimensão 2 (Cumprimento dos Tempos), e, ao final do mês, é classificado como
+Aprovado ou Reprovado em cada uma delas.
+
+A Dimensão 1 tem peso 2 e a Dimensão 2 tem peso 1, refletindo a maior relevância da ausência
+de erros na experiência de uso do Split Payment.
+
+O IGA mensal é a diferença entre o Cumprimento de ANS (CA) e o Decréscimo por Recorrência
+(DR):
+                                               IGAm = CA − DR
+
+
+
+
+                                               Página 28 de 33
+Split Payment | Manual de Tempos                                                                  Versão 1.0.1
+
+
+O Cumprimento de ANS (CA) corresponde à razão entre os pesos dos indicadores Aprovados e
+o total de pesos possíveis no mês:
+     CA = (indicadores Aprovados na Dimensão 1 × 2 + indicadores Aprovados na Dimensão 2 × 1) / (total de
+                                             indicadores × 3)
+
+O Decréscimo por Recorrência (DR) penaliza a recorrência de não conformidades no mesmo
+indicador:
+  DR = (indicadores Reprovados de forma recorrente na Dimensão 1 × 1%) + (indicadores Reprovados de forma
+                                     recorrente na Dimensão 2 × 0,5%)
+
+Considera-se recorrente o indicador Reprovado tanto no mês de apuração quanto no mês
+imediatamente anterior.
+
+O IGA trimestral é a média simples dos três IGAm do trimestre:
+                                     IGAt = (IGAm₁ + IGAm₂ + IGAm₃) / 3
+
+Os trimestres de apuração correspondem aos trimestres do ano civil: 1º (janeiro a março), 2º
+(abril a junho), 3º (julho a setembro) e 4º (outubro a dezembro).
+
+O participante é considerado regular no trimestre quando o IGAt for igual ou superior ao valor de
+referência de sua categoria. O IGAm é acompanhado apenas para fins de monitoramento e não
+enseja, por si só, avaliação de regularidade.
+
+Os valores de referência do IGAt, por categoria, são:
+
+ Categoria                         Valor de Referência
+
+ A                                 80%
+
+ B                                 75%
+
+ C                                 70%
+
+ D                                 66%
+
+
+
+7.4 EXCEÇÕES E AUSÊNCIA DE PENALIDADE
+
+Determinados eventos são excluídos da apuração dos indicadores ou afastam a aplicação de
+penalidade, ainda que o resultado nominal do participante fique aquém do valor de referência.
+
+São excluídos do cálculo dos indicadores das Dimensões 1 e 2 (não sendo computados nem
+entre os Aprovados nem no total) os seguintes eventos, quando devidamente comprovados:
+     • Períodos de indisponibilidade da Plataforma Pública;
+     • Manutenções programadas da Plataforma Pública;
+     • Manutenções programadas dos participantes, quando comunicadas à administração da
+       Plataforma Pública com antecedência mínima de 48 horas;
+     • Falhas na cadeia entre a RFB/CGIBS e a Plataforma Pública que comprometam a
+       disponibilização tempestiva do Retorno Super Inteligente, no que se refere ao indicador de
+       Consumo do Retorno Super Inteligente; e
+
+
+
+                                              Página 29 de 33
+Split Payment | Manual de Tempos                                                     Versão 1.0.1
+
+
+    • Eventos de caso fortuito ou força maior reconhecidos pela administração da Plataforma
+      Pública.
+
+Não constituem hipótese de exclusão nem de ausência de penalidade:
+    • Falhas de Prestador de Serviço de Conexão ou de Prestador de Serviço de Repasse
+      Financeiro contratado pelo participante;
+    • Falhas de PSP Recebedor Indireto na cadeia; e
+    • Indisponibilidades ou erros internos do próprio participante.
+
+Nesses casos, a responsabilidade pelo cumprimento dos prazos e pela ausência de erros
+permanece integralmente do PSP Recebedor Direto e, no arranjo Boleto, da Núclea, resolvendo-
+se eventuais falhas de terceiros na relação contratual entre as partes envolvidas nos arranjos.
+
+Quando o indicador não tiver volume apurável no período (total de eventos igual a zero), ele é
+tratado como não apurável e não impacta o IGA.
+
+As hipóteses de não aplicação, suspensão ou atenuação de penalidades, inclusive durante a
+produção assistida escalonada, são tratadas no Regulamento e no Manual de Habilitação de
+Participantes (Onboarding).
+
+
+
+
+                                          Página 30 de 33
+Split Payment | Manual de Tempos                                                                                  Versão 1.0.1
+
+CAPÍTUL O 8 – MECAN ISM O D E OC ORRÊNC IAS
+
+
+
+
+                                              CAPÍTULO 8 – MECANISMO DE OCORRÊNCIAS
+
+
+O Mecanismo de Ocorrências (MOC) é o processo padronizado para tratamento de transações
+com split que apresentaram falhas, erros ou exceções ao longo do ciclo operacional, como
+retenção por impeditivos não contratuais e necessidade de estorno de CBS/IBS. Sua descrição
+operacional completa (casos de uso, cenários possíveis para Solicitação de Estorno, fluxo
+financeiro e responsabilidades) consta do Manual de Operações. Para fins deste Manual de
+Tempos, importam os prazos dos eventos do MOC, tratados na Seção 8.1.
+
+A Notificação de Transação em Análise ocorre quando uma transação com Liquidação Financeira
+concluída é retida pelo PSP Recebedor Direto ou PSP Recebedor Indireto em razão de
+impeditivos não contratuais (por exemplo, análise de segurança, prevenção a fraude,
+identificação de inconsistências ou compliance) e a análise não se conclui a tempo do envio do
+Informe de Segregação. Nesse caso, o PSP Recebedor Direto (em todos os arranjos, inclusive
+no Boleto) é responsável por notificar a Plataforma Pública de que a transação está em análise,
+e ela não é incluída no Informe de Segregação enquanto a análise perdurar.
+
+8.1 TEMPOS DO MECANISMO DE OCORRÊNCIAS
+
+Os tempos a seguir aplicam-se aos eventos do MOC. À semelhança dos demais ANS deste
+manual, cada tempo possui uma meta funcional (desempenho esperado em condições normais)
+e um limite máximo (ANS). Entre os eventos do MOC, o Envio da Notificação de Transação em
+Análise (indicador 13) e o Consumo, pelo PSP Recebedor Direto, das respostas da Solicitação
+de Estorno (indicador 14) são considerados para compor o Índice Geral de ANS, conforme a
+Seção 7.1; os demais não compõem o IGA. Ambos são avaliados nas duas dimensões do IGA,
+Taxa de Sucesso e Cumprimento dos Tempos, como os demais indicadores.
+
+          Evento                                     Meta                        ANS                    Integra o IGA?
+
+          Envio, pelo PSP Recebedor Direto,
+                                                     3 horas após a              24 horas após a
+          da Notificação de transação em
+                                                     Liquidação                  Liquidação
+          análise (transação com impeditivo                                                             Sim (Indicador 13)
+                                                     Intrabancária ou            Intrabancária ou
+          não contratual para a Liquidação
+                                                     Interbancária               Interbancária
+          Financeira) à PP
+
+                                                                                 Até 90 dias após a
+          Solicitação de Estorno pelo PSP                                                               Não (motivo:
+                                                                                 Liquidação
+          Recebedor Direto à PP, após                —                                                  inviabilidade de
+                                                                                 Intrabancária ou
+          identificar a demanda                                                                         mensuração)
+                                                                                 Interbancária
+
+          Consumo, pelo PSP Recebedor
+          Direto, das respostas da Solicitação       30 minutos                  6 horas                Sim (Indicador 14)
+          de Estorno na Plataforma Pública
+
+          Resposta à Solicitação de Estorno                                                             Não (motivo:
+          pela RFB/CGIBS (após o envio da            24 horas                    7 dias consecutivos¹   responsabilidade de
+          solicitação)                                                                                  RFB/CGIBS)
+
+          Devolução do tributo estornado ao                                                             Não (motivo:
+          PSP Recebedor Direto pela                  3 horas                     2 dias úteis¹          responsabilidade de
+          RFB/CGIBS                                                                                     RFB/CGIBS)
+
+
+
+
+                                                               Página 31 de 33
+Split Payment | Manual de Tempos                                                                  Versão 1.0.1
+
+
+ Evento                               Meta                      ANS                     Integra o IGA?
+
+ Envio, pelo PSP Recebedor Direto,                                                      Não (motivo:
+ do valor do tributo estornado pela   24 horas                  2 dias úteis            inviabilidade de
+ RFB/CGIBS ao ator prejudicado                                                          mensuração)
+
+¹ Os tempos de RFB/CGIBS constam a título de referência, para contextualizar o prazo de Repasse do PSP
+Recebedor Direto; não constituem ANS deste manual.
+
+O prazo de até 90 dias para a Solicitação de Estorno é um limite máximo para o PSP Recebedor
+Direto solicitar o estorno após identificar a demanda, e não um parâmetro de desempenho
+contínuo.
+
+A resposta à Solicitação de Estorno é de responsabilidade da RFB/CGIBS e não compõe o IGA
+dos participantes. O envio do valor do tributo estornado ao ator prejudicado também não compõe
+o IGA, por não ser diretamente mensurável pela Plataforma Pública.
+
+
+
+
+                                              Página 32 de 33
+Split Payment | Manual de Tempos                                                                     Versão 1.0.1
+
+CAPÍTUL O 9 – HISTÓR ICO D E R EVISÃ O
+
+
+
+
+                                                  CAPÍTULO 9 – HISTÓRICO DE REVISÃO
+
+
+          Data                           Versão      Descrição das Alterações
+
+          15/07/2026                     1.0.0       Versão Inicial
+                                                     Prazo do Repasse Financeiro fixado em D+1, com meta
+          10/09/2026                     1.0.1
+                                                     funcional às 09:00 e limite às 12:00, ambos de D+1.
+
+
+
+
+                                                             Página 33 de 33
+

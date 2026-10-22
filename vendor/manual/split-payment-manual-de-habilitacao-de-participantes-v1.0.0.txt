@@ -1,0 +1,909 @@
+CGIBS                                                          RECEITA FEDERAL
+Comitê Gestor do IBS                                            Ministério da Fazenda
+
+
+
+
+                   Manual de
+          Habilitação de Participantes
+
+                          Split Payment
+                             Reforma Tributária
+
+
+
+
+              Manual de Habilitação de Participantes
+                       Versão 1.0.0 | 24 de Setembro de 2026
+Split Payment | Manual de Habilitação de Participantes                                                                         Versão 1.0.0
+
+
+                                                               SUMÁRIO
+1. Disposições Iniciais .................................................................................................................. 3
+   1.1 OBJETIVO .......................................................................................................................... 3
+   1.2 ESCOPO ............................................................................................................................ 3
+2. Participantes e Responsabilidades .......................................................................................... 4
+   2.1 PERFIL DE PARTICIPANTE E ATRIBUIÇÕES ................................................................. 4
+   2.2 RESPONSABILIDADE PERANTE A PP ............................................................................ 5
+3. Modelo de Habilitação.............................................................................................................. 6
+   3.1 FORMA DE PARTICIPAÇÃO ............................................................................................. 6
+   3.2 PRESTADORES DE SERVIÇO DE CONEXÃO E DE REPASSE FINANCEIRO .............. 8
+   3.3 MARCOS, INSTRUMENTOS E CRITÉRIOS DE ACEITE ................................................. 9
+4. Habilitação Inicial ................................................................................................................... 11
+   4.1 CADASTRO...................................................................................................................... 11
+   4.2 ANÁLISE DO CADASTRO ............................................................................................... 12
+   4.3 PRONTIDÃO TÉCNICA E DE EXPERIÊNCIA ................................................................. 12
+   4.4 HOMOLOGAÇÃO E CERTIFICAÇÃO .............................................................................. 13
+   4.5 ENTRADA EM PRODUÇÃO ............................................................................................ 14
+5. Alterações Pós-Habilitação .................................................................................................... 15
+   5.1 ATUALIZAÇÃO CADASTRAL E ALTERAÇÃO DE ESCOPO .......................................... 15
+   5.2 PROFUNDIDADE DA REVALIDAÇÃO ............................................................................ 15
+6. Suspensão, Reativação e Desabilitação ................................................................................ 16
+   6.1 SUSPENSÃO ................................................................................................................... 16
+   6.2 REATIVAÇÃO .................................................................................................................. 16
+   6.3 DESABILITAÇÃO ............................................................................................................. 17
+7. Comunicação e Canais de Atendimento ................................................................................ 18
+   7.1 NOTIFICAÇÃO DE DECISÕES........................................................................................ 18
+   7.2 CANAIS DE ATENDIMENTO ........................................................................................... 18
+8. Histórico de Revisão .............................................................................................................. 19
+
+
+
+
+                                                            Página 2 de 19
+Split Payment | Manual de Habilitação de Participantes                                                    Versão 1.0.0
+
+1. D ispo siçõ es Ini ciai s
+
+
+
+
+                                        CAPÍTULO 1 – DISPOSIÇÕES INICIAIS
+
+
+
+1.1 OBJETIVO
+
+Este manual define o processo de habilitação dos participantes que se comunicam com a
+Plataforma Pública (PP) do Split Payment. Ele descreve como um participante entra no
+ecossistema, o que precisa comprovar em cada etapa, quem aprova sua passagem para
+produção e como seu vínculo é alterado, suspenso ou encerrado ao longo do tempo.
+
+O documento organiza a jornada de habilitação em marcos de aprovação. Essa lógica garante
+que toda habilitação seja rastreável e que ninguém opere em produção sem ter demonstrado
+estar apto ao escopo pretendido.
+
+Este manual integra um conjunto de documentos do Split Payment, cada um com finalidade
+específica:
+
+             Documento                   Finalidade
+
+                                         Funcionamento operacional, fluxos, regras de cálculo, experiência do
+             Manual de Operações
+                                         usuário
+
+             Manual de Integração +      Especificação técnica da API, contratos de mensagens, endpoints,
+             Documento OpenAPI           dicionário de campos
+
+             Manual de Tempos            Prazos, janelas operacionais, ANS e marcos temporais
+
+             Manual de Redes             Arquitetura de conexão, topologia, capacidade e resiliência
+
+             Manual de Segurança         Autenticação, criptografia, auditoria e controles de proteção
+
+             Manual de Habilitação de    Checklist de conformidade para entrada de novos PSPs no Split Payment,
+             Participantes               playbooks de onboarding e offboarding, governança de incidentes
+
+                                         Cronograma de implantação, marcos, prazos de envio dos formulários e
+             Plano de Implantação
+                                         penalidades por etapa
+
+
+1.2 ESCOPO
+
+Este manual aplica-se à Fase 1 do Split Payment, denominada B2B Opcional, que abrange os
+arranjos Boleto, Pix Dinâmico, Pix Automático, Pix Estático, TED e TEF (Book Transfer). Seu
+alcance é o ciclo de vida da habilitação dos participantes, desde a solicitação de entrada até o
+encerramento controlado do vínculo, passando pela alteração de escopo, pela suspensão e pela
+reativação.
+
+Os termos técnicos empregados ao longo do texto seguem as definições do Apêndice A do
+Manual de Operações, que serve de glossário de referência para todo o ecossistema. Neste
+manual, arranjo designa a via de recebimento sobre a qual incide o Split Payment, conforme o
+Apêndice A do Manual de Operações, e não corresponde a arranjo de pagamento na acepção
+da regulação do Banco Central. Tais conceitos (arranjo, PSP Recebedor/Pagador Direto/Indireto,
+entre outros) contidos nos manuais do Split Payment são utilizados unicamente para facilitar a
+compreensão do leitor sobre as especificações técnicas desse mecanismo. Eles são válidos
+apenas para o contexto do Split Payment, e não possuem qualquer efeito em temas distintos.
+
+
+                                                         Página 3 de 19
+Split Payment | Manual de Habilitação de Participantes                                     Versão 1.0.0
+
+2. Participantes e R espon sabil idades
+
+
+
+
+                                          CAPÍTULO 2 – PARTICIPANTES E RESPONSABILIDADES
+
+
+
+2.1 PERFIL DE PARTICIPANTE E ATRIBUIÇÕES
+
+O único perfil de participante é o PSP — Prestador de Serviços de Pagamento, instituição
+autorizada a funcionar pelo Banco Central que operacionaliza arranjos de pagamento. A
+expressão instituição autorizada a funcionar pelo Banco Central abrange tanto as instituições
+financeiras quanto as instituições de pagamento.
+
+Em cada arranjo, o PSP exerce um ou mais papéis, e são eles que definem as suas obrigações
+no Split Payment:
+
+PSP Recebedor Direto: participa diretamente do arranjo e responde perante a PP pela
+comunicação dos informes, exceto no Boleto, pelo acionamento do MOC e pelo Repasse
+Financeiro, inclusive quanto às transações dos PSPs Recebedores Indiretos que atende.
+
+PSP Recebedor Indireto: detém a relação com o Recebedor e opera por meio de um PSP
+Recebedor Direto.
+
+PSP Pagador Direto: participa diretamente do arranjo pelo lado do Pagador.
+
+PSP Pagador Indireto: detém a relação com o Pagador e opera por meio de um PSP Pagador
+Direto.
+
+O percurso de cada PSP decorre dos papéis que exerce. Quem se comunica com a PP ou
+executa o Repasse Financeiro percorre os marcos de prontidão, homologação e entrada em
+produção. Quem exerce apenas papéis indiretos cumpre as obrigações do seu papel sem
+percorrer esses marcos.
+
+Não percorrer esses marcos não significa estar fora do Split Payment. Ao PSP Recebedor
+Indireto cabe trocar com o PSP Recebedor Direto os dados das transações sujeitas ao Split
+Payment e prestar contas da segregação ao Recebedor; ao PSP Pagador Indireto, adequar seus
+canais para que o Pagador informe os campos fiscais e acompanhe essas transações. Essas
+obrigações estão detalhadas nas Seções 7.3 e 8 do Manual de Operações e são exigíveis na
+relação contratual entre os PSPs, sem afastar a responsabilidade do PSP Recebedor Direto
+perante a PP.
+
+A comunicação com a PP serve a duas finalidades distintas: a troca dos informes das transações,
+que abrange o envio dos dados pelo participante e o recebimento dos retornos do Modelo Super
+Inteligente, e o acionamento do Mecanismo de Ocorrências (MOC). A troca de informes existe
+em cinco arranjos, pois no Boleto ela é cumprida pela Núclea; o acionamento do MOC existe nos
+seis. Por isso todo PSP Recebedor Direto mantém um caminho de comunicação com a PP para
+o MOC.
+
+O envio dos informes é declarado por arranjo e pode seguir caminho próprio ou de Prestador de
+Serviço de Conexão. O acionamento do MOC, por sua vez, tem caminho único por participante:
+as ocorrências de todos os arranjos trafegam pelo mesmo canal, e o retorno da Plataforma
+Pública não é segregado por arranjo. Por isso o participante indica, entre os caminhos que
+declarou para os informes, qual deles conduzirá o MOC.
+
+                                                           Página 4 de 19
+Split Payment | Manual de Habilitação de Participantes                                 Versão 1.0.0
+
+
+Prestador de Serviço de Conexão e Prestador de Serviço de Repasse Financeiro não são perfis
+distintos, mas atribuições que um PSP pode assumir ao atuar em nome de outro participante.
+São declaradas no cadastro da instituição e formalizadas em declaração própria, conforme a
+Seção 3.2.
+
+2.2 RESPONSABILIDADE PERANTE A PP
+
+O processo distribui responsabilidades entre duas partes:
+       Participante: solicitar a habilitação, apresentar as evidências de cada marco e manter os
+        dados cadastrais atualizados durante o vínculo.
+       PP: validar o cadastro, analisar as evidências apresentadas e decidir a liberação para
+        homologação, para produção ou para o encerramento do vínculo.
+
+Quando o PSP contrata um Prestador de Serviço de Conexão para a comunicação com a PP,
+ou um Prestador de Serviço de Repasse Financeiro para o Repasse Financeiro do CBS e do
+IBS, a responsabilidade pela conexão ou pelo Repasse Financeiro não se transfere: permanece
+com o PSP Recebedor Direto. O mesmo se aplica quando há PSP Recebedor Indireto na cadeia.
+Eventuais falhas do terceiro na entrega de evidências ou na execução de suas atividades
+resolvem-se na relação contratual entre as partes, sem afastar a responsabilidade do PSP
+Recebedor Direto pelo cumprimento das obrigações do Split Payment.
+
+A exceção do arranjo Boleto, em que a comunicação dos informes é cumprida pela Núclea, não
+desloca a responsabilidade do PSP Recebedor Direto pelo Repasse Financeiro nem pelo
+acionamento do MOC.
+
+
+
+
+                                                         Página 5 de 19
+Split Payment | Manual de Habilitação de Participantes                                 Versão 1.0.0
+
+3. Mod elo de Habilit ação
+
+
+
+
+                                   CAPÍTULO 3 – MODELO DE HABILITAÇÃO
+
+
+Este capítulo define quem pode se habilitar, como se formalizam as atribuições de prestador de
+serviço e quais são os marcos comuns a toda habilitação. O percurso de cada participante
+decorre da sua situação: quem entra pela primeira vez percorre a jornada completa, da
+declaração de participação à entrada em produção (Capítulo 4); quem já está habilitado e amplia
+ou reduz sua atuação segue o Capítulo 5, com validação proporcional ao que muda; e quem
+esteve suspenso e deseja retomar segue o Capítulo 6.
+
+3.1 FORMA DE PARTICIPAÇÃO
+
+O processo alcança todas as instituições autorizadas a funcionar pelo Banco Central. Todas
+respondem à apuração nos seis arranjos, inclusive as que não constam de nenhuma relação de
+participantes e as que estão em processo de adesão a um arranjo, caso em que respondem
+como participantes dele. A relação das instituições autorizadas é publicada pelo Banco Central
+(https://www.bcb.gov.br/estabilidadefinanceira/relacao_instituicoes_funcionamento).
+
+Participar de um arranjo é conseguir emitir ou receber transações nele — próprias da instituição,
+de seus clientes, ou de clientes de instituições que operem por seu intermédio — por conta
+própria ou por meio de outro PSP. A adoção do Split Payment é facultativa ao originador da
+transação, que a manifesta ao preencher os campos fiscais na iniciação, mas a adequação ao
+Split Payment é obrigatória a todos os PSPs que participam do arranjo. As adequações exigidas
+em cada arranjo são definidas pelos papéis que a instituição exerce nele, conforme a Seção 2.1.
+
+A jornada do arranjo é implementada nos lados em que a instituição atua. As transações da
+própria instituição, como Pessoa Jurídica que paga e recebe, podem estar sujeitas ao Split
+Payment: ter apenas clientes Pessoa Física não dispensa as adequações.
+
+A apuração produz uma destas três situações:
+
+Participação direta: a instituição opera o arranjo por conta própria. Implicam-se a
+responsabilidade pela comunicação com a PP (exceto no arranjo Boleto), pelo Repasse
+Financeiro e a adequação da experiência do usuário PJ.
+
+Participação indireta: a instituição opera por meio de um PSP Recebedor Direto, portanto,
+não é responsável pela comunicação com a PP, tampouco pela execução do Repasse
+Financeiro. Porém, a instituição deve realizar a adequação da experiência do usuário PJ e
+as obrigações da Seção 2.1. Nos arranjos TED e TEF não há participação indireta.
+
+Fora do arranjo: a instituição não consegue emitir nem receber transações no arranjo, seja de
+forma direta ou indireta. Nada lhe é exigido além desta apuração. Passando a emitir, pagar ou
+receber, ainda que por meio de outra instituição, cabe rever a resposta.
+
+No arranjo Pix Automático, a participação como recebedor depende da sinalização de oferta de
+recebimento. A instituição não sinalizada participa do arranjo apenas no lado do Pagador:
+responde pela adequação da experiência do usuário nesse lado e não há, nesse arranjo,
+comunicação com a PP nem Repasse Financeiro.
+
+
+
+                                                         Página 6 de 19
+Split Payment | Manual de Habilitação de Participantes                                                          Versão 1.0.0
+
+
+As perguntas da apuração remetem às relações oficiais de cada arranjo. O quadro a seguir indica
+onde consultar a de cada um:
+
+
+ Arranjo                 Participantes diretos do arranjo                 Onde consultar a relação
+
+                         Todos os clientes da Plataforma                  https://www2.nuclea.com.br/SAP/Rela%C3%A7
+ Boleto
+                         Centralizadora de Recebíveis (PCR)               %C3%A3o%20de%20Clientes%20PCR.pdf
+
+                                                                          Consulta de instituições reguladas ou
+                         Todos os participantes diretos do Pix,
+                                                                          supervisionadas pelo Banco Central, em
+ Pix Dinâmico            que possuem Conta PI (instituições com
+                                                                          https://www.bcb.gov.br/meubc/encontreinstituic
+                         Tipo de participação no SPI = Direta)
+                                                                          ao
+
+                         Todos os participantes diretos do Pix,
+                                                                          Consulta de instituições reguladas ou
+                         que possuem Conta PI (instituições com
+                                                                          supervisionadas pelo Banco Central, em
+ Pix Automático          Tipo de participação no SPI = Direta) e
+                                                                          https://www.bcb.gov.br/meubc/encontreinstituic
+                         estejam sinalizados como “oferta
+                                                                          ao
+                         recebimento de Pix Automático”
+
+                                                                          Consulta de instituições reguladas ou
+                         Todos os participantes diretos do Pix,
+                                                                          supervisionadas pelo Banco Central, em
+ Pix Estático            que possuem Conta PI (instituições com
+                                                                          https://www.bcb.gov.br/meubc/encontreinstituic
+                         Tipo de participação no SPI = Direta)
+                                                                          ao
+
+                         Todos os participantes do STR que
+                                                                          https://www.bcb.gov.br/content/estabilidadefina
+ TED                     possuam Número-Código, ou seja,
+                                                                          nceira/str1/ParticipantesSTR.pdf
+                         exceto câmaras de compensação
+
+                                                                          Relação de Instituições em Funcionamento no
+                                                                          País, publicada pelo Banco Central do Brasil
+                         Todas as instituições autorizadas a
+ TEF                                                                      em
+                         funcionar pelo Banco Central
+                                                                          bcb.gov.br/estabilidadefinanceira/relacao_instit
+                                                                          uicoes_funcionamento
+
+
+As relações identificam os participantes diretos de cada arranjo. Não constar de uma relação não
+dispensa a instituição de responder à apuração, que alcança os seis arranjos: por isso ela
+pergunta, a quem não consta, se consegue emitir, pagar ou receber por meio de outra instituição.
+
+A consulta de instituições do Banco Central aceita busca pelos oito primeiros caracteres do
+CNPJ, que correspondem à raiz utilizada nos formulários deste processo. No arranjo Boleto, a
+relação não identifica o participante indireto, porque o beneficiário registrado é o próprio PSP
+Recebedor Indireto, que depois repassa o valor ao beneficiário final. Nos arranjos Pix, o filtro
+Tipo de participação no SPI informa se a instituição consta como participante direto ou indireto,
+e a página indica se ela está apta a receber transações de Pix Automático. No arranjo TED, o
+Número-Código é o identificador de três dígitos que a relação apresenta.
+
+O quadro a seguir resume, para cada situação apurada, as obrigações que se aplicam e os
+formulários correspondentes. Os Formulários 07, 08 e 09 são devidos por quem opera caminho
+próprio de comunicação com a PP, conforme a Seção 4.3.
+
+
+
+
+                                                         Página 7 de 19
+Split Payment | Manual de Habilitação de Participantes                                                     Versão 1.0.0
+
+
+ Situação apurada no
+                                  O que se aplica                                Formulários
+ arranjo
+
+                                  Responsabilidade por conexão com a PP
+                                  (exceto no Boleto) e Repasse Financeiro;       01, 02, 05, 06, 07, 08 e 09; e 03 ou
+ Participação direta              adequação da experiência do usuário; e         04 se prestar serviço a outras
+                                  transmissão de dados com participantes         instituições
+                                  indiretos.
+
+                                  Adequação da experiência do usuário e
+ Participação indireta            transmissão de dados com participantes         01, 02 e 06
+                                  diretos.
+
+ Fora do arranjo                  Apenas a apuração                              01 e 02
+
+
+
+3.2 PRESTADORES DE SERVIÇO DE CONEXÃO E DE REPASSE FINANCEIRO
+
+Atuar como Prestador de Serviço de Conexão ou como Prestador de Serviço de Repasse
+Financeiro é opcional: o PSP pode não assumir nenhuma dessas atribuições, assumir uma delas
+ou ambas. Não é exigida comprovação técnica complementar para assumir essas atribuições.
+
+Para estar apta a prestar esses serviços a outras instituições no âmbito do Split Payment, a
+instituição deverá atender a critérios específicos, não exaustivos, que variam conforme o arranjo
+e o serviço que deseja prestar:
+
+
+ Arranjo                      Prestação de conexão para os informes            Prestação de Repasse Financeiro
+
+                              Não há: os informes são cumpridos pela
+ Boleto                                                                        Critérios 2, 4, 6 e 7
+                              Núclea
+
+ Pix Dinâmico                 Critérios 1, 3 e 5                               Critérios 2, 4, 6 e 7
+
+ Pix Automático               Critérios 1, 3 e 5                               Critérios 2, 4, 6 e 7
+
+ Pix Estático                 Critérios 1, 3 e 5                               Critérios 2, 4, 6 e 7
+
+ TED                          Critérios 2, 4 e 6                               Critérios 2, 4, 6 e 7
+
+ TEF (Book Transfer)          Critérios 2, 4 e 6                               Critérios 2, 4, 6 e 7
+
+
+A relação dos critérios referidos no quadro anterior é a seguinte:
+ Critério                Descrição do Critério
+
+ Critério 1              Ser participante direto do arranjo Pix, com Conta PI.
+
+                         Ser participante do arranjo TED (participar diretamente da Liquidação Interbancária via
+ Critério 2
+                         STR e PAG).
+
+ Critério 3              Estar habilitado ao Split Payment nos arranjos Pix.
+
+ Critério 4              Estar habilitado ao Split Payment no arranjo TED.
+
+                         Não utilizar Prestador de Serviço de Conexão nos arranjos Pix para suas próprias
+ Critério 5
+                         transações (realizar conexão direta com a PP).
+
+                         Não utilizar Prestador de Serviço de Conexão no arranjo TED para suas próprias
+ Critério 6
+                         transações (realizar conexão direta com a PP)
+
+
+
+                                                         Página 8 de 19
+Split Payment | Manual de Habilitação de Participantes                                                     Versão 1.0.0
+
+
+ Critério                Descrição do Critério
+
+                         Não utilizar Prestador de Serviço de Repasse Financeiro no arranjo TED para suas
+ Critério 7
+                         próprias transações (realizar o Repasse Financeiro diretamente à RFB e ao CGIBS)
+
+
+Especificamente no arranjo Boleto, a comunicação dos informes com a PP é cumprida
+obrigatoriamente pela Núclea para todas as instituições, pois ela centraliza internamente todos
+os dados do arranjo, o que evita a criação de conexões específicas com cada PSP e reduz riscos
+relacionados. Não há, portanto, prestação de serviço de conexão para informes nesse arranjo.
+
+No arranjo TEF, a comunicação própria com a PP depende de o participante ser direto no arranjo
+TED ou nos arranjos Pix. O participante cuja participação direta se limite ao TEF conduz a
+comunicação por Prestador de Serviço de Conexão.
+
+O PSP declara no Formulário 01 - Cadastro da Instituição quais atribuições assumirá. Para atuar
+como Prestador de Serviço de Conexão, formaliza a prestação no Formulário 03 - Declaração de
+Prestação de Serviço de Conexão. Para atuar como Prestador de Serviço de Repasse
+Financeiro, formaliza a prestação no Formulário 04 - Declaração de Prestação de Serviço de
+Repasse Financeiro.
+
+Na outra ponta, o PSP contratante indica no Formulário 02 - Cadastro de Arranjos o Prestador
+de Serviço de Conexão ou o Prestador de Serviço de Repasse Financeiro que houver contratado,
+e a PP registra o vínculo. Nos Formulários 03 e 04, o prestador relaciona os PSPs Recebedores
+Diretos contratantes, por arranjo e por período de vigência.
+
+3.3 MARCOS, INSTRUMENTOS E CRITÉRIOS DE ACEITE
+
+A jornada de habilitação é composta por cinco marcos, detalhados nas Seções 4.1 a 4.5, na
+mesma ordem. Cada marco tem um instrumento próprio, que coleta as informações da etapa ou
+registra a decisão correspondente. O quadro a seguir indica, para cada marco, esse instrumento,
+o que precisa estar comprovado para o participante avançar e o que impede esse avanço
+enquanto não for resolvido:
+
+
+                                                                                            Condição que impede o
+Marco       Nome           Instrumento                             Critério de aceite
+                                                                                            avanço
+                           Formulário 01 - Cadastro da
+                           Instituição
+                           Formulário 02 - Cadastro de     Cadastro completo, com
+                           Arranjos                        atribuições, arranjos,
+                                                                                            Dados institucionais,
+                                                           vínculos de Prestador de
+                           Formulário 03 - Declaração de                                    atribuições, arranjos,
+                                                           Serviço de Conexão e de
+                           Prestação de Serviço de Conexão                                  vínculos ou empresas da
+M1          Cadastro                                       Repasse Financeiro e
+                           (se aplicável)                                                   Produção Assistida
+                                                           empresas indicadas para
+                           Formulário 04 - Declaração de                                    Escalonada ausentes ou
+                                                           a Produção Assistida
+                           Prestação de Serviço de Repasse Escalonada (PAE)                 inconsistentes.
+                           Financeiro (se aplicável)       declarados e aceitos.
+                           Formulário 05 - Indicação de
+                           Empresas PAE
+                                                                   Cadastro consistente, com Declarações
+            Análise do     Confirmação da realização do            a situação apurada em     inconsistentes ou
+M2
+            cadastro       cadastro, emitida pela PP               cada arranjo e os         pendências de ajuste não
+                                                                   caminhos de comunicação resolvidas.
+
+                                                         Página 9 de 19
+Split Payment | Manual de Habilitação de Participantes                                                     Versão 1.0.0
+
+
+                                                                                           Condição que impede o
+Marco     Nome             Instrumento                         Critério de aceite
+                                                                                           avanço
+                                                               e de Repasse Financeiro
+                                                               identificados.
+                                                               Implementação adequada
+                           Formulário 06 - Experiência do      do Split Payment para o
+                           Usuário                                                      Ausência de conectividade
+          Prontidão                                            escopo declarado,
+                                                                                        válida, falha em controle
+M3        técnica e de     Formulário 07 - Conectividade PP    incluindo conectividade,
+                                                                                        de segurança ou erros na
+          experiência      Formulário 08 - Segurança PP        segurança e integração
+                                                                                        integração com a PP.
+                           Formulário 09 - Integração PP       com a PP e adequação da
+                                                               experiência do usuário.
+                                                                                       Evidência reprovada ou
+                                                               Validação, pela PP, das não aceita, pendência
+          Homologação e Certificado de Homologação
+M4                                                             evidências apresentadas crítica em aberto ou
+          certificação  emitido pela PP
+                                                               no marco M3.            prontidão técnica
+                                                                                       insuficiente.
+                                                               Participante integrado à
+                                                               PP em ambiente de           Falha ou impossibilidade
+          Entrada em       Autorização de entrada em           produção, conforme os       de o participante realizar a
+M5
+          produção         produção emitida pela PP            arranjos em que participa, entrada no ambiente de
+                                                               respeitada a data de início produção da PP.
+                                                               determinada.
+
+O Formulário 10 - Suspensão, Reativação ou Desabilitação não integra a jornada inicial: é
+utilizado nos eventos tratados no Capítulo 6.
+
+
+
+
+                                                     Página 10 de 19
+Split Payment | Manual de Habilitação de Participantes                                                        Versão 1.0.0
+
+4. H abilitação In icial
+
+
+
+
+                                                     CAPÍTULO 4 – HABILITAÇÃO INICIAL
+
+
+Este capítulo descreve o percurso do participante do cadastro à operação recorrente, seguindo
+os cinco marcos definidos na Seção 3.3. A forma de participação em cada arranjo, tratada na
+Seção 3.1, é a condição de entrada. Cada seção detalha o que o participante precisa fazer e
+comprovar para avançar.
+
+4.1 CADASTRO
+
+O cadastro é o primeiro marco da habilitação. Ele reconhece o participante, suas atribuições,
+seus responsáveis, os arranjos declarados e os Prestadores de Serviço de Conexão e de
+Repasse Financeiro vinculados, e é realizado a partir do envio dos seguintes formulários:
+                              Formulário 01 - Cadastro da Instituição: identifica a instituição e registra seus dados
+                               básicos, o representante legal, os responsáveis técnicos, a volumetria estimada e as
+                               atribuições de prestação de serviço a outros PSPs que pretenda assumir.
+                                  o Quem deve enviar: todas as instituições autorizadas a funcionar pelo Banco
+                                    Central, conforme a Seção 3.1, inclusive as apuradas como fora de determinado
+                                    arranjo.
+                              Formulário 02 - Cadastro de Arranjos: apura a situação da instituição em cada um dos
+                               seis arranjos e, nos de participação direta, registra os caminhos de envio dos informes e
+                               de Repasse Financeiro, com os prestadores contratados, e o caminho único pelo qual o
+                               MOC será acionado.
+                                  o Quem deve enviar: todas as instituições autorizadas a funcionar pelo Banco
+                                    Central, conforme a Seção 3.1, inclusive as apuradas como fora de determinado
+                                    arranjo.
+                              Formulário 03 - Declaração de Prestação de Serviço de Conexão: preenchido quando
+                               a instituição transmite informes ou aciona o MOC em nome de outros PSPs Recebedores
+                               Diretos, relacionando os atendidos, os arranjos em que presta e a quem também transmite
+                               o MOC.
+                                  o Quem deve enviar: somente as instituições que participem diretamente do arranjo,
+                                    conforme a Seção 3.1, que atendam aos critérios de prestação do serviço de
+                                    conexão, conforme a Seção 3.2, e desejem realizar tal prestação.
+                              Formulário 04 - Declaração de Prestação de Serviço de Repasse Financeiro:
+                               preenchido apenas quando o participante deseja atuar como Prestador de Serviço de
+                               Repasse Financeiro.
+                                  o Quem deve enviar: somente as instituições que participem diretamente do arranjo,
+                                    conforme a Seção 3.1, que atendam aos critérios de prestação do serviço de
+                                    repasse financeiro, conforme a Seção 3.2, e desejem realizar tal prestação.
+                              Formulário 05 - Indicação de Empresas PAE: o participante indica as empresas que
+                               operarão com ele, o momento da Produção Assistida Escalonada em que cada uma
+                               ingressa e o seu papel nos arranjos daquele momento. A mesma empresa indicada em
+                               mais de um momento ocupa um registro por momento, e a relação pode ser ampliada a
+                               cada marco.
+
+                                                                 Página 11 de 19
+Split Payment | Manual de Habilitação de Participantes                                 Versão 1.0.0
+
+
+             o Quem deve enviar: as instituições com participação direta em ao menos um
+               arranjo.
+
+A apuração é por arranjo e alcança os seis: por meio do Formulário 02 - Cadastro de Arranjos, a
+instituição responde às perguntas de cada arranjo, e delas resulta a sua situação, conforme a
+Seção 3.1. Não constar de uma relação oficial não dispensa a instituição de responder.
+
+Os formulários preenchidos deverão ser encaminhados pelo solicitante à PP, pelo canal indicado
+no Capítulo 7.
+
+4.2 ANÁLISE DO CADASTRO
+
+A análise do cadastro é conduzida pela PP a partir dos formulários recebidos no marco anterior.
+A PP verifica a consistência das respostas, a situação apurada em cada arranjo e os vínculos
+com Prestadores de Serviço de Conexão e de Repasse Financeiro. Havendo pedido de dispensa
+(em situações excepcionais), ele é analisado nesta etapa.
+
+Havendo pendências, a PP devolve ao participante os pontos de ajuste identificados no cadastro,
+que são resolvidos com a PP antes do encerramento do marco. Nesta etapa a PP pode solicitar
+informações complementares.
+
+O marco se encerra quando a PP confirma ao participante a realização do cadastro no Split
+Payment sem ressalvas adicionais. Somente após essa confirmação o participante avança para
+o marco de prontidão.
+
+4.3 PRONTIDÃO TÉCNICA E DE EXPERIÊNCIA
+
+O marco de prontidão confirma que o participante está apto, quanto a conectividade, segurança,
+integração e experiência do usuário, a iniciar a homologação.
+
+A prontidão é apresentada a partir do envio dos seguintes formulários:
+       Formulário 06 - Experiência do Usuário: declarar a adequação dos canais e das telas
+        destinados a clientes Pessoa Jurídica, conforme o Capítulo 8 do Manual de Operações.
+       Formulário 07 - Conectividade PP: comprovar o estabelecimento do canal de rede
+        seguro com a PP, conforme o Manual de Redes.
+       Formulário 08 - Segurança PP: comprovar os controles de identidade, autenticação,
+        assinatura e isolamento entre participantes, conforme o Manual de Segurança.
+       Formulário 09 - Integração PP: comprovar a troca de mensagens com a PP nos fluxos
+        do escopo, conforme o Manual de Integração.
+
+Os formulários são enviados em conjunto, pelos participantes que já tenham recebido a
+confirmação da realização do cadastro.
+
+O Formulário 06 é devido em todo arranjo de participação, direta ou indireta, e alcança a jornada
+nos lados em que a instituição atua, conforme a situação apurada na Seção 3.1. As regras de
+experiência do usuário são as do Capítulo 8 do Manual de Operações. Cada instituição declara
+a adequação dos seus próprios canais, inclusive o PSP Recebedor Indireto quanto aos seus.
+Diferentemente dos demais, este formulário é uma declaração de conformidade: não há
+
+                                                     Página 12 de 19
+Split Payment | Manual de Habilitação de Participantes                               Versão 1.0.0
+
+
+evidência a anexar. Quando um item não estiver implementado, o participante informa a data
+prevista, e o envio do formulário não fica retido por pendências pontuais.
+
+Os Formulários 07, 08 e 09 comprovam o caminho de comunicação com a PP, e não o arranjo.
+Envia-os quem opera o caminho: o participante, quanto aos arranjos em que se conecta por
+conta própria, e cada Prestador de Serviço de Conexão, quanto ao caminho que opera,
+declarando no Formulário 03 os participantes atendidos. O participante que contrata prestador
+em todos os arranjos que opera diretamente, e que por ele conduz o MOC, não opera caminho
+próprio e, por isso, não envia esses três formulários.
+
+Os Formulários 07 e 08 tratam do canal de rede e dos controles de segurança, que não variam
+conforme o arranjo, e são comprovados uma única vez por caminho. O Formulário 09 reúne itens
+de igual natureza, comprovados uma única vez, e itens de envio de informes, que alcançam
+apenas os arranjos que trafegam por aquele caminho. O acionamento do MOC integra os itens
+comprovados uma única vez, por ter caminho único e retorno não segregado por arranjo.
+
+No arranjo Boleto não há itens de envio de informes a comprovar, por serem cumpridos pela
+Núclea; o acionamento do MOC das ocorrências do Boleto é comprovado no caminho único do
+participante, junto com o dos demais arranjos.
+
+A participação indireta não gera o envio desses três formulários em nenhum arranjo: as
+ocorrências do MOC do participante indireto são comunicadas ao PSP Recebedor Direto.
+
+O participante sem participação direta como recebedor em nenhum arranjo encerra a jornada
+neste marco: entrega os Formulários 01, 02 e 06 e não percorre a homologação nem a entrada
+em produção, por não haver evidência técnica a validar nem conexão a liberar. Suas obrigações
+permanecem exigíveis conforme a Seção 2.1.
+
+Os itens de verificação, os critérios de aptidão e as evidências exigidas constam no respectivo
+formulário.
+
+Os formulários preenchidos deverão ser encaminhados pelo solicitante à PP, pelo canal indicado
+no Capítulo 7. Após o envio dos formulários aplicáveis, a PP poderá solicitar informações
+complementares.
+
+4.4 HOMOLOGAÇÃO E CERTIFICAÇÃO
+
+Nesta etapa, a PP certifica que o participante está apto a operar de ponta a ponta no escopo
+solicitado.
+
+A PP analisa as informações, documentos e evidências submetidos pelo participante por meio
+dos Formulários 07, 08 e 09. No âmbito dessa análise, poderá solicitar esclarecimentos,
+informações adicionais ou evidências complementares, quando necessários à verificação do
+atendimento aos requisitos estabelecidos.
+
+A partir dessa análise, a PP pode agendar validações técnicas conjuntas, em que cada parte
+examina os próprios logs e registros para confirmar o intercâmbio no ambiente de homologação,
+além de reuniões adicionais quando necessário. Concluída a avaliação, a PP emite manifestação
+formal (certificado), cujo resultado atesta a aptidão técnica do participante e formaliza sua
+liberação para o ambiente produtivo no escopo aprovado.
+
+                                                     Página 13 de 19
+Split Payment | Manual de Habilitação de Participantes                                Versão 1.0.0
+
+
+4.5 ENTRADA EM PRODUÇÃO
+
+A entrada em produção é a ação que determina o início da operação produtiva no escopo
+certificado. A certificação não implica entrada imediata: a entrada ocorre na data determinada
+pela PP.
+
+Confirmados os requisitos, a PP autoriza a entrada do participante no ambiente de produção. O
+participante então estabelece a conectividade de rede com a PP, ativa as credenciais de
+produção e conecta-se aos endpoints de produção.
+
+Caso a PP julgue necessário, a entrada poderá ser seguida de um período de acompanhamento
+assistido, para estabilizar a operação e confirmar que o participante conduz os primeiros ciclos
+produtivos sem necessidade de apoio excepcional da equipe de habilitação.
+
+
+
+
+                                                     Página 14 de 19
+Split Payment | Manual de Habilitação de Participantes                                 Versão 1.0.0
+
+5. A lter ações Pós-H abi litação
+
+
+
+
+                                    CAPÍTULO 5 – ALTERAÇÕES PÓS-HABILITAÇÃO
+
+
+Depois de habilitado, o participante permanece sujeito a mudanças ao longo do vínculo. Este
+capítulo trata de como essas mudanças são solicitadas, avaliadas e efetivadas, e de quando
+exigem apenas atualização de registro ou nova comprovação técnica. O objetivo é permitir que
+a operação evolua sem perder o controle e a rastreabilidade que a habilitação estabeleceu.
+
+5.1 ATUALIZAÇÃO CADASTRAL E ALTERAÇÃO DE ESCOPO
+
+O participante deverá manter seus dados cadastrais atualizados e fiéis à realidade durante todo
+o ciclo de vida da habilitação. Mudanças de contato, de responsáveis ou de outras informações
+institucionais deverão ser informadas mediante o reenvio dos respectivos formulários, com os
+dados atualizados, e serão registradas no histórico do participante.
+
+A alteração de escopo amplia ou reduz o que o participante opera e é solicitada pelos canais do
+Capítulo 7, com indicação do motivo e do escopo afetado.
+
+Para incluir, trocar ou encerrar arranjo, reenvia-se o Formulário 02 - Cadastro de Arranjos. Para
+passar a atuar ou deixar de atuar como Prestador de Serviço de Conexão ou de Repasse
+Financeiro, envia-se o Formulário 03 ou o Formulário 04; se o papel de prestador ainda não
+constava do Formulário 01 - Cadastro da Instituição, reenvia-se também esse formulário. A
+redução de escopo também pode ser determinada pela PP, por perda da condição de
+participante restrita a um arranjo ou vínculo.
+
+O reenvio de formulário é um pedido de alteração e não produz efeito imediato: nenhuma
+alteração, cadastral ou técnica, vigora antes do aceite da PP. Até o aceite, permanece vigente a
+última versão aceita e o participante continua operando conforme o cadastro em vigor.
+
+5.2 PROFUNDIDADE DA REVALIDAÇÃO
+
+A profundidade da revalidação depende do tipo de mudança. A inclusão de arranjo com
+participação direta exige nova homologação restrita ao arranjo incluído. Troca de Prestador de
+Serviço de Conexão e alterações técnicas (IP, certificado, canal ou modelo de conexão) exigem
+revalidação parcial, com aceite da PP antes da ativação. Atualização cadastral sem impacto
+técnico e inclusão de novo PSP Recebedor Direto na relação de contratantes de um Prestador
+de Serviço de Conexão já habilitado, declarada no Formulário 03, não exigem nova
+homologação; se a inclusão abranger arranjo ainda não transmitido, trata-se como novo arranjo.
+
+A redução de escopo não exige nova homologação: registra-se a alteração e encerra-se a fração
+correspondente, preservando o restante.
+
+Alterações técnicas significativas, que causem modificações na integração entre participante e
+PP no ambiente produtivo, deverão ser informadas mediante o reenvio dos Formulários 07, 08 e
+09, conforme a aplicabilidade.
+
+
+
+
+                                                     Página 15 de 19
+Split Payment | Manual de Habilitação de Participantes                                                                     Versão 1.0.0
+
+6. Su spen são, R eativação e Desabilitação
+
+
+
+
+                                                       CAPÍTULO 6 – SUSPENSÃO, REATIVAÇÃO E DESABILITAÇÃO
+
+
+Este capítulo trata das situações em que a habilitação de um participante é interrompida ou
+encerrada, em três estados distintos: suspensão, reativação e desabilitação. A distinção entre
+eles importa, porque cada um preserva ou extingue o vínculo de maneira diferente e exige
+tratamento próprio das pendências.
+
+6.1 SUSPENSÃO
+
+A suspensão interrompe temporariamente a habilitação do participante. Pode ser solicitada pelo
+próprio participante ou aplicada pela PP, conforme a governança aplicável, em três situações:
+                                             Voluntária: solicitada pelo participante, para interromper temporariamente sua
+                                              habilitação.
+                                             Preventiva: aplicada pela PP diante de risco operacional, cadastral, técnico ou de
+                                              incidente, antes de uma decisão definitiva.
+                                             Por não conformidade: aplicada pela PP quando o participante deixa de cumprir requisito
+                                              de habilitação, evidência obrigatória ou condição mínima de operação, incluído o
+                                              descumprimento reiterado dos Acordos de Nível de Serviço, caracterizado pelo Índice
+                                              Geral de ANS do Manual de Tempos.
+
+Na suspensão voluntária, a interrupção é formalizada no Formulário 10 - Suspensão, Reativação
+ou Desabilitação. Nas suspensões preventiva e por não conformidade, aplicadas pela PP, o
+participante é comunicado por notificação formal.
+
+A suspensão voluntária é sempre total e alcança todos os arranjos habilitados: interromper a
+operação em parte do escopo, mantendo a habilitação nos demais arranjos, é alteração de
+escopo e segue o Capítulo 5. As suspensões preventiva e por não conformidade, aplicadas pela
+PP, podem ser totais ou restritas a um arranjo ou a um vínculo com Prestador de Serviço de
+Conexão ou de Repasse Financeiro, conforme a extensão do risco ou do descumprimento
+identificado.
+
+6.2 REATIVAÇÃO
+
+A reativação encerra uma suspensão e restabelece a habilitação no escopo suspenso. Aplica-se
+apenas à suspensão: a desabilitação é definitiva e não comporta reativação, e um eventual
+retorno depende de nova habilitação.
+
+É solicitada pelo participante no Formulário 10 - Suspensão, Reativação ou Desabilitação e
+depende da comprovação de que a causa da suspensão foi tratada, com a apresentação das
+evidências exigidas pela PP.
+
+A profundidade é proporcional à causa. Quando a suspensão decorreu de motivo simples, já
+resolvido, basta confirmar a correção e atualizar o cadastro. Quando envolveu falha técnica
+crítica, incidente de segurança, perda da condição de participante ou longo período de
+inatividade, a reativação exige nova homologação, salvo decisão formal da PP fundamentada
+em análise de impacto.
+
+
+                                                                               Página 16 de 19
+Split Payment | Manual de Habilitação de Participantes                                 Versão 1.0.0
+
+
+6.3 DESABILITAÇÃO
+
+A desabilitação encerra de forma controlada a habilitação do participante. Ela é sempre total:
+encerrar apenas parte do escopo, mantendo o participante habilitado, é redução de escopo e
+segue o Capítulo 5. Pode ser solicitada pelo participante ou aplicada pela PP, em duas situações:
+       Voluntária: solicitada pelo participante, para encerrar sua habilitação.
+       Definitiva: aplicada pela PP por perda da condição de participante ou por decisão
+        institucional ou regulatória.
+
+Na desabilitação voluntária, o encerramento é formalizado no Formulário 10 - Suspensão,
+Reativação ou Desabilitação; na definitiva, o participante é comunicado por notificação formal.
+
+O encerramento revoga credenciais, autorizações, certificados e chaves, encerra sessões e
+tokens ativos e retira os acessos de conectividade de rede. Havendo atuação como Prestador
+de Serviço de Conexão ou de Repasse Financeiro, revoga-se a delegação de Conexão e cessa
+a prestação de Repasse Financeiro para os PSPs atendidos. Remessas e Repasses Financeiros
+pendentes são tratados antes do encerramento definitivo.
+
+O encerramento não extingue as obrigações originadas enquanto o participante esteve
+habilitado. Obrigações de transações, informes, evidências, auditorias e incidentes permanecem
+exigíveis pelo prazo aplicável e são preservadas nas evidências do encerramento.
+
+
+
+
+                                                     Página 17 de 19
+Split Payment | Manual de Habilitação de Participantes                                              Versão 1.0.0
+
+7. Co muni cação e C an ai s d e Atend im ento
+
+
+
+
+                                                 CAPÍTULO 7 – COMUNICAÇÃO E CANAIS DE ATENDIMENTO
+
+
+
+7.1 NOTIFICAÇÃO DE DECISÕES
+
+A habilitação de participantes requer troca constante entre cada participante e a PP, para
+viabilizar a condução do processo e a comunicação de cada decisão. Este capítulo reúne os
+canais dessa interação e a forma como as decisões são notificadas.
+
+As decisões relevantes são registradas e comunicadas formalmente ao participante: aprovação
+ou reprovação em marco, emissão da certificação, autorização de entrada em produção e
+suspensão, reativação ou desabilitação. Quando a decisão exige ação, a comunicação indica o
+que precisa ser feito e em que prazo.
+
+7.2 CANAIS DE ATENDIMENTO
+
+Os canais de atendimento são usados para protocolar solicitações e enviar formulários, agendar
+homologações, tratar pendências e acompanhar a entrada em produção e o período assistido.
+Incidentes de segurança, falhas críticas de produção e problemas de conectividade seguem
+canais específicos, não os canais gerais da habilitação.
+
+O atendimento da habilitação será disponibilizado em portal próprio da PP, cujo endereço e cujas
+condições de uso serão divulgados pela RFB e pelo CGIBS. Até essa disponibilização, as
+solicitações e os formulários são tratados pelos meios indicados no ato de convocação de cada
+marco.
+
+
+
+
+                                                                   Página 18 de 19
+Split Payment | Manual de Habilitação de Participantes                     Versão 1.0.0
+
+8. H istór ico de Revisão
+
+
+
+
+                                     CAPÍTULO 8 – HISTÓRICO DE REVISÃO
+
+
+
+            Data            Versão              Descrição das Alterações
+
+            —               —                   —
+
+
+
+
+                                                     Página 19 de 19
+

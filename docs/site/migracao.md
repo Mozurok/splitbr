@@ -6,6 +6,58 @@ title: Guia de migração
 
 Registro das mudanças que quebram compatibilidade entre versões do `@splitbr/client` e do `@splitbr/mock`, com o que fazer em cada caso. Mais recente primeiro.
 
+## 0.2.x para 0.3.0: o contrato oficial foi de v1.1.0 para v1.1.1
+
+Em 24/09/2026 o CGIBS publicou o **OpenAPI v1.1.1**, junto com o Manual de Integração v1.1.1, aprovados pelo Ato Técnico Conjunto RFB/CGIBS nº 5. Os pacotes 0.3.0 são gerados desse contrato.
+
+O salto é bem menor que o da 0.2.0: as rotas são as mesmas 35, os nomes de schema são os mesmos 78, e a assinatura não mudou. O que muda são campos removidos, então o compilador aponta cada lugar que precisa de ajuste.
+
+### Resumo das mudanças
+
+| | v1.1.0 (0.2.x) | v1.1.1 (0.3.0) |
+|---|---|---|
+| `indPgtoIntegral` | Boleto, Pix Dinâmico e Pix Automático | só Boleto |
+| `cnpjRaizPspRecInd` | Boleto e arranjos Pix | só arranjos Pix |
+| Respostas de erro 403, 410, 422 e 500 | `errors[]` | `resourceId`, sem `errors` |
+| `resourceId` nas respostas de erro | não declarado | em todas |
+
+### 1. `indPgtoIntegral` saiu dos arranjos Pix
+
+No Informe Preliminar de Pagamento e no lote de segregação, Pix Dinâmico e Pix Automático não têm mais `indPgtoIntegral`. Antes o campo era obrigatório nesses arranjos. O manual explica: eles admitem um único pagamento por transação, então o indicador não diz nada. No Boleto o campo continua obrigatório.
+
+Tire o campo dos corpos de Pix. Com o client 0.3.0, o TypeScript acusa o campo como propriedade desconhecida no objeto literal.
+
+### 2. `cnpjRaizPspRecInd` saiu do Boleto
+
+Os seis schemas de Boleto (transação iniciada, atualizada, baixa, preliminar, segregação e retorno do Super Inteligente) perderam `cnpjRaizPspRecInd`. Segundo o manual, quando existe um PSP Recebedor Indireto no Boleto, o CNPJ dele vai no campo do Recebedor. Nos arranjos Pix o campo continua opcional.
+
+### 3. Erros trocaram `errors` por `resourceId`
+
+Nas respostas `application/problem+json` de 403, 410 (stream e consulta retroativa), 500 e nos 422 de segregação, stream e MOC, o array `errors` saiu. Todas as respostas de erro ganharam `resourceId`, o identificador que o capítulo 9 do manual manda gerar para toda requisição, com sucesso ou erro. Os 400 continuam com `errors`, e o envelope 201 de sucesso também.
+
+Se o seu tratamento de erro lia `errors` de um 422, passe a ler `detail`. Guarde o `resourceId` no log: é por ele que a plataforma rastreia a requisição.
+
+### 4. Duas regras novas no manual, sem mudança de schema
+
+- **Valor zero não é campo omitido.** Nos campos de valor de tributo, zero passa a significar "transação com split cujo valor a segregar é zero". Omitir o campo significa "transação sem split". Quem mandava `0` para dizer "não se aplica" precisa passar a omitir.
+- **`dtHrIni` em transação que ganha dados fiscais depois.** Se a transação foi criada sem os campos fiscais e passou a tê-los por atualização, o Informe de Transação Iniciada vai com a data e hora da alteração.
+
+### Divergência entre manuais: `hashPayload`
+
+O Manual de Segurança v1.0.0, publicado no mesmo dia, lista um oitavo claim no protected header do JWS, `hashPayload`, com janela de 5 minutos para o `jti` e tolerância de 1 minuto no `iat`. O Manual de Integração v1.1.1 e o OpenAPI continuam com os sete atributos, e nenhum documento define o formato do `hashPayload`. O client e o mock seguem o OpenAPI. Se a plataforma passar a exigir o claim, isso vira uma versão nova.
+
+### Migrando o `@splitbr/mock` para a 0.3.0
+
+O mock 0.3.0 serve o contrato v1.1.1. Além de aplicar as mudanças acima, ele corrige três comportamentos que estavam errados na 0.2.0:
+
+- **Códigos RSUP.** O mock trocava o significado dos finais 2 e 3. O correto, pelo capítulo 6 do manual, é x01 CBS corrigido, x02 CBS em aberto, x03 IBS corrigido, x04 IBS em aberto. Um teste que esperava `RSUP102` para `ibs-correcao` passa a receber `RSUP103`.
+- **Baixa de Boleto.** O mock exigia `numPgto` na Baixa de Boleto, campo que o contrato tirou na v1.1.0, e rejeitava uma baixa válida. Agora rejeita o campo se ele vier.
+- **`cnpjRaizPspRecInd` no TEF.** Era aceito, mas o manual marca como N/E. Agora é rejeitado.
+
+### Compatibilidade
+
+`^0.2.0` **não** puxa a 0.3.0: em versões `0.x`, o caret do npm não atravessa o minor.
+
 ## 0.1.x para 0.2.0: o contrato oficial foi de v0.0.10 para v1.1.0
 
 Em 24/08/2026 o CGIBS publicou o **OpenAPI v1.1.0** da Plataforma Pública de Split Payment, junto com o Manual de Integração v1.1.0, e moveu a v0.0.10 para "versões anteriores". Os pacotes 0.2.0 são gerados desse contrato novo.
@@ -13,7 +65,7 @@ Em 24/08/2026 o CGIBS publicou o **OpenAPI v1.1.0** da Plataforma Pública de Sp
 **A migração não é opcional se você integra a plataforma real.** O contrato antigo saiu do ar como referência corrente, e as rotas que a 0.1.x chama foram renomeadas.
 
 ::: warning Antes de começar
-Uma parte do contrato v1.1.0 depende do **Manual de Segurança**, que ainda não foi publicado. É dele que sai o fluxo de JWKS por trás da assinatura, ou seja, como sua chave pública chega à plataforma. O que está aqui cobre o que os artefatos oficiais já definem.
+Uma parte do contrato v1.1.0 depende do **Manual de Segurança**, que ainda não tinha sido publicado quando esta seção foi escrita. É dele que sai o fluxo de JWKS por trás da assinatura, ou seja, como sua chave pública chega à plataforma. Ele saiu em 24/09/2026; a seção da 0.3.0 trata do que ele muda.
 :::
 
 ### Resumo das mudanças

@@ -16,10 +16,12 @@
     "test:site": "pnpm --filter @splitbr/client build && vitest run --config docs/site/vitest.config.ts"
   },
   "devDependencies": {
+    "@fontsource-variable/archivo": "^5.3.0",
     "vitepress": "1.6.4",
     "vitest": "^4.1.10"
   },
   "dependencies": {
-    "@splitbr/client": "workspace:*"
+    "@splitbr/client": "workspace:*",
+    "gsap": "^3.15.0"
   }
 }

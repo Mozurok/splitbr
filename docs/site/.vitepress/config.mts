@@ -12,6 +12,11 @@ export default defineConfig({
   description: DEFAULT_DESCRIPTION,
   base: "/splitbr/",
   lastUpdated: true,
+  // Claro como padrao (redesign de 2026-10-22), escuro a um clique. O padrao do
+  // VitePress segue o sistema. O tipo so admite initialValue "dark", mas o
+  // script de tema usa o valor como preferencia inicial, e "light" funciona;
+  // quem ja escolheu um tema mantem a escolha salva no localStorage.
+  appearance: { initialValue: "light" as "dark" },
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: "/splitbr/favicon.svg" }],
     ["link", { rel: "icon", type: "image/png", sizes: "32x32", href: "/splitbr/favicon-32.png" }],
@@ -46,8 +51,8 @@ export default defineConfig({
   themeConfig: {
     logo: "/favicon.svg",
     nav: [
-      { text: "Guia", link: "/tutorial" },
       { text: "Entenda", link: "/split-payment" },
+      { text: "Tutorial", link: "/tutorial" },
       { text: "Referência", link: "/referencia/client" },
       { text: "Leis e novidades", link: "/novidades" },
     ],

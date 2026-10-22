@@ -94,9 +94,6 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
 <template>
   <div class="splitbr-demo demo">
     <header class="cabeca">
-      <p class="olho">Simulador ao vivo &middot; sem instalar nada</p>
-      <h2 class="titulo">Veja seu dinheiro se dividir</h2>
-      <p class="sub">Siga o passo a passo abaixo. Cada valor é calculado pelo código publicado no <code>@splitbr/client</code>.</p>
       <div class="modos" role="tablist" aria-label="Modo da demo">
         <button role="tab" :aria-selected="modo === 'guiado'" :class="{ ativo: modo === 'guiado' }" @click="trocarModo('guiado')">
           <span class="modo-i">1</span> Passo a passo
@@ -125,7 +122,7 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
           <p v-if="passo.coachTip" class="coach">{{ passo.coachTip }}</p>
           <div class="nav">
             <button class="btn ghost" type="button" :disabled="passoIdx === 0" @click="voltar">Voltar</button>
-            <button v-if="!ultimoPasso" class="btn primario" type="button" @click="proximo">Próximo passo &rarr;</button>
+            <button v-if="!ultimoPasso" class="btn primario" type="button" @click="proximo">Próximo passo</button>
             <button v-else class="btn ghost" type="button" @click="escolherCaso(casoIdx)">Rever do início</button>
           </div>
         </section>
@@ -189,12 +186,9 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
 </template>
 
 <style scoped>
-.demo { color: var(--demo-text-1); background: var(--demo-bg); border: 1px solid var(--demo-border); border-radius: var(--demo-radius); padding: clamp(20px, 4vw, 40px); box-shadow: var(--demo-shadow); margin: 28px 0; }
+.demo { color: var(--demo-text-1); background: var(--demo-bg); border: 3px solid var(--demo-border); border-radius: var(--demo-radius); padding: clamp(20px, 4vw, 40px); box-shadow: var(--demo-shadow); margin: 28px 0; }
 .cabeca { margin-bottom: 22px; }
-.olho { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--demo-accent-text); }
-.titulo { font: var(--demo-font-display); margin: 6px 0 8px; border: 0; padding: 0; background: var(--demo-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.sub { margin: 0 0 18px; color: var(--demo-text-2); max-width: 54ch; }
-.sub code, .cod-nota code { color: var(--demo-accent-text); }
+.cod-nota code { color: var(--demo-text-1); }
 
 /* Toggle legivel: pilula ativa inequivoca */
 .modos { display: inline-flex; gap: 6px; background: var(--demo-surface); border: 1px solid var(--demo-border); border-radius: 999px; padding: 5px; }
@@ -210,10 +204,10 @@ function pct(n: number) { return n.toLocaleString("pt-BR", { maximumFractionDigi
 .casos-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
 .casos-tabs button { border: 1px solid var(--demo-border); background: var(--demo-card); color: var(--demo-text-2); border-radius: 999px; padding: 6px 13px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all var(--demo-dur) var(--demo-ease); }
 .casos-tabs button.ativo { border-color: var(--demo-cta-bg); color: var(--demo-cta-fg); background: var(--demo-cta-bg); }
-.passo-num { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--demo-text-2); font-weight: 700; }
+.passo-num { font-size: 0.85rem; color: var(--demo-text-2); font-weight: 600; }
 .trilha { height: 6px; background: var(--demo-border); border-radius: 3px; margin-top: 6px; overflow: hidden; }
 .preenchido { height: 100%; background: var(--demo-gradient); transition: width var(--demo-dur) var(--demo-ease); }
-.passo-titulo { margin: 4px 0 0; font: var(--demo-font-title); }
+.passo-titulo { margin: 4px 0 0; font: var(--demo-font-title); text-transform: uppercase; border: 0; padding: 0; }
 .passo-texto { margin: 0; color: var(--demo-text-1); font-size: 1.02rem; }
 .coach { margin: 0; padding: 12px 14px; background: color-mix(in srgb, var(--demo-accent) 12%, var(--demo-card)); border-left: 3px solid var(--demo-accent); border-radius: 8px; font-size: 0.9rem; }
 .nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 6px; }
@@ -258,7 +252,7 @@ input[type="range"] { width: 100%; accent-color: var(--demo-cta-bg); }
 
 .coluna-codigo { display: flex; flex-direction: column; border: 1px solid var(--demo-border); border-radius: var(--demo-radius-sm); overflow: hidden; background: var(--demo-card); box-shadow: var(--demo-shadow-card); }
 .cod-cab { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; border-bottom: 1px solid var(--demo-border); background: var(--demo-surface); }
-.cod-titulo { font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--demo-text-2); }
+.cod-titulo { font-size: 0.85rem; font-weight: 600; color: var(--demo-text-2); }
 .cod-copiar { border: 1px solid var(--demo-border); background: var(--demo-card); color: var(--demo-accent-text); border-radius: 6px; padding: 4px 11px; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
 .cod-bloco { margin: 0; padding: 16px; overflow-x: auto; font-size: 0.82rem; line-height: 1.55; }
 .cod-bloco code { font-family: var(--vp-font-family-mono, monospace); color: var(--demo-text-1); white-space: pre; }

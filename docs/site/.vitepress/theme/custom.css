@@ -1,119 +1,167 @@
 /**
- * Direcao "Fiscal claro" evoluida para a linguagem da demo (D-1, restyle leve):
- * gradiente ambar->coral, cards elevados, tipo display forte no hero, foco
- * visivel e micro-movimento. Mantem claro + escuro; NAO retuna a escada global
- * de fundo (--vp-c-bg / --vp-c-bg-soft) nem toca no palco isolado da demo.
- * Doador da linguagem: demo.css / DemoSplit.vue. Refs originais: Cloudflare
- * Workers, Firecrawl, Tailscale (REFERENCES.md ## Design do site).
+ * Tema "lambe-lambe" (redesign de 2026-10-22).
+ *
+ * O material vem do cartaz de rua brasileiro, o lambe-lambe das graficas
+ * populares: gradiente fluorescente, letra ultracondensada em caixa alta,
+ * papel colado e rasgado num muro. Cada destino do dinheiro tem uma cor fixa
+ * no site inteiro: voce em amarelo, a CBS (Uniao) em azul, o IBS (estados e
+ * municipios) em rosa.
+ *
+ * Tipografia: Archivo variavel (Omnibus-Type), uma familia so. Titulos a 62%
+ * de largura e peso 900; texto corrido em largura normal. Fonte hospedada no
+ * proprio site via @fontsource, sem chamada ao Google.
  */
+@import "@fontsource-variable/archivo/wdth.css";
 
 :root {
-  --vp-c-brand-1: #b45309;
-  --vp-c-brand-2: #d97706;
-  --vp-c-brand-3: #f59e0b;
-  --vp-c-brand-soft: rgba(245, 158, 11, 0.14);
+  --lb-muro: #ece9e0;
+  --lb-muro-2: #e2ded2;
+  --lb-papel: #fbfaf6;
+  --lb-tinta: #000000;
+  --lb-tinta-2: #3c3a35;
+  --lb-amarelo: #ffe600;
+  --lb-laranja: #ff6a13;
+  --lb-rosa: #ff2d87;
+  --lb-azul: #2433ff;
+  --lb-lambe: linear-gradient(180deg, #ffe600 0%, #ffb000 30%, #ff6a13 62%, #ff2d87 100%);
 
-  /* Gradiente ambar->coral, ancorado no escuro para legibilidade do hero. */
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #b45309 18%, #ea580c 55%, #f43f5e);
+  /* Textura de papel: ruido fractal, multiplicado sobre a cor. */
+  --lb-grao: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23g)'/></svg>");
 
-  /* Botao: acento unico alinhado a CTA da demo; hover/active mais escuros (AA). */
-  --vp-button-brand-bg: #b45309;
-  --vp-button-brand-hover-bg: #92400e;
-  --vp-button-brand-active-bg: #7c2d12;
+  --lb-font: "Archivo Variable", "Archivo", "Arial Narrow", system-ui, sans-serif;
 
-  /* Movimento compartilhado (curva da demo). */
-  --site-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --site-dur: 220ms;
+  --vp-font-family-base: var(--lb-font);
 
-  /* Elevacao dos cards (repouso + hover). */
-  --site-shadow-card: 0 6px 20px -8px rgba(28, 25, 23, 0.14);
-  --site-shadow-card-hover: 0 18px 40px -16px rgba(146, 64, 14, 0.30);
+  --vp-c-bg: var(--lb-muro);
+  --vp-c-bg-alt: var(--lb-muro-2);
+  --vp-c-bg-soft: var(--lb-muro-2);
+  --vp-c-bg-elv: var(--lb-papel);
+  --vp-c-text-1: var(--lb-tinta);
+  --vp-c-text-2: var(--lb-tinta-2);
+  --vp-c-text-3: #6a675f;
+  --vp-c-divider: #cdc8bb;
+  --vp-c-gutter: #cdc8bb;
+
+  --vp-c-brand-1: var(--lb-azul);
+  --vp-c-brand-2: #1a26c9;
+  --vp-c-brand-3: var(--lb-tinta);
+  --vp-c-brand-soft: rgba(36, 51, 255, 0.12);
+
+  --vp-button-brand-bg: var(--lb-tinta);
+  --vp-button-brand-text: var(--lb-amarelo);
+  --vp-button-brand-hover-bg: var(--lb-azul);
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-active-bg: var(--lb-azul);
+
+  --vp-nav-bg-color: var(--lb-muro);
+  --vp-sidebar-bg-color: var(--lb-muro);
 }
 
 .dark {
-  --vp-c-brand-1: #fbbf24;
-  --vp-c-brand-2: #f59e0b;
-  --vp-c-brand-3: #d97706;
-  --vp-c-brand-soft: rgba(251, 191, 36, 0.16);
+  --lb-muro: #000000;
+  --lb-muro-2: #161512;
+  --lb-papel: #1d1c19;
+  --lb-tinta: #f4f1e8;
+  --lb-tinta-2: #bdb8ab;
 
-  /* No escuro, cores mais claras: alto contraste sobre fundo escuro. */
-  --vp-home-hero-name-background: linear-gradient(120deg, #fbbf24 18%, #fb923c 55%, #fb7185);
+  --vp-c-text-3: #8d887c;
+  --vp-c-divider: #2d2b26;
+  --vp-c-gutter: #2d2b26;
+  --vp-c-brand-1: #9aa2ff;
+  --vp-c-brand-2: #c3c8ff;
+  --vp-c-brand-soft: rgba(154, 162, 255, 0.16);
 
-  /* Branco sobre #b45309 = 5.5:1; hover/active mais escuros passam AA. */
-  --vp-button-brand-bg: #b45309;
-  --vp-button-brand-hover-bg: #92400e;
-  --vp-button-brand-active-bg: #7c2d12;
-
-  --site-shadow-card: 0 6px 20px -8px rgba(0, 0, 0, 0.45);
-  --site-shadow-card-hover: 0 18px 40px -16px rgba(0, 0, 0, 0.55);
+  --vp-button-brand-bg: var(--lb-amarelo);
+  --vp-button-brand-text: #000000;
+  --vp-button-brand-hover-bg: #ffffff;
+  --vp-button-brand-hover-text: #000000;
+  --vp-button-brand-active-bg: #ffffff;
 }
 
-/* Hero: tipo display mais forte (so o nome do hero, nunca o corpo). */
-.VPHero .name {
+/* Titulos das paginas: a voz de cartaz, condensada e pesada. */
+.vp-doc h1,
+.vp-doc h2 {
+  font-stretch: 62%;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  line-height: 0.92;
+}
+.vp-doc h1 {
+  font-size: clamp(2.6rem, 6vw, 3.6rem);
+}
+.vp-doc h2 {
+  font-size: 2.2rem;
+  border-top: 3px solid var(--lb-tinta);
+  padding-top: 28px;
+}
+.vp-doc h3 {
+  font-stretch: 80%;
   font-weight: 800;
+  font-size: 1.35rem;
 }
 
-/* Grid blueprint sutil atras do hero (so na home). */
-.VPHome .VPHero {
-  background-image:
-    linear-gradient(to right, rgba(180, 83, 9, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(180, 83, 9, 0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-.dark .VPHome .VPHero {
-  background-image:
-    linear-gradient(to right, rgba(251, 191, 36, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(251, 191, 36, 0.06) 1px, transparent 1px);
+.vp-doc p,
+.vp-doc li {
+  line-height: 1.7;
 }
 
-/* Cards de feature ELEVADOS no repouso (nao so no hover). */
-.VPFeature {
-  border: 1px solid var(--vp-c-divider);
-  box-shadow: var(--site-shadow-card);
-  transition: border-color var(--site-dur) var(--site-ease),
-              transform var(--site-dur) var(--site-ease),
-              box-shadow var(--site-dur) var(--site-ease);
-}
-.VPFeature:hover {
-  border-color: var(--vp-c-brand-2);
-  transform: translateY(-3px);
-  box-shadow: var(--site-shadow-card-hover);
-}
-
-/* Tabelas: numerais tabulares para figuras (aliquotas/impostos). */
-.vp-doc table {
-  font-size: 0.9rem;
-}
+/* Dinheiro e aliquota sempre em numerais tabulares. */
 .vp-doc td,
 .vp-doc th {
   font-variant-numeric: tabular-nums;
 }
+.vp-doc table {
+  font-size: 0.92rem;
+}
 .vp-doc th {
-  background: var(--vp-c-brand-soft);
+  background: var(--lb-tinta);
+  color: var(--lb-muro);
 }
 
-/* Foco visivel unico no site inteiro (a11y). */
+.vp-doc a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+}
+
+/* Avisos do VitePress viram etiquetas coladas: borda preta, sem arredondar. */
+.vp-doc .custom-block {
+  border-radius: 0;
+  border: 2px solid var(--lb-tinta);
+}
+.vp-doc .custom-block.warning {
+  background: var(--lb-amarelo);
+  color: #000000;
+}
+.vp-doc .custom-block.warning a {
+  color: #000000;
+}
+
+/* Logo e nome na barra, condensados como o resto. */
+.VPNavBarTitle .title {
+  font-stretch: 70%;
+  font-weight: 900;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
 :focus-visible {
-  outline: 3px solid var(--vp-c-brand-1);
-  outline-offset: 2px;
+  outline: 3px solid var(--lb-azul);
+  outline-offset: 3px;
+}
+.dark :focus-visible {
+  outline-color: var(--lb-amarelo);
 }
 
-/* Aviso de correcoes no rodape: destacado sem gritar. */
+/* Home: no escuro o cartaz preto do npx some no muro preto e ganha o mesmo
+   registro rosa do selo. Fica aqui e nao no <style scoped> do Inicio.vue: o
+   :global(.dark) do Vue compilava so ".dark" e aplicava a sombra na pagina. */
+.dark .cartaz-cmd {
+  box-shadow: 5px 5px 0 var(--lb-rosa);
+}
+
 .VPFooter .message a {
   color: var(--vp-c-brand-1);
   text-decoration: underline;
-}
-
-/* Respeita prefers-reduced-motion: colapsa o micro-movimento. */
-@media (prefers-reduced-motion: reduce) {
-  :root {
-    --site-dur: 0.01ms;
-  }
-  .VPFeature {
-    transition: none;
-  }
-  .VPFeature:hover {
-    transform: none;
-  }
 }

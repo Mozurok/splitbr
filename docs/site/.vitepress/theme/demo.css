@@ -1,57 +1,43 @@
 /**
- * Tokens da demo interativa -- PALCO DE DESTAQUE, sempre claro (D-13).
- * A demo e uma superficie autocontida: NAO troca com o tema do site (sem
- * `.dark .splitbr-demo`). Fica sempre clara, com hierarquia e elevacao reais,
- * para nunca repetir o FAIL de "tudo na mesma cor" no modo escuro (D-10).
- *
- * Escada de figura/fundo: canvas (o cartao) < surface (paineis) < card (branco
- * com sombra, os resultados). Um acento quente unico guia o olho.
- *
- * Contraste WCAG AA verificado nesta sessao (todos >= 4.94:1): texto-1 17.23,
- * texto-2 7.52, branco/CTA 5.02, acento 7.20, empresa 4.94, fisco 4.95.
+ * Tokens da demo interativa no tema "lambe-lambe" (redesign de 2026-10-22).
+ * Palco sempre claro (D-13): a demo e um cartaz de papel colado no muro e nao
+ * troca com o tema do site, para nao repetir o FAIL de "tudo na mesma cor" no
+ * modo escuro (D-10). Bordas pretas grossas, sem arredondar, e as cores dos
+ * destinos iguais as do site: o fisco em azul, o liquido da empresa em preto.
  */
 
 .splitbr-demo {
-  /* Escada de superficie (sempre clara) */
-  --demo-bg: #fffdfb; /* canvas do cartao */
-  --demo-surface: #f4f1ec; /* paineis */
-  --demo-card: #ffffff; /* cartoes elevados (resultado) */
-  --demo-border: #e7e2da;
+  --demo-bg: #fbfaf6;
+  --demo-surface: #ece9e0;
+  --demo-card: #ffffff;
+  --demo-border: #000000;
 
-  /* Texto */
-  --demo-text-1: #1c1917;
-  --demo-text-2: #57534e;
+  --demo-text-1: #000000;
+  --demo-text-2: #3c3a35;
 
-  /* Acento / acao */
-  --demo-accent: #d97706;
-  --demo-accent-text: #9a3412; /* acento como texto (7.20:1) */
-  --demo-cta-bg: #b45309; /* branco por cima = 5.02:1 */
-  --demo-cta-fg: #ffffff;
-  --demo-cta-hover: #92400e;
+  --demo-accent: #2433ff;
+  --demo-accent-text: #1a26c9;
+  --demo-cta-bg: #000000;
+  --demo-cta-fg: #ffe600;
+  --demo-cta-hover: #2433ff;
 
-  /* Gradiente decorativo (ambar -> coral) */
-  --demo-grad-from: #f59e0b;
-  --demo-grad-to: #f43f5e;
-  --demo-gradient: linear-gradient(120deg, var(--demo-grad-from), var(--demo-grad-to));
+  --demo-gradient: linear-gradient(90deg, #ffe600, #ff6a13, #ff2d87);
 
-  /* Estados semanticos */
-  --demo-fisco: #b45309;
-  --demo-empresa: #15803d;
-  --demo-atencao: #dc2626;
+  --demo-fisco: #2433ff;
+  --demo-empresa: #000000;
+  --demo-atencao: #d1004f;
 
-  /* Tipografia */
-  --demo-font-display: 800 clamp(2rem, 6vw, 3.25rem) / 1.05 var(--vp-font-family-base);
-  --demo-font-title: 700 1.25rem / 1.3 var(--vp-font-family-base);
-  --demo-num: 800 clamp(1.6rem, 3.6vw, 2.5rem) / 1 var(--vp-font-family-base);
+  /* extra-condensed (62,5%) dentro do atalho font: o atalho zeraria um
+     font-stretch declarado a parte. */
+  --demo-font-title: 900 extra-condensed 1.9rem / 0.95 var(--lb-font, "Arial Narrow", sans-serif);
+  --demo-num: 900 extra-condensed clamp(2.4rem, 4.6vw, 3.6rem) / 0.9 var(--lb-font, "Arial Narrow", sans-serif);
 
-  /* Ritmo / forma / elevacao */
-  --demo-radius: 18px;
-  --demo-radius-sm: 12px;
+  --demo-radius: 0px;
+  --demo-radius-sm: 0px;
   --demo-gap: 16px;
-  --demo-shadow: 0 24px 60px -20px rgba(146, 64, 14, 0.28), 0 2px 8px rgba(28, 25, 23, 0.06);
-  --demo-shadow-card: 0 6px 20px -8px rgba(28, 25, 23, 0.18);
+  --demo-shadow: 8px 8px 0 #000000;
+  --demo-shadow-card: none;
 
-  /* Movimento (D-9); honra prefers-reduced-motion */
   --demo-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --demo-dur: 220ms;
 }

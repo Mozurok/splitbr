@@ -8,8 +8,8 @@ Toolkit open source de **Split Payment** do Brasil (IBS/CBS, LC 214/2025) para N
 
 O split payment da Reforma Tributária segrega o tributo no momento do pagamento: a parcela de CBS/IBS vai direto ao fisco antes de o valor chegar ao vendedor. Isso afeta todo mundo que vende no Brasil, mas quase ninguém consegue ver o mecanismo funcionando, porque a Plataforma Pública é restrita a PSPs homologados. Este repositório abre essa caixa-preta para qualquer pessoa:
 
-- **Quer entender o que muda para a sua empresa?** Leia o [guia em português claro](docs/site/split-payment.md), sem código.
-- **Quer ver a plataforma funcionando na sua máquina?** `npx @splitbr/mock` sobe um simulador fiel do contrato oficial em minutos ([tutorial](docs/site/tutorial.md)); nenhuma licença necessária.
+- **Quer entender o que muda para a sua empresa?** Leia o [guia em português claro](https://mozurok.github.io/splitbr/split-payment), sem código.
+- **Quer ver a plataforma funcionando na sua máquina?** `npx @splitbr/mock` sobe um simulador fiel do contrato oficial em minutos ([tutorial](https://mozurok.github.io/splitbr/tutorial)); nenhuma licença necessária.
 - **Integra a plataforma de verdade (PSP homologado)?** O [@splitbr/client](packages/client) é o SDK tipado do contrato.
 
 > **Aviso**: projeto independente e não oficial. Não é afiliado à RFB, ao Comitê Gestor do IBS, ao Serpro ou à Núclea. A fonte da verdade é sempre o contrato oficial, vendorado aqui com hash pinado (`vendor/MANIFEST.md`); quando o contrato mudar, os builds recusam artefatos divergentes.
@@ -19,7 +19,7 @@ O split payment da Reforma Tributária segrega o tributo no momento do pagamento
 | Pacote | Para quem | O que faz |
 |---|---|---|
 | [@splitbr/mock](packages/mock) | Qualquer dev; nenhuma licença necessária | A plataforma inteira rodando local: os 7 fluxos documentados, matrizes de campos M/O/N-E como dados, segregação em 3 passos com rejeição integral de lote, long polling do Super Inteligente, motor de caos (429/503/circuit breaker) e cenários de divergência RSUP com os dois procedimentos de cálculo. |
-| [@splitbr/client](packages/client) | Times que integram a plataforma real (PSPs homologados e provedores de conexão) | SDK TypeScript tipado: tipos gerados do OAS oficial, os 4 headers obrigatórios injetados por middleware, erros RFC 7807 tipados e a fórmula de segregação como função pura (centavos inteiros, truncamento para baixo). |
+| [@splitbr/client](packages/client) | Times que integram a plataforma real (PSPs homologados e provedores de conexão) | SDK TypeScript tipado: tipos gerados do OAS oficial, assinatura `X-JWS-Signature` aplicada por middleware (a chave privada fica com você), erros RFC 7807 tipados e a fórmula de segregação como função pura (centavos inteiros, truncamento para baixo). |
 
 Roadmap (próxima fase, priorizada): validadores NF-e da NT 2025.002, que tocam toda empresa que emite nota no Brasil; depois o client da Calculadora oficial e o simulador de fluxo de caixa.
 

@@ -60,12 +60,18 @@ Os atos infralegais que operacionalizam o split payment na prática e publicaram
 
 Esses dois atos não têm URL permanente própria. Para acompanhá-los, use o [CGIBS](https://www.cgibs.gov.br/) e as [notícias da RFB](https://www.gov.br/receitafederal/pt-br/assuntos/noticias).
 
+## Atos Técnicos Conjuntos RFB/CGIBS 4/2026 e 5/2026
+
+A documentação técnica do split payment passou a ser aprovada formalmente por **Ato Técnico Conjunto** da RFB com o CGIBS, com base na Resolução CGIBS 17/2026. O **nº 4** (28/08/2026) aprova o Manual de Habilitação de Participantes e o Manual de Redes. O **nº 5** (22/09/2026) aprova o pacote publicado em 24/09: Manuais de Operações, Integração, Tempos, Redes e Segurança e o OpenAPI v1.1.1. O nº 5 também reserva o terceiro dígito da versão (X.Y.**Z**) para correções materiais e redacionais.
+
+Texto oficial: [Atos Técnicos Conjuntos no CGIBS](https://www.cgibs.gov.br/atos-tecnicos-conjuntos)
+
 ## Quem é alcançado
 
-Dois fatos de contrato do Manual de Integração ajudam a situar quem entra nesse fluxo:
+Dois fatos do contrato da Plataforma (OpenAPI v1.1.1) e um da lei ajudam a situar quem entra nesse fluxo:
 
 - **O recebedor é sempre CNPJ.** O campo `cnpjRec` identifica quem recebe o valor líquido da transação e só aceita CNPJ (14 caracteres alfanuméricos). É o contribuinte do regime regular.
-- **CPF aparece apenas como pagador.** Os campos de pagador (`cnpjCpfPagOrig` e `cnpjCpfPagEfet`) aceitam CPF de 11 dígitos ou CNPJ. Ou seja: pessoa física paga, mas não recebe via split.
+- **CPF aparece apenas como pagador efetivo.** O campo `cnpjCpfPagEfet`, de quem de fato pagou, aceita CPF de 11 dígitos ou CNPJ. Já o pagador informado na emissão (`cnpjPagOrig`) só aceita CNPJ desde a v1.1.0 do contrato. Ou seja: pessoa física pode pagar, mas não recebe via split.
 - **Simples Nacional e MEI têm cronograma próprio**, definido no art. 348 da LC 214/2025, e não entram no mesmo ritmo do regime regular.
 
 ## O que ainda não foi publicado
